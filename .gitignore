@@ -14,4 +14,3 @@
 .cxx
 local.properties
 /app/src/main/java/com/example/poste/api/twitter/Keys
-apikey.properties
