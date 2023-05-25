@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="ctx_menu_edit_folder" type="id" />
+    <item name="ctx_menu_share_folder" type="id" />
+    <item name="ctx_menu_delete_folder" type="id" />
+    <item name="ctx_menu_edit_post" type="id" />
+</resources>

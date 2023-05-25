@@ -1,0 +1,78 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 4,
+    "identityHash": "6cc2993ad2e2146141371c679aee0611",
+    "entities": [
+      {
+        "tableName": "User",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`email` TEXT NOT NULL, `password` TEXT, `name` TEXT, PRIMARY KEY(`email`))",
+        "fields": [
+          {
+            "fieldPath": "email",
+            "columnName": "email",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "password",
+            "columnName": "password",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "email"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "TwitterToken",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`access_token` TEXT NOT NULL, `refresh_token` TEXT, `twitter_id` TEXT, PRIMARY KEY(`access_token`))",
+        "fields": [
+          {
+            "fieldPath": "access_token",
+            "columnName": "access_token",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "refresh_token",
+            "columnName": "refresh_token",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "twitter_id",
+            "columnName": "twitter_id",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "access_token"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6cc2993ad2e2146141371c679aee0611')"
+    ]
+  }
+}
