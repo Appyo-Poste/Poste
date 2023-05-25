@@ -1,0 +1,72 @@
+plugins {
+    id 'com.android.application'
+}
+
+
+def apikeyPropertiesFile = rootProject.file("apikey.properties")
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
+
+android {
+    namespace 'com.example.poste'
+    compileSdk 33
+
+
+    defaultConfig {
+        applicationId "com.example.poste"
+        minSdk 26
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+
+        // should correspond to key/value pairs inside the file
+        buildConfigField("String", "TWITTER_CLIENT_KEY", apikeyProperties['TWITTER_CLIENT_KEY'])
+        buildConfigField("String", "TWITTER_CLIENT_SECRET", apikeyProperties['TWITTER_CLIENT_SECRET'])
+        buildConfigField("String", "TWITTER_CONSUMER_KEY", apikeyProperties['TWITTER_CONSUMER_KEY'])
+        buildConfigField("String", "TWITTER_CONSUMER_SECRET", apikeyProperties['TWITTER_CONSUMER_SECRET'])
+        //buildConfigField("String", "REDDIT_CLIENT_KEY", apikeyProperties['REDDIT_CLIENT_KEY'])
+        //buildConfigField("String", "REDDIT_CLIENT_SECRET", apikeyProperties['REDDIT_CLIENT_SECRET'])
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.navigation:navigation-fragment:2.5.3'
+    implementation 'androidx.navigation:navigation-ui:2.5.3'
+    implementation 'androidx.room:room-runtime:2.5.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    annotationProcessor 'androidx.room:room-compiler:2.5.0'
+    implementation 'com.google.android.gms:play-services-auth:20.4.1'
+    implementation ('com.twitter:twitter-api-java-sdk:2.0.3'){
+        exclude group:'org.apache.oltu.oauth2' , module: 'org.apache.oltu.oauth2.common'
+    }
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+}
