@@ -40,5 +40,10 @@ jobs:
     # - name: Refresh Dependencies
     #   run: ./gradlew --refresh-dependencies --stacktrace
 
+    - name: Set up environment variables
+      run: |
+        echo "export ANDROID_HOME=C:\Users\Administrator\AppData\Local\Android\Sdk" >> $GITHUB_ENV
+        echo "export PATH=C:\Users\Administrator\AppData\Local\Android\Sdk/tools/bin;$PATH" >> $GITHUB_ENV
+
     - name: Build with Gradle
       run: ./gradlew build --stacktrace
