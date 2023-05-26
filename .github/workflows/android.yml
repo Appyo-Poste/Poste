@@ -41,7 +41,7 @@ jobs:
 
     - name: Accept Android licenses
       run: |
-        Set-Location -Path android-sdk\tools\bin
+        Set-Location -Path android-sdk/cmdline-tools/latest/bin
         .\sdkmanager.bat --licenses
         Set-Location -Path ../../..
 
