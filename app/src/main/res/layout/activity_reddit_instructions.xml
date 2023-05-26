@@ -11,7 +11,8 @@
         android:layout_height="729dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="1dp">
+        tools:layout_editor_absoluteY="1dp"
+        tools:ignore="MissingConstraints">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -45,7 +46,8 @@
                 android:ems="10"
                 android:hint="Reddit Username"
                 android:inputType="textPersonName"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <Button
                 android:id="@+id/redditSubmitInfobtn"
