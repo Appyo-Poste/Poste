@@ -40,4 +40,4 @@ jobs:
     #     arguments: assembleRelease
 
     - name: Build with Gradle
-      run: ./gradlew build --stacktrace
+      run: ./gradlew build --recompile-scripts --stacktrace
