@@ -35,7 +35,9 @@ jobs:
         cache: gradle
 
     - name: Download sdkmanager-wrapper
-      run: Invoke-WebRequest -Uri https://raw.githubusercontent.com/JakeWharton/sdk-manager-plugin/master/sdkmanager-wrapper -OutFile sdkmanager-wrapper
+      run: |
+        Invoke-WebRequest -Uri https://github.com/NordicSemiconductor/asset-tracker-cloud-android-sdk/raw/main/.github/workflows/sdkmanager-wrapper -OutFile sdkmanager-wrapper
+        chmod +x sdkmanager-wrapper
 
     - name: Download Android SDK
       run: ./sdkmanager-wrapper --install
