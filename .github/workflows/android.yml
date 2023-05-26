@@ -19,7 +19,7 @@ jobs:
     - name: Create local.properties
       run: |
         dir
-        echo C\\\:\\\\Users\\\\Administrator\\\\AppData\\\\Local\\\\Android\\\\Sdk
+        echo C\:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk > local.properties
 
     - name: Checkout
       uses: actions/checkout@v3
