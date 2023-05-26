@@ -13,6 +13,9 @@ on:
 jobs:
   build:
 
+    env:
+      ANDROID_HOME: C:\Users\Administrator\AppData\Local\Android\Sdk
+
     runs-on: self-hosted
 
     steps:
