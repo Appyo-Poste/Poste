@@ -22,6 +22,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    # - name: Create local.properties
+    #   run: |
+    #     echo %ANDROID_HOME%
+    #     echo sdk.dir=C\:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk > local.properties
+
     - name: Set up JDK 11
       uses: actions/setup-java@v3
       with:
@@ -36,18 +41,24 @@ jobs:
 
     - name: Accept Android licenses
       run: |
-        Set-Location -Path android-sdk/cmdline-tools/bin
+        Set-Location -Path android-sdk/cmdline-tools/tools/bin
         .\sdkmanager.bat --licenses
         Set-Location -Path ../../../..
 
     - name: Set up environment variables
       run: |
         echo "export ANDROID_HOME=$PWD/android-sdk" >> $GITHUB_ENV
-        echo "export PATH=$PWD/android-sdk/cmdline-tools/bin;$PATH" >> $GITHUB_ENV
+        echo "export PATH=$PWD/android-sdk/cmdline-tools/tools/bin;$PATH" >> $GITHUB_ENV
 
     - name: Manually add javax.xml.bind module
       run: |
-        echo '<?xml version="1.0" encoding="UTF-8"?><modules><module name="java.xml.bind"/></modules>' > android-sdk/cmdline-tools/lib/jdeps/jdk.jdeps
+        echo '<?xml version="1.0" encoding="UTF-8"?><modules><module name="java.xml.bind"/></modules>' > android-sdk/cmdline-tools/tools/lib/jdeps/jdk.jdeps
+
+    # - name: Setup Gradle
+    #   uses: gradle/gradle-build-action@v2
+
+    # - name: Refresh Dependencies
+    #   run: ./gradlew --refresh-dependencies --stacktrace
 
     - name: Build with Gradle
       run: ./gradlew build --stacktrace
