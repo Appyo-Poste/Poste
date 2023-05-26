@@ -34,28 +34,21 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    - name: Create required-modules directory
-      run: New-Item -ItemType Directory -Path "$Env:JAVA_HOME/lib/mods" -Force
-
-    - name: Install missing Java modules
+    - name: Download sdkmanager-wrapper
       run: |
-        echo "javax.xml.bind" >> "$Env:JAVA_HOME/lib/mods/required-modules"
+        Invoke-WebRequest -Uri https://github.com/NordicSemiconductor/asset-tracker-cloud-android-sdk/raw/main/.github/workflows/sdkmanager-wrapper -OutFile sdkmanager-wrapper
+        chmod +x sdkmanager-wrapper
 
     - name: Download Android SDK
-      run: |
-        Invoke-WebRequest -Uri https://dl.google.com/android/repository/sdk-tools-windows-4333796.zip -OutFile android-sdk.zip
-        Expand-Archive -Path android-sdk.zip -DestinationPath android-sdk
+      run: ./sdkmanager-wrapper --install
 
     - name: Accept Android licenses
-      run: |
-        Set-Location -Path android-sdk\tools\bin
-        .\sdkmanager.bat --licenses
-        Set-Location -Path ../../..
+      run: ./sdkmanager-wrapper --licenses
 
     - name: Set up environment variables
       run: |
-        echo "export ANDROID_HOME=$PWD/android-sdk" >> $GITHUB_ENV
-        echo "export PATH=$PWD/android-sdk/platform-tools;$PWD/android-sdk/tools;$PATH" >> $GITHUB_ENV
+        echo "export ANDROID_HOME=$PWD/sdk" >> $GITHUB_ENV
+        echo "export PATH=$PWD/sdk/platform-tools;$PWD/sdk/cmdline-tools/latest/bin;$PATH" >> $GITHUB_ENV
 
     # - name: Setup Gradle
     #   uses: gradle/gradle-build-action@v2
