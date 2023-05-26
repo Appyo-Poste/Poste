@@ -35,7 +35,7 @@ jobs:
         cache: gradle
 
     - name: Create required-modules directory
-      run: New-Item -ItemType Directory -Path "$Env:JAVA_HOME/lib/mods" -Force
+        run: New-Item -ItemType Directory -Path "$Env:JAVA_HOME/lib/mods" -Force
 
     - name: Install missing Java modules
       run: |
