@@ -39,7 +39,7 @@ jobs:
 
     - name: Install missing Java modules
       run: |
-        echo "javax.xml.bind" >> "$Env:JAVA_HOME/lib/mods/required-modules"
+        echo "javax.xml.bind" >> "${JAVA_HOME}/lib/mods/required-modules"
 
     - name: Download Android SDK
       run: |
