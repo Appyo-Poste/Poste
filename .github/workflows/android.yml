@@ -34,9 +34,12 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
+    - name: Create required-modules directory
+        run: New-Item -ItemType Directory -Path "$Env:JAVA_HOME/lib/mods" -Force
+
     - name: Install missing Java modules
       run: |
-        echo "javax.xml.bind" >> "$JAVA_HOME/lib/mods/required-modules"
+        echo "javax.xml.bind" >> "${JAVA_HOME}/lib/mods/required-modules"
 
     - name: Download Android SDK
       run: |
