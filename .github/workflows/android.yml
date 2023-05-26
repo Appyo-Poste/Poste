@@ -38,7 +38,7 @@ jobs:
       uses: gradle/gradle-build-action@v2
 
     - name: Refresh Dependencies
-      run: Z:\actions-runner\_workPoste\Poste\Poste\gradlew --refresh-dependencies --stacktrace
+      run: .\gradlew --refresh-dependencies --stacktrace
 
     - name: Build with Gradle
-      run: Z:\actions-runner\_workPoste\Poste\Poste\gradlew build --stacktrace
+      run: .\gradlew build --stacktrace
