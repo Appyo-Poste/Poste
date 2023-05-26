@@ -46,4 +46,6 @@ jobs:
         echo "export PATH=C:\Users\Administrator\AppData\Local\Android\Sdk/tools/bin;$PATH" >> $GITHUB_ENV
 
     - name: Build with Gradle
-      run: ./gradlew build --stacktrace
+      run: |
+        echo $ANDROID_HOME
+        ./gradlew build --stacktrace
