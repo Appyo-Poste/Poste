@@ -38,7 +38,7 @@ jobs:
       run: |
         Set-Location -Path android-sdk/cmdline-tools/bin
         .\sdkmanager.bat --licenses
-        Set-Location -Path ../../..
+        Set-Location -Path ../../../..
 
     - name: Set up environment variables
       run: |
