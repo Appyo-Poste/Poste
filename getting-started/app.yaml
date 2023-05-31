@@ -4,10 +4,8 @@
 runtime: php81
 
 env_variables:
-    GOOGLE_STORAGE_BUCKET: "capstone-bs-bvc"
-    # populate these to use the "mysql" or "postres" backends
-    CLOUDSQL_CONNECTION_NAME: "poste-388319:us-east1-b:poste"
+    GOOGLE_STORAGE_BUCKET: "poste-picture-storage"
+    CLOUDSQL_CONNECTION_NAME: "poste-388415:us-central1:poste"
     CLOUDSQL_USER: "root"
-    CLOUDSQL_PASSWORD: "9FgIZrcgTnUIZ3PWsAMmg13fyLEnRsEHjdy68nV6MQOwcfE1oDLkDC64YjwIhXsv9NNhC53f6wAOnYRFrQTL7UMxawSNIt2Iu15V"
-    ## Uncomment to give your database a name other than "bookshelf"
-    CLOUDSQL_DATABASE_NAME: "poste"
+    CLOUDSQL_PASSWORD: "mtQ7XfjJqjVIxeUqFVYSIom4d6lmCV"
+    CLOUDSQL_DATABASE_NAME: "poste-data"
