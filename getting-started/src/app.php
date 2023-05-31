@@ -59,7 +59,7 @@ $container->set('bucket', function ($container) {
 // Get the Cloud SQL MySQL connection object
 $container->set('cloudsql', function ($container) {
     // Data Model
-    $dbName = getenv('CLOUDSQL_DATABASE_NAME') ?: 'poste';
+    $dbName = getenv('CLOUDSQL_DATABASE_NAME') ?: 'poste-data';
     $dbConn = getenv('CLOUDSQL_CONNECTION_NAME');
     $dbUser = getenv('CLOUDSQL_USER');
     $dbPass = getenv('CLOUDSQL_PASSWORD');
