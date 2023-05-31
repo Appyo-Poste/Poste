@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.PosteApplication;
+import com.example.poste.api.API;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -106,16 +107,10 @@ public class Login extends AppCompatActivity {
         }
         @Override
         protected String doInBackground(String... params) {
-            try {
 
-                // Enter URL address where your php file resides
-                url = new URL("https://test-project-379806.wl.r.appspot.com/users/login");
+            url = API.URL("users/login");
+            if (url.equals(null)) { return "exception"; }
 
-            } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                return "exception";
-            }
             try {
                 // Setup HttpURLConnection class to send and receive data from php and mysql
                 conn = (HttpURLConnection)url.openConnection();

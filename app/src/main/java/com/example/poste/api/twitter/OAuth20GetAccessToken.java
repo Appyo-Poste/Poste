@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.example.PosteApplication;
 import com.example.poste.BuildConfig;
+import com.example.poste.api.API;
 import com.example.poste.database.AppRepository;
 import com.example.poste.database.entity.ItemFolder;
 import com.example.poste.database.entity.PosteItem;
@@ -144,7 +145,7 @@ public class OAuth20GetAccessToken {
         TwitterOAuth20Service service = new TwitterOAuth20Service(
                 credentials.getTwitterOauth2ClientId(),
                 credentials.getTwitterOAuth2ClientSecret(),
-                "https://test-project-379806.wl.r.appspot.com/twitter/auth",
+                API.URL("twitter/auth").toString(),
                 "offline.access tweet.read users.read bookmark.read like.read");
         try {
             System.out.println("Fetching the Authorization URL...");
@@ -173,7 +174,7 @@ public class OAuth20GetAccessToken {
         TwitterOAuth20Service service = new TwitterOAuth20Service(
                 credentials.getTwitterOauth2ClientId(),
                 credentials.getTwitterOAuth2ClientSecret(),
-                "https://test-project-379806.wl.r.appspot.com/twitter/auth",
+                API.URL("twitter/auth").toString(),
                 "offline.access tweet.read users.read");
         try {
             OAuth2AccessToken accessToken = null;
@@ -197,7 +198,7 @@ public class OAuth20GetAccessToken {
         TwitterOAuth20Service service = new TwitterOAuth20Service(
                 credentials.getTwitterOauth2ClientId(),
                 credentials.getTwitterOAuth2ClientSecret(),
-                "https://test-project-379806.wl.r.appspot.com/twitter/auth",
+                API.URL("twitter/auth").toString(),
                 "offline.access tweet.read users.read");
 
         OAuth2AccessToken accessToken = null;

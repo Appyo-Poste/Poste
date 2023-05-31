@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.PosteApplication;
+import com.example.poste.api.API;
 import com.example.poste.api.reddit.Data;
 import com.example.poste.api.reddit.GetUser;
 import com.example.poste.api.reddit.RedditApi;
@@ -35,7 +36,8 @@ public class redditInstructions extends AppCompatActivity {
     //private String clientID = BuildConfig.; //Client ID From Reddit
     private String response_type = "code"; //code is the standered response type
     private String state = UUID.randomUUID().toString(); //Makes a random state string
-    private String redirect_uri = "https://test-project-379806.wl.r.appspot.com/twitter/auth"; //URI for redirect
+//    private String redirect_uri = "https://test-project-379806.wl.r.appspot.com/twitter/auth"; //URI for redirect
+    private String redirect_uri = API.URL("twitter/auth").toString(); //URI for redirect
     private String duration = "permanent"; //Permanent need for token
     private String scope = "history"; //Area need for acsess is the saved data belonging to history
     //Example: https://www.reddit.com/api/v1/authorize?client_id=MoAV7KPhPmso-1_4u38pYQ&response_type=code&state=Cat&redirect_uri=https://www.google.com&duration=permanent&scope=history
