@@ -9,7 +9,7 @@ public class API {
 
     public static URL URL(String endpoint) {
         try {
-            return new URL(String.join(HOST_URL, endpoint));
+            return new URL(String.join("", HOST_URL, endpoint));
         } catch (MalformedURLException exception) {
             exception.printStackTrace();
             return null;
