@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.PosteApplication;
+import com.example.poste.api.API;
 import com.example.poste.database.AppRepository;
 import com.example.poste.database.entity.User;
 
@@ -94,16 +95,10 @@ public class Register extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            try {
 
-                // Enter URL address where your php file resides
-                url = new URL("https://test-project-379806.wl.r.appspot.com/users/add");
+            url = API.URL("users/add");
+            if (url.equals(null)) { return "exception"; }
 
-            } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                return "exception";
-            }
             try {
                 // Setup HttpURLConnection class to send and receive data from php and mysql
                 conn = (HttpURLConnection) url.openConnection();

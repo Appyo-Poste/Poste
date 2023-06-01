@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.PosteApplication;
+import com.example.poste.api.API;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -87,7 +89,8 @@ public class Login extends AppCompatActivity {
             // Initialize  AsyncLogin() class with email and password
             new AsyncLogin().execute(email, password);
         }
-}
+    }
+
     private class AsyncLogin extends AsyncTask<String, String, String>
     {
         ProgressDialog pdLoading = new ProgressDialog(Login.this);
@@ -106,33 +109,35 @@ public class Login extends AppCompatActivity {
         }
         @Override
         protected String doInBackground(String... params) {
-            try {
 
-                // Enter URL address where your php file resides
-                url = new URL("https://test-project-379806.wl.r.appspot.com/users/login");
+            Log.i("[Login.java]", "At login");
+            url = API.URL("users/login");
+            Log.i("[Login.java]", String.format("%s is the url 1", url.toString()));
+            if (url == null) { return "exception"; }
+            Log.i("[Login.java]", String.format("%s is the url", url.toString()));
 
-            } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                return "exception";
-            }
             try {
+                Log.i("[Login.java]", "try setup httpurlconnection");
                 // Setup HttpURLConnection class to send and receive data from php and mysql
                 conn = (HttpURLConnection)url.openConnection();
                 conn.setReadTimeout(READ_TIMEOUT);
                 conn.setConnectTimeout(CONNECTION_TIMEOUT);
                 conn.setRequestMethod("GET");
 
+                Log.i("[Login.java]", "setDoInput and setDoOutput");
                 // setDoInput and setDoOutput method depict handling of both send and receive
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
 
+                Log.i("[Login.java]", "Append params to url");
                 // Append parameters to URL
                 Uri.Builder builder = new Uri.Builder()
                         .appendQueryParameter("username", params[0])
                         .appendQueryParameter("password", params[1]);
                 String query = builder.build().getEncodedQuery();
+                Log.i("[Login.java]", String.format("Build query of: %s", query));
 
+                Log.i("[Login.java]", "open connection");
                 // Open connection for sending data
                 OutputStream os = conn.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(
@@ -143,16 +148,20 @@ public class Login extends AppCompatActivity {
                 os.close();
                 conn.connect();
 
+                Log.i("[Login.java]", "end of try");
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
                 return "exception";
             }
 
+            Log.i("[Login.java]", "pre try 2");
             try {
 
+                Log.i("[Login.java]", "pre response code");
                 int response_code = conn.getResponseCode();
 
+                Log.i("[Login.java]", String.format("%d response code", response_code));
                 // Check if successful connection made
                 if (response_code == HttpURLConnection.HTTP_OK) {
 
@@ -167,6 +176,7 @@ public class Login extends AppCompatActivity {
                     }
 
                     // Pass data to onPostExecute method
+                    Log.i("[Login.java]", String.format("result: %s", result));
                     return(result.toString());
 
                 }else{

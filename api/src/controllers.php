@@ -27,24 +27,6 @@ use Google\Cloud\Storage\Bucket;
 
 $container = $app->getContainer();
 
-$app->get('/', function (Request $request, Response $response) use ($container) {
-    return $response
-        ->withHeader('Location', '/books')
-        ->withStatus(302);
-})->setName('home');
-
-$app->get('/books', function (Request $request, Response $response) use ($container) {
-    $token = (int) $request->getUri()->getQuery('page_token');
-    $bookList = $container->get('cloudsql')->listUsers(10, $token);
-
-    console_log($bookList);
-
-    return $container->get('view')->render($response, 'list.html.twig', [
-        'users' => $bookList['users'],
-        'next_page_token' => $bookList['cursor'],
-    ]);
-})->setName('books');
-
 function console_log($output, $with_script_tags = true) {
     $js_code = 'console.log(' . json_encode($output, JSON_PRETTY_PRINT) . 
 ');';
@@ -53,6 +35,27 @@ function console_log($output, $with_script_tags = true) {
     }
     echo $js_code;
 }
+
+/**
+ * Base URL - Forward to /users
+ */
+$app->get('/', function (Request $request, Response $response) use ($container) {
+    return $response
+        ->withHeader('Location', '/users')
+        ->withStatus(302);
+})->setName('home');
+
+$app->get('/users', function (Request $request, Response $response) use ($container) {
+    $token = (int) $request->getUri()->getQuery('page_token');
+    $userList = $container->get('cloudsql')->listUsers(10, $token);
+
+    console_log($userList);
+
+    foreach ($userList as &$value){
+        echo $value . "<br>";
+    }
+
+})->setName('users');
 
 $app->post('/users/add', function (Request $request, Response $response) use ($container) {
     $user = $request->getParsedBody();
@@ -113,82 +116,6 @@ $app->get('/users/login', function (Request $request, Response $response, $args)
      }
      $response->getBody()->write($result);
     return $response;
-});
-
-$app->get('/books/{id}', function (Request $request, Response $response, $args) use ($container) {
-    $book = $container->get('cloudsql')->read($args['id']);
-    if (!$book) {
-        return $response->withStatus(404);
-    }
-    return $container->get('view')->render($response, 'view.html.twig', ['book' => $book]);
-});
-
-$app->get('/books/{id}/edit', function (Request $request, Response $response, $args) use ($container) {
-    $book = $container->get('cloudsql')->read($args['id']);
-    if (!$book) {
-        return $response->withStatus(404);
-    }
-
-    return $container->get('view')->render($response, 'form.html.twig', [
-        'action' => 'Edit',
-        'book' => $book,
-    ]);
-});
-
-$app->post('/books/{id}/edit', function (Request $request, Response $response, $args) use ($container) {
-    if (!$container->get('cloudsql')->read($args['id'])) {
-        return $response->withStatus(404);
-    }
-    $book = $request->getParsedBody();
-    $book['id'] = $args['id'];
-    $files = $request->getUploadedFiles();
-    if ($files['image']->getSize()) {
-        $image = $files['image'];
-        $bucket = $container->get('bucket');
-        $imageStream = $image->getStream();
-        $imageContentType = $image->getClientMediaType();
-        // [START gae_php_app_upload_image]
-        // Set your own image file path and content type below to upload an
-        // image to Cloud Storage.
-        // $imageStream = fopen('/path/to/your_image.jpg', 'r');
-        // $imageContentType = 'image/jpg';
-        $object = $bucket->upload($imageStream, [
-            'metadata' => ['contentType' => $imageContentType],
-            'predefinedAcl' => 'publicRead',
-        ]);
-        $imageUrl = $object->info()['mediaLink'];
-        // [END gae_php_app_upload_image]
-        $book['image_url'] = $imageUrl;
-    }
-    if ($container->get('cloudsql')->update($book)) {
-        return $response
-            ->withHeader('Location', "/books/$args[id]")
-            ->withStatus(302);
-    }
-
-    $response->getBody()->write('Could not update book');
-    return $response;
-});
-
-$app->post('/books/{id}/delete', function (Request $request, Response $response, $args) use ($container) {
-    $book = $container->get('cloudsql')->read($args['id']);
-    if ($book) {
-        $container->get('cloudsql')->delete($args['id']);
-        if (!empty($book['image_url'])) {
-            $objectName = parse_url(basename($book['image_url']), PHP_URL_PATH);
-            $bucket = $container->get('bucket');
-            // get bucket name from image
-            // [START gae_php_app_delete_image]
-            $object = $bucket->object($objectName);
-            $object->delete();
-            // [END gae_php_app_delete_image]
-        }
-        return $response
-            ->withHeader('Location', '/books')
-            ->withStatus(302);
-    }
-
-    return $response->withStatus(404);
 });
 
 /**
