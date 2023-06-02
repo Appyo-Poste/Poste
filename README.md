@@ -1,6 +1,8 @@
 # Poste
+You can find the project documentation [here](./docs/home.md)
 
-# Poste
+
+# LEGACY DOCUMENTATION (OLD PLEASE REFERENCE [NEW DOCUMENTATION](./docs/home.md))
 
 "getting-started.zip" contains the backend server files.
 
@@ -26,21 +28,3 @@ Step 2:
   - Heres a link that can help you with setting up your backend service https://cloud.google.com/appengine/docs/standard/php-gen2/building-app.
   - getting-started.zip will have a similar copy to the repository that you would grab in the totorial link above. You can essentialy overwrite the files.
   - As per the totorial you will need to overwrite the files in app.yaml with the correct datebase credentials.
-
-
-
-# Branching Guidelines
-
-Using GitHubFlow branching strategey.
-
-You start off with the master branch then developers create branches, feature branches that stem directly from the master, to isolate their work which are then merged back into master. The feature branch is then deleted.
-
-The main idea behind this model is keeping the master code in a constant deployable state and hence can support continuous integration and continuous delivery processes.
-
-All feature branches are to be made from the `master` branch
-
-Feature branches should be in camel case and be prefixed with `feature/` (example: `feature/addNewFolders`)
-
-All PR (pull requests) will be reviewed by at least 2 other team members
-
-![githubflow branching](https://www.flagship.io/wp-content/uploads/github-flow-branching-model.jpeg)
