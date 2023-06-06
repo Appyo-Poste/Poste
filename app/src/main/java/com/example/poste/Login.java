@@ -100,8 +100,6 @@ public class Login extends AppCompatActivity {
     private class AsyncLogin extends AsyncTask<String, String, String>
     {
         ProgressDialog pdLoading = new ProgressDialog(Login.this);
-        HttpURLConnection conn;
-        URL url = null;
 
         @Override
         protected void onPreExecute() {
@@ -115,7 +113,6 @@ public class Login extends AppCompatActivity {
         }
         @Override
         protected String doInBackground(String... params) {
-
             try {
                 boolean validLogin = API.validateUserLogin(params[0], params[1]);
 
