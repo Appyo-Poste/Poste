@@ -15,6 +15,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.PosteApplication;
 import com.example.poste.api.API;
+import com.example.poste.api.exceptions.APIException;
+import com.example.poste.api.exceptions.EmailAlreadyUsedException;
+import com.example.poste.api.exceptions.IncompleteRequestException;
+import com.example.poste.api.exceptions.MalformedResponseException;
 import com.example.poste.database.AppRepository;
 import com.example.poste.database.entity.User;
 
@@ -34,6 +38,7 @@ public class Register extends AppCompatActivity {
     EditText nameView, emailView, passwordView, confirmedPasswordView;
     public static final int CONNECTION_TIMEOUT=10000;
     public static final int READ_TIMEOUT=15000;
+    private static com.example.poste.api.models.User newUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +84,6 @@ public class Register extends AppCompatActivity {
 
     private class AsyncLogin extends AsyncTask<String, String, String> {
         ProgressDialog pdLoading = new ProgressDialog(Register.this);
-        HttpURLConnection conn;
-        URL url = null;
 
         @Override
         protected void onPreExecute() {
@@ -95,103 +98,39 @@ public class Register extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-
-            url = API.URL("users/add");
-            if (url.equals(null)) { return "exception"; }
-
             try {
-                // Setup HttpURLConnection class to send and receive data from php and mysql
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(READ_TIMEOUT);
-                conn.setConnectTimeout(CONNECTION_TIMEOUT);
-                conn.setRequestMethod("POST");
+                API.addUser(params[1], params[0], params[2]);
 
-                // setDoInput and setDoOutput method depict handling of both send and receive
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
+                newUser = API.getUserByEmail(params[1]);
 
-                // Append parameters to URL
-                Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("nickname", params[0])
-                        .appendQueryParameter("username", params[1])
-                        .appendQueryParameter("password", params[2]);
-                String query = builder.build().getEncodedQuery();
-
-                // Open connection for sending data
-                OutputStream os = conn.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(
-                        new OutputStreamWriter(os, "UTF-8"));
-                writer.write(query);
-                writer.flush();
-                writer.close();
-                os.close();
-                conn.connect();
-
-            } catch (IOException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-                return "exception";
-            }
-
-            try {
-
-                int response_code = conn.getResponseCode();
-
-                // Check if successful connection made
-                if (response_code == HttpURLConnection.HTTP_OK) {
-
-                    // Read data sent from server
-                    InputStream input = conn.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-                    StringBuilder result = new StringBuilder();
-                    String line;
-
-                    while ((line = reader.readLine()) != null) {
-                        result.append(line);
-                    }
-
-                    // Pass data to onPostExecute method
-                    return (result.toString());
-
-                } else {
-                    InputStream input = conn.getErrorStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-                    StringBuilder result = new StringBuilder();
-                    String line;
-
-                    while ((line = reader.readLine()) != null) {
-                        result.append(line);
-                    }
-                    String error = result.toString();
-                    return ("unsuccessful");
-                }
-
-            } catch (IOException e) {
+                return "UserCreated";
+            } catch (APIException e) {
                 e.printStackTrace();
-                return "exception";
-            } finally {
-                conn.disconnect();
+                return e.getClass().toString();
             }
-
-
         }
 
         @Override
         protected void onPostExecute(String result) {
-
             //this method will be running on UI thread
-
             pdLoading.dismiss();
 
-            try
-            {
-                int id = Integer.parseInt(result);
-                Toast.makeText(Register.this, "User created with ID: " + id, Toast.LENGTH_LONG).show();
-                navigateToDashboard();
-            } catch (NumberFormatException ex)
-            {
-                Toast.makeText(Register.this, ex.getMessage(), Toast.LENGTH_LONG).show();
-
+            switch (result) {
+                case "UserCreated":
+                    Toast.makeText(Register.this, getString(R.string.register_success), Toast.LENGTH_LONG).show();
+                    PosteApplication.setLoggedInUser(newUser.getEmail());
+                    navigateToDashboard();
+                    break;
+                case "EmailAlreadyUsedException":
+                    Toast.makeText(Register.this, getString(R.string.register_email_in_use), Toast.LENGTH_LONG).show();
+                    break;
+                case "IncompleteRequestException":
+                case "MalformedResponseException":
+                    Toast.makeText(Register.this, getString(R.string.internal_error), Toast.LENGTH_LONG).show();
+                    break;
+                default:
+                    Toast.makeText(Register.this, getString(R.string.unknown_error), Toast.LENGTH_LONG).show();
+                    break;
             }
         }
     }

@@ -35,13 +35,95 @@ class CloudSqlDataModel
     {
         $this->pdo = $pdo;
 
+        // -----[ Users | Start ]-----
         $userColumns = array(
-            'id serial PRIMARY KEY ',
-            'nickname VARCHAR(255)',
-            'username VARCHAR(255)',
-            'password VARCHAR(255)',
+            'id INT PRIMARY KEY AUTO_INCREMENT',
+            'email VARCHAR(255) UNIQUE NOT NULL',
+            'username VARCHAR(255) NOT NULL',
+            'password VARCHAR(255) NOT NULL',
             'password_salt VARCHAR(255)',
         );
+
+        $this->userColumnNames = array_map(function ($columnDefinition) {
+            return explode(' ', $columnDefinition)[0];
+        }, $userColumns);
+        $userColumnsText = implode(', ', $userColumns);
+
+        $this->pdo->query("CREATE TABLE IF NOT EXISTS users ($userColumnsText)");
+        // -----[ Users | End ]-----
+
+
+        // -----[ Posts | Start ]-----
+        $postColumns = array(
+            'id INT PRIMARY KEY AUTO_INCREMENT',
+            'name VARCHAR(255) NOT NULL',
+            'link longtext NOT NULL',
+        );
+
+        $this->postColumnNames = array_map(function ($columnDefinition) {
+            return explode(' ', $columnDefinition)[0];
+        }, $postColumns);
+        $postColumnsText = implode(', ', $postColumns);
+
+        $this->pdo->query("CREATE TABLE IF NOT EXISTS posts ($postColumnsText)");
+        // -----[ Posts | End ]-----
+
+
+        // -----[ Folders | Start ]-----
+        $folderColumns = array(
+            'id INT PRIMARY KEY AUTO_INCREMENT',
+            'name VARCHAR(50) NOT NULL',
+            'ownerId INT NOT NULL REFERENCES users(id)',
+        );
+
+        $this->folderColumnNames = array_map(function ($columnDefinition) {
+            return explode(' ', $columnDefinition)[0];
+        }, $folderColumns);
+        $folderColumnsText = implode(', ', $folderColumns);
+
+        $this->pdo->query("CREATE TABLE IF NOT EXISTS folders ($folderColumnsText)");
+        // -----[ Folders | End ]-----
+
+
+        // -----[ Posts-Folders | Start ]-----
+        $postFolderColumns = array(
+            'postId INT NOT NULL REFERENCES posts(id)',
+            'folderId INT NOT NULL REFERENCES folders(id)',
+        );
+
+        $this->postFolderColumnNames = array_map(function ($columnDefinition) {
+            return explode(' ', $columnDefinition)[0];
+        }, $postFolderColumns);
+        $postFolderColumnsText = implode(', ', $postFolderColumns);
+
+        $this->pdo->query("CREATE TABLE IF NOT EXISTS posts_folders ($postFolderColumnsText, PRIMARY KEY (postId, folderId))");
+        // -----[ Posts-Folders | End ]-----
+
+
+        // -----[ Users-Folders | Start ]-----
+        /**
+         * Access ints:
+         *      0 - No Access
+         *      1 - View Access
+         *      2 - Manage Access
+         *      3 - Owner Access
+         */
+        $userFolderColumns = array(
+            'userId INT NOT NULL REFERENCES users(id)',
+            'folderId INT NOT NULL REFERENCES folders(id)',
+            'access int NOT NULL',
+        );
+
+        $this->userFolderColumnNames = array_map(function ($columnDefinition) {
+            return explode(' ', $columnDefinition)[0];
+        }, $userFolderColumns);
+        $userFolderColumnsText = implode(', ', $userFolderColumns);
+
+        $this->pdo->query("CREATE TABLE IF NOT EXISTS users_folders ($userFolderColumnsText, PRIMARY KEY (userId, folderId))");
+        // -----[ Users-Folders | End ]-----
+
+
+
 
         $TokensColumns = array(
             'acccess_code VARCHAR(255) PRIMARY KEY ',
@@ -49,14 +131,6 @@ class CloudSqlDataModel
             'type VARCHAR(255)',
         );
 
-        $this->userColumnNames = array_map(function ($columnDefinition) {
-            return explode(' ', $columnDefinition)[0];
-        }, $userColumns);
-        $columnText = implode(', ', $userColumns);
-
-        $this->pdo->query("CREATE TABLE IF NOT EXISTS users ($columnText)");
-
-        
         $this->tokensColumnNames = array_map(function ($tokensDefinition) {
             return explode(' ', $tokensDefinition)[0];
         }, $TokensColumns);
@@ -64,6 +138,122 @@ class CloudSqlDataModel
 
         $this->pdo->query("CREATE TABLE IF NOT EXISTS tokens ($tokensText)");
     }
+
+
+    // -----[ Users | Start ]-----
+    /**
+     * /users endpoint
+     */
+    public function getAllUsers() 
+    {
+        $pdo = $this->pdo;
+        $query = 'SELECT * FROM users';
+        
+        $statement = $pdo->prepare($query);
+        $statement->execute();
+
+        $result = array();
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            array_push($result, $row);
+        }
+
+        return $result;
+    }
+
+    /**
+     * /users endpoint with email param
+     */
+    public function getUserByEmail($email) 
+    {
+        $pdo = $this->pdo;
+        $query = 'SELECT * FROM users WHERE email = :email';
+        
+        $statement = $pdo->prepare($query);
+        $statement->bindValue(':email', $email, PDO::PARAM_STR);
+        $statement->execute();
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
+    /**
+     * /users endpoint with id param
+     */
+    public function getUserById($id) 
+    {
+        $pdo = $this->pdo;
+        $query = 'SELECT * FROM users WHERE id = :id';
+        
+        $statement = $pdo->prepare($query);
+        $statement->bindValue(':id', $id, PDO::PARAM_INT);
+        $statement->execute();
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
+    /**
+     * /users/add endpoint
+     */
+    public function addUser($email, $username, $password) 
+    {
+        $pdo = $this->pdo;
+        $query = 'INSERT INTO users (email, username, password) VALUES (:email, :username, :password)';
+        
+        $statement = $pdo->prepare($query);
+        $statement->bindValue(':email', $email, PDO::PARAM_STR);
+        $statement->bindValue(':username', $username, PDO::PARAM_STR);
+        $statement->bindValue(':password', $password, PDO::PARAM_STR);
+        $statement->execute();
+        // $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+        // return $result;
+        return $this->pdo->lastInsertId();
+    }
+
+    /**
+     * /users/update endpoint
+     */
+    public function updateUser($email, $username, $password) 
+    {
+        $pdo = $this->pdo;
+        $query = 'UPDATE users SET username=:username, password=:password WHERE email=:email';
+        
+        $statement = $pdo->prepare($query);
+        $statement->bindValue(':email', $email, PDO::PARAM_STR);
+        $statement->bindValue(':username', $username, PDO::PARAM_STR);
+        $statement->bindValue(':password', $password, PDO::PARAM_STR);
+        // $statement->execute();
+        // $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+        // return $result;
+        return $statement->execute();
+    }
+
+    /**
+     * /users/delete endpoint
+     */
+    public function deleteUser($email, $password) 
+    {
+        $pdo = $this->pdo;
+        $query = 'DELETE FROM users WHERE email=:email AND password=:password';
+        
+        $statement = $pdo->prepare($query);
+        $statement->bindValue(':email', $email, PDO::PARAM_STR);
+        $statement->bindValue(':password', $password, PDO::PARAM_STR);
+        $statement->execute();
+        // $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+        // return $result;
+        return $statement->rowCount();
+    }
+    // -----[ Users | End ]-----
+
+
+
+
+
+
 
     /**
      * Throws an exception if $book contains an invalid key.

@@ -45,26 +45,297 @@ $app->get('/', function (Request $request, Response $response) use ($container) 
         ->withStatus(302);
 })->setName('home');
 
+
+// -----[ Users | Start ]-----
+
+/**
+ * GET /users
+ */
 $app->get('/users', function (Request $request, Response $response) use ($container) {
-    $token = (int) $request->getUri()->getQuery('page_token');
-    $userList = $container->get('cloudsql')->listUsers(10, $token);
+    $data = $container->get('cloudsql')->getAllUsers();
 
-    console_log($userList);
+    $response->getBody()->write(json_encode(array(
+        "code" => 200,
+        "message" => "Successfully retreived all users",
+        "result" => $data
+    )));
+    return $response
+        ->withStatus(200, "Successfully retreived all users");
+});
 
-    foreach ($userList as &$value){
-        echo $value . "<br>";
+/**
+ * GET /users/id/{id}
+ */
+$app->get('/users/id/{id}', function (Request $request, Response $response, $args) use ($container) {
+    $missingProperties = array();
+    if (!array_key_exists("id", $args)) { array_push($missingProperties, "id"); }
+    
+    if (!empty($missingProperties)) {
+        $response->getBody()->write(json_encode(array(
+            "code" => 400,
+            "message" => "Missing the following properties: " . implode(", ", $missingProperties),
+            "result" => "{}"
+        )));
+        
+        return $response
+            ->withStatus(400, "Missing the following properties: " . implode(", ", $missingProperties));
+    }
+    
+    $data = $container->get('cloudsql')->getUserById($args["id"]);
+    
+    $response->getBody()->write(json_encode(array(
+        "code" => 200,
+        "message" => "Successfully retreived user with id " . $args["id"],
+        "result" => $data
+    )));
+    return $response
+        ->withStatus(200, "Successfully retreived user with id " . $args["id"]);
+});
+
+/**
+ * GET /users/email/{email}
+ */
+$app->get('/users/email/{email}', function (Request $request, Response $response, $args) use ($container) {
+    $missingProperties = array();
+    if (!array_key_exists("email", $args)) { array_push($missingProperties, "email"); }
+    
+    if (!empty($missingProperties)) {
+        $response->getBody()->write(json_encode(array(
+            "code" => 400,
+            "message" => "Missing the following properties: " . implode(", ", $missingProperties),
+            "result" => "{}"
+        )));
+        
+        return $response
+            ->withStatus(400, "Missing the following properties: " . implode(", ", $missingProperties));
+    }
+    
+    $data = $container->get('cloudsql')->getUserByEmail($args["email"]);
+    
+    $response->getBody()->write(json_encode(array(
+        "code" => 200,
+        "message" => "Successfully retreived user with email " . $args["email"],
+        "result" => $data
+    )));
+    return $response
+        ->withStatus(200, "Successfully retreived user with email " . $args["email"]);
+});
+
+/**
+ * GET /users/login/{email}/{password}
+ */
+$app->get('/users/login/{email}/{password}', function (Request $request, Response $response, $args) use ($container) {
+    $missingProperties = array();
+    if (!array_key_exists("email", $args)) { array_push($missingProperties, "email"); }
+    if (!array_key_exists("password", $args)) { array_push($missingProperties, "password"); }
+    
+    if (!empty($missingProperties)) {
+        $response->getBody()->write(json_encode(array(
+            "code" => 400,
+            "message" => "Missing the following properties: " . implode(", ", $missingProperties),
+            "result" => "{}"
+        )));
+        
+        return $response
+            ->withStatus(400, "Missing the following properties: " . implode(", ", $missingProperties));
+    }
+    
+    $data = $container->get('cloudsql')->getUserByEmail($args["email"]);
+    
+    if ($data == false) {
+        $response->getBody()->write(json_encode(array(
+            "code" => 200,
+            "message" => "Requets OK",
+            "result" => array(
+                "success" => true,
+                "message" => "No user with email '" . $args["email"] . "' exisits"
+            )
+        )));
+        
+        return $response
+            ->withStatus(200, "No user with email '" . $args["email"] . "' exisits");
     }
 
-})->setName('users');
+    if ($data["password"] != $args["password"]) {
+        $response->getBody()->write(json_encode(array(
+            "code" => 200,
+            "message" => "Requets OK",
+            "result" => array(
+                "success" => false,
+                "message" => "Incorrect password provided for user '" . $args["email"] . "'"
+            )
+        )));
+        
+        return $response
+            ->withStatus(200, "Incorrect password provided for user '" . $args["email"] . "'");
+    }
 
-$app->post('/users/add', function (Request $request, Response $response) use ($container) {
-    $user = $request->getParsedBody();
-
-    $id = $container->get('cloudsql')->create($user, "users");
-
-    $response->getBody()->write($id);
-        return $response;
+    $response->getBody()->write(json_encode(array(
+        "code" => 200,
+        "message" => "Requets OK",
+        "result" => array(
+            "success" => true,
+            "message" => "Login for user '" . $args["email"] . "' succeeded"
+        )
+    )));
+    return $response
+        ->withStatus(200, "Login for user '" . $args["email"] . "' succeeded");
 });
+
+/**
+ * POST /users/add
+ */
+$app->post('/users/add', function (Request $request, Response $response) use ($container) {
+    $body = $request->getParsedBody();
+
+    if (empty($body)) {
+        $response->getBody()->write(json_encode(array(
+            "code" => 400,
+            "message" => "Cannot process empty body",
+            "result" => "{}"
+        )));
+        return $response->withStatus(400, "Cannot process empty body");
+    }
+
+    $missingProperties = array();
+    if (!array_key_exists("email", $body)) { array_push($missingProperties, "email"); }
+    if (!array_key_exists("username", $body)) { array_push($missingProperties, "username"); }
+    if (!array_key_exists("password", $body)) { array_push($missingProperties, "password"); }
+    
+    if (!empty($missingProperties)) {
+        $response->getBody()->write(json_encode(array(
+            "code" => 400,
+            "message" => "Missing the following properties: " . implode(", ", $missingProperties),
+            "result" => "{}"
+        )));
+        
+        return $response
+            ->withStatus(400, "Missing the following properties: " . implode(", ", $missingProperties));
+    }
+    
+    $duplicate = $container->get('cloudsql')->getUserByEmail($body["email"]);
+    if ($duplicate != false) {
+        $response->getBody()->write(json_encode(array(
+            "code" => 200,
+            "message" => "Requets OK",
+            "result" => array(
+                "success" => false,
+                "message" => "Email already in use",
+                "newUserId" => ""
+            )
+        )));
+        
+        return $response
+            ->withStatus(200, "Email already in use");
+    }
+
+    $data = $container->get('cloudsql')->addUser($body["email"], $body["username"], $body["password"]);
+
+    $response->getBody()->write(json_encode(array(
+        "code" => 201,
+        "message" => "New user created",
+        "result" => array(
+            "success" => true,
+            "message" => "Successfully created new user",
+            "newUserId" => $data
+        )
+    )));
+    return $response
+        ->withStatus(201);
+});
+
+/**
+ * POST /users/update
+ */
+$app->post('/users/update', function (Request $request, Response $response) use ($container) {
+    $body = $request->getParsedBody();
+
+    if (empty($body)) {
+        $response->getBody()->write(json_encode(array(
+            "code" => 400,
+            "message" => "Cannot process empty body",
+            "result" => "{}"
+        )));
+        return $response->withStatus(400, "Cannot process empty body");
+    }
+
+    $missingProperties = array();
+    if (!array_key_exists("email", $body)) { array_push($missingProperties, "email"); }
+    if (!array_key_exists("username", $body)) { array_push($missingProperties, "username"); }
+    if (!array_key_exists("password", $body)) { array_push($missingProperties, "password"); }
+    
+    if (!empty($missingProperties)) {
+        $response->getBody()->write(json_encode(array(
+            "code" => 400,
+            "message" => "Missing the following properties: " . implode(", ", $missingProperties),
+            "result" => "{}"
+        )));
+        
+        return $response
+            ->withStatus(400, "Missing the following properties: " . implode(", ", $missingProperties));
+    }
+
+    $data = $container->get('cloudsql')->updateUser($body["email"], $body["username"], $body["password"]);
+
+    $response->getBody()->write(json_encode(array(
+        "code" => 201,
+        "message" => "User updated",
+        "result" => array(
+            "success" => true,
+            "message" => "Successfully updated user"
+        )
+    )));
+    return $response
+        ->withStatus(201);
+});
+
+/**
+ * POST /users/delete
+ */
+$app->post('/users/delete', function (Request $request, Response $response) use ($container) {
+    $body = $request->getParsedBody();
+
+    if (empty($body)) {
+        $response->getBody()->write(json_encode(array(
+            "code" => 400,
+            "message" => "Cannot process empty body",
+            "result" => "{}"
+        )));
+        return $response->withStatus(400, "Cannot process empty body");
+    }
+
+    $missingProperties = array();
+    if (!array_key_exists("email", $body)) { array_push($missingProperties, "email"); }
+    if (!array_key_exists("password", $body)) { array_push($missingProperties, "password"); }
+    
+    if (!empty($missingProperties)) {
+        $response->getBody()->write(json_encode(array(
+            "code" => 400,
+            "message" => "Missing the following properties: " . implode(", ", $missingProperties),
+            "result" => "{}"
+        )));
+        
+        return $response
+            ->withStatus(400, "Missing the following properties: " . implode(", ", $missingProperties));
+    }
+
+    $data = $container->get('cloudsql')->deleteUser($body["email"], $body["password"]);
+
+    $response->getBody()->write(json_encode(array(
+        "code" => 201,
+        "message" => "User deleted",
+        "result" => array(
+            "success" => true,
+            "message" => "Successfully deleted user"
+        )
+    )));
+    return $response
+        ->withStatus(201);
+});
+
+// -----[ Users | End ]-----
+
+
 
 $app->post('/twitter/auth', function (Request $request, Response $response) use ($container) {
     $body = $request->getParsedBody();
