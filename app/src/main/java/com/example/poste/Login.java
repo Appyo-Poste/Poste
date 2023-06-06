@@ -17,6 +17,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.PosteApplication;
 import com.example.poste.api.API;
+import com.example.poste.api.exceptions.APIException;
+import com.example.poste.api.exceptions.IncompleteRequestException;
+import com.example.poste.api.exceptions.MalformedResponseException;
+import com.example.poste.api.models.User;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -41,6 +45,8 @@ public class Login extends AppCompatActivity {
     private EditText usernameField,passwordField;
     private String email;
     private String password;
+
+    private User loginUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,96 +116,19 @@ public class Login extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
 
-            Log.i("[Login.java]", "At login");
-            url = API.URL("users/login");
-            Log.i("[Login.java]", String.format("%s is the url 1", url.toString()));
-            if (url == null) { return "exception"; }
-            Log.i("[Login.java]", String.format("%s is the url", url.toString()));
-
             try {
-                Log.i("[Login.java]", "try setup httpurlconnection");
-                // Setup HttpURLConnection class to send and receive data from php and mysql
-                conn = (HttpURLConnection)url.openConnection();
-                conn.setReadTimeout(READ_TIMEOUT);
-                conn.setConnectTimeout(CONNECTION_TIMEOUT);
-                conn.setRequestMethod("GET");
+                boolean validLogin = API.validateUserLogin(params[0], params[1]);
 
-                Log.i("[Login.java]", "setDoInput and setDoOutput");
-                // setDoInput and setDoOutput method depict handling of both send and receive
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-
-                Log.i("[Login.java]", "Append params to url");
-                // Append parameters to URL
-                Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("username", params[0])
-                        .appendQueryParameter("password", params[1]);
-                String query = builder.build().getEncodedQuery();
-                Log.i("[Login.java]", String.format("Build query of: %s", query));
-
-                Log.i("[Login.java]", "open connection");
-                // Open connection for sending data
-                OutputStream os = conn.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(
-                        new OutputStreamWriter(os, "UTF-8"));
-                writer.write(query);
-                writer.flush();
-                writer.close();
-                os.close();
-                conn.connect();
-
-                Log.i("[Login.java]", "end of try");
-            } catch (IOException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-                return "exception";
-            }
-
-            Log.i("[Login.java]", "pre try 2");
-            try {
-
-                Log.i("[Login.java]", "pre response code");
-                int response_code = conn.getResponseCode();
-
-                Log.i("[Login.java]", String.format("%d response code", response_code));
-                // Check if successful connection made
-                if (response_code == HttpURLConnection.HTTP_OK) {
-
-                    // Read data sent from server
-                    InputStream input = conn.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-                    StringBuilder result = new StringBuilder();
-                    String line;
-
-                    while ((line = reader.readLine()) != null) {
-                        result.append(line);
-                    }
-
-                    // Pass data to onPostExecute method
-                    Log.i("[Login.java]", String.format("result: %s", result));
-                    return(result.toString());
-
-                }else{
-                    InputStream input = conn.getErrorStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-                    StringBuilder result = new StringBuilder();
-                    String line;
-
-                    while ((line = reader.readLine()) != null) {
-                        result.append(line);
-                    }
-                    String error = result.toString();
-                    return("unsuccessful");
+                loginUser = API.getUserByEmail(params[0]);
+                if (validLogin) {
+                    return "ValidLogin";
+                } else {
+                    return "InvalidLogin";
                 }
-
-            } catch (IOException e) {
+            } catch (APIException e) {
                 e.printStackTrace();
-                return "exception";
-            } finally {
-                conn.disconnect();
+                return e.getClass().toString();
             }
-
-
         }
 
         @Override
@@ -208,24 +137,23 @@ public class Login extends AppCompatActivity {
             //this method will be running on UI thread
 
             pdLoading.dismiss();
-
-            if(result.equalsIgnoreCase("true"))
-            {
-                /* Here launching another activity when login successful. If you persist login state
-                use sharedPreferences of Android. and logout button to clear sharedPreferences.
-                 */
-                PosteApplication.setLoggedInUser(email);
-                navigateToDashboard();
-
-            }else if (result.equalsIgnoreCase("false")){
-
-                // If username and password does not match display a error message
-                Toast.makeText(Login.this, "Invalid email or password", Toast.LENGTH_LONG).show();
-
-            } else if (result.equalsIgnoreCase("exception") || result.equalsIgnoreCase("unsuccessful")) {
-
-                Toast.makeText(Login.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
-
+            switch (result) {
+                case "ValidLogin":
+                    Toast.makeText(Login.this, getString(R.string.login_successful), Toast.LENGTH_LONG).show();
+                    PosteApplication.setLoggedInUser(loginUser.getEmail());
+                    navigateToDashboard();
+                    break;
+                case "InvalidLogin":
+                    Toast.makeText(Login.this, getString(R.string.login_invalid_credentials), Toast.LENGTH_LONG).show();
+                    break;
+                case "NoUserFoundException":
+                case "IncompleteRequestException":
+                case "MalformedResponseException":
+                    Toast.makeText(Login.this, getString(R.string.internal_error), Toast.LENGTH_LONG).show();
+                    break;
+                default:
+                    Toast.makeText(Login.this, getString(R.string.unknown_error), Toast.LENGTH_LONG).show();
+                    break;
             }
         }
     }

@@ -1,21 +1,39 @@
 <resources>
+    <!--=====[ General | Start ]=====-->
     <string name="app_name">Poste</string>
     <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
+    <string name="internal_error">An internal error occurred</string>
+    <string name="unknown_error">An unknown error occurred</string>
+    <!--=====[ General | End ]=====-->
+
+    <!--=====[ Register | Start ]=====-->
+    <string name="register_success">Successfully registered your account</string>
+    <string name="register_email_in_use">The provided email is already in use</string>
+    <!--=====[ Register | End ]=====-->
+
+    <!--=====[ Login | Start ]=====-->
+    <string name="login_successful">Login successful</string>
+    <string name="login_invalid_credentials">Invalid username or password</string>
+    <!--=====[ Login | End ]=====-->
+
+    <!--=====[ Words | Start ]=====-->
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="share">Share</string>
-    <string name="poste_logo_description">Poste Logo</string>
-    <string name="title_activity_twitter_token">TwitterToken</string>
     <string name="folder_name">Folder Name</string>
     <string name="edit">Edit</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="name">Name</string>
     <string name="delete">Delete</string>
+    <!--=====[ Words | End ]=====-->
+
+    <!--=====[ Misc | Start ]=====-->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="poste_logo_description">Poste Logo</string>
+    <string name="title_activity_twitter_token">TwitterToken</string>
+    <!--=====[ Misc | End ]=====-->
 </resources>
