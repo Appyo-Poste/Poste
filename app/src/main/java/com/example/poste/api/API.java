@@ -4,6 +4,7 @@ import com.example.poste.api.exceptions.EmailAlreadyUsedException;
 import com.example.poste.api.exceptions.IncompleteRequestException;
 import com.example.poste.api.exceptions.MalformedResponseException;
 import com.example.poste.api.exceptions.NoUserFoundException;
+import com.example.poste.api.models.Post;
 import com.example.poste.api.models.User;
 
 import org.json.JSONArray;
@@ -141,6 +142,102 @@ public class API {
         catch (IOException e) { throw new IncompleteRequestException(); }
     }
 
+    public static ArrayList<Post> getAllPosts() throws MalformedResponseException, IncompleteRequestException {
+        ArrayList<Post> posts = new ArrayList<>();
+
+        try (Response response = endpointPosts()) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONArray responseJson = new JSONObject(response.body().string()).getJSONArray("result");
+
+            for (int i = 0; i < responseJson.length(); i++)
+            {
+                try {
+                    JSONObject obj = responseJson.getJSONObject(i);
+
+                    int id = obj.getInt("id");
+                    String name = obj.getString("name");
+                    String link = obj.getString("link");
+                    int ownerId = obj.getInt("ownerId");
+
+                    posts.add(new Post(id, name, link, ownerId));
+                } catch (JSONException e) { throw new MalformedResponseException(); }
+            }
+        } catch (JSONException e) { throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+
+        return posts;
+    }
+
+    public static Post getPostById(int _id) throws MalformedResponseException, IncompleteRequestException {
+        try (Response response = endpointPostsId(_id)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+
+            int id = responseJson.getInt("id");
+            String name = responseJson.getString("name");
+            String link = responseJson.getString("link");
+            int ownerId = responseJson.getInt("ownerId");
+
+            return new Post(id, name, link, ownerId);
+        } catch (JSONException e) { throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+    }
+
+    public static ArrayList<Post> getPostsForUserId(int _id) throws MalformedResponseException, IncompleteRequestException {
+        ArrayList<Post> posts = new ArrayList<>();
+
+        try (Response response = endpointPostsUser(_id)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONArray responseJson = new JSONObject(response.body().string()).getJSONArray("result");
+
+            for (int i = 0; i < responseJson.length(); i++)
+            {
+                try {
+                    JSONObject obj = responseJson.getJSONObject(i);
+
+                    int id = obj.getInt("id");
+                    String name = obj.getString("name");
+                    String link = obj.getString("link");
+                    int ownerId = obj.getInt("ownerId");
+
+                    posts.add(new Post(id, name, link, ownerId));
+                } catch (JSONException e) { throw new MalformedResponseException(); }
+            }
+        } catch (JSONException e) { throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+
+        return posts;
+    }
+
+    public static boolean addPost(String name, String link, int ownerId) throws MalformedResponseException, IncompleteRequestException {
+        try (Response response = endpointPostsAdd(name, link, ownerId)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+
+            return responseJson.getBoolean("success");
+        } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+    }
+
+    public static boolean updatePost(int id, String name, String link, int ownerId) throws MalformedResponseException, IncompleteRequestException {
+        try (Response response = endpointPostsUpdate(id, name, link, ownerId)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+
+            return responseJson.getBoolean("success");
+        } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+    }
+
+    public static boolean deletePost(int id) throws MalformedResponseException, IncompleteRequestException {
+        try (Response response = endpointPostsDelete(id)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+
+            return responseJson.getBoolean("success");
+        } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+    }
 
 
 
@@ -220,6 +317,78 @@ public class API {
         RequestBody body = RequestBody.create(mediaType, String.format("email=%s&password=%s", email, password));
         Request request = new Request.Builder()
                 .url(Objects.requireNonNull(URL("/users/delete")))
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private static Response endpointPosts() throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/posts")))
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private static Response endpointPostsId(int id) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL(String.format("/posts/id/%s", id))))
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private static Response endpointPostsUser(int id) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL(String.format("/posts/user/%s", id))))
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private static Response endpointPostsAdd(String name, String link, int ownerId) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, String.format("name=%s&link=%s&ownerId=%d", name, link, ownerId));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/posts/add")))
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private static Response endpointPostsUpdate(int id, String name, String link, int ownerId) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, String.format("id=%s&name=%s&link=%s&ownerId=%d", id, name, link, ownerId));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/posts/update")))
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private static Response endpointPostsDelete(int id) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, String.format("id=%d", id));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/posts/delete")))
                 .method("POST", body)
                 .addHeader("Content-Type", "application/x-www-form-urlencoded")
                 .build();

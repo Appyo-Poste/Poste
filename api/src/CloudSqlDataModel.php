@@ -24,6 +24,9 @@ use PDO;
  */
 class CloudSqlDataModel
 {
+    // Setting the bellow to true will drop all tables on startup
+    private $debug_nuke = true;
+    
     private $dsn;
     private $user;
     private $password;
@@ -49,6 +52,10 @@ class CloudSqlDataModel
         }, $userColumns);
         $userColumnsText = implode(', ', $userColumns);
 
+        if ($debug_nuke) 
+        {
+            $this->pdo->query("DROP TABLE IF EXISTS users");
+        }
         $this->pdo->query("CREATE TABLE IF NOT EXISTS users ($userColumnsText)");
         // -----[ Users | End ]-----
 
@@ -58,6 +65,7 @@ class CloudSqlDataModel
             'id INT PRIMARY KEY AUTO_INCREMENT',
             'name VARCHAR(255) NOT NULL',
             'link longtext NOT NULL',
+            'ownerId INT NOT NULL REFERENCES users(id)',
         );
 
         $this->postColumnNames = array_map(function ($columnDefinition) {
@@ -65,6 +73,10 @@ class CloudSqlDataModel
         }, $postColumns);
         $postColumnsText = implode(', ', $postColumns);
 
+        if ($debug_nuke) 
+        {
+            $this->pdo->query("DROP TABLE IF EXISTS posts");
+        }
         $this->pdo->query("CREATE TABLE IF NOT EXISTS posts ($postColumnsText)");
         // -----[ Posts | End ]-----
 
@@ -81,6 +93,10 @@ class CloudSqlDataModel
         }, $folderColumns);
         $folderColumnsText = implode(', ', $folderColumns);
 
+        if ($debug_nuke) 
+        {
+            $this->pdo->query("DROP TABLE IF EXISTS folders");
+        }
         $this->pdo->query("CREATE TABLE IF NOT EXISTS folders ($folderColumnsText)");
         // -----[ Folders | End ]-----
 
@@ -96,6 +112,10 @@ class CloudSqlDataModel
         }, $postFolderColumns);
         $postFolderColumnsText = implode(', ', $postFolderColumns);
 
+        if ($debug_nuke) 
+        {
+            $this->pdo->query("DROP TABLE IF EXISTS posts_folders");
+        }
         $this->pdo->query("CREATE TABLE IF NOT EXISTS posts_folders ($postFolderColumnsText, PRIMARY KEY (postId, folderId))");
         // -----[ Posts-Folders | End ]-----
 
@@ -119,6 +139,10 @@ class CloudSqlDataModel
         }, $userFolderColumns);
         $userFolderColumnsText = implode(', ', $userFolderColumns);
 
+        if ($debug_nuke) 
+        {
+            $this->pdo->query("DROP TABLE IF EXISTS users_folders");
+        }
         $this->pdo->query("CREATE TABLE IF NOT EXISTS users_folders ($userFolderColumnsText, PRIMARY KEY (userId, folderId))");
         // -----[ Users-Folders | End ]-----
 
@@ -141,113 +165,229 @@ class CloudSqlDataModel
 
 
     // -----[ Users | Start ]-----
-    /**
-     * /users endpoint
-     */
-    public function getAllUsers() 
-    {
-        $pdo = $this->pdo;
-        $query = 'SELECT * FROM users';
-        
-        $statement = $pdo->prepare($query);
-        $statement->execute();
+        /**
+         * /users endpoint
+         */
+        public function getAllUsers() 
+        {
+            $pdo = $this->pdo;
+            $query = 'SELECT * FROM users';
+            
+            $statement = $pdo->prepare($query);
+            $statement->execute();
 
-        $result = array();
-        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            array_push($result, $row);
+            $result = array();
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                array_push($result, $row);
+            }
+
+            return $result;
         }
 
-        return $result;
-    }
+        /**
+         * /users endpoint with email param
+         */
+        public function getUserByEmail($email) 
+        {
+            $pdo = $this->pdo;
+            $query = 'SELECT * FROM users WHERE email = :email';
+            
+            $statement = $pdo->prepare($query);
+            $statement->bindValue(':email', $email, PDO::PARAM_STR);
+            $statement->execute();
+            $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-    /**
-     * /users endpoint with email param
-     */
-    public function getUserByEmail($email) 
-    {
-        $pdo = $this->pdo;
-        $query = 'SELECT * FROM users WHERE email = :email';
-        
-        $statement = $pdo->prepare($query);
-        $statement->bindValue(':email', $email, PDO::PARAM_STR);
-        $statement->execute();
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
+            return $result;
+        }
 
-        return $result;
-    }
+        /**
+         * /users endpoint with id param
+         */
+        public function getUserById($id) 
+        {
+            $pdo = $this->pdo;
+            $query = 'SELECT * FROM users WHERE id = :id';
+            
+            $statement = $pdo->prepare($query);
+            $statement->bindValue(':id', $id, PDO::PARAM_INT);
+            $statement->execute();
+            $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-    /**
-     * /users endpoint with id param
-     */
-    public function getUserById($id) 
-    {
-        $pdo = $this->pdo;
-        $query = 'SELECT * FROM users WHERE id = :id';
-        
-        $statement = $pdo->prepare($query);
-        $statement->bindValue(':id', $id, PDO::PARAM_INT);
-        $statement->execute();
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
+            return $result;
+        }
 
-        return $result;
-    }
+        /**
+         * /users/add endpoint
+         */
+        public function addUser($email, $username, $password) 
+        {
+            $pdo = $this->pdo;
+            $query = 'INSERT INTO users (email, username, password) VALUES (:email, :username, :password)';
+            
+            $statement = $pdo->prepare($query);
+            $statement->bindValue(':email', $email, PDO::PARAM_STR);
+            $statement->bindValue(':username', $username, PDO::PARAM_STR);
+            $statement->bindValue(':password', $password, PDO::PARAM_STR);
+            $statement->execute();
+            // $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-    /**
-     * /users/add endpoint
-     */
-    public function addUser($email, $username, $password) 
-    {
-        $pdo = $this->pdo;
-        $query = 'INSERT INTO users (email, username, password) VALUES (:email, :username, :password)';
-        
-        $statement = $pdo->prepare($query);
-        $statement->bindValue(':email', $email, PDO::PARAM_STR);
-        $statement->bindValue(':username', $username, PDO::PARAM_STR);
-        $statement->bindValue(':password', $password, PDO::PARAM_STR);
-        $statement->execute();
-        // $result = $statement->fetch(PDO::FETCH_ASSOC);
+            // return $result;
+            return $this->pdo->lastInsertId();
+        }
 
-        // return $result;
-        return $this->pdo->lastInsertId();
-    }
+        /**
+         * /users/update endpoint
+         */
+        public function updateUser($email, $username, $password) 
+        {
+            $pdo = $this->pdo;
+            $query = 'UPDATE users SET username=:username, password=:password WHERE email=:email';
+            
+            $statement = $pdo->prepare($query);
+            $statement->bindValue(':email', $email, PDO::PARAM_STR);
+            $statement->bindValue(':username', $username, PDO::PARAM_STR);
+            $statement->bindValue(':password', $password, PDO::PARAM_STR);
+            // $statement->execute();
+            // $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-    /**
-     * /users/update endpoint
-     */
-    public function updateUser($email, $username, $password) 
-    {
-        $pdo = $this->pdo;
-        $query = 'UPDATE users SET username=:username, password=:password WHERE email=:email';
-        
-        $statement = $pdo->prepare($query);
-        $statement->bindValue(':email', $email, PDO::PARAM_STR);
-        $statement->bindValue(':username', $username, PDO::PARAM_STR);
-        $statement->bindValue(':password', $password, PDO::PARAM_STR);
-        // $statement->execute();
-        // $result = $statement->fetch(PDO::FETCH_ASSOC);
+            // return $result;
+            return $statement->execute();
+        }
 
-        // return $result;
-        return $statement->execute();
-    }
+        /**
+         * /users/delete endpoint
+         */
+        public function deleteUser($email, $password) 
+        {
+            $pdo = $this->pdo;
+            $query = 'DELETE FROM users WHERE email=:email AND password=:password';
+            
+            $statement = $pdo->prepare($query);
+            $statement->bindValue(':email', $email, PDO::PARAM_STR);
+            $statement->bindValue(':password', $password, PDO::PARAM_STR);
+            $statement->execute();
+            // $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-    /**
-     * /users/delete endpoint
-     */
-    public function deleteUser($email, $password) 
-    {
-        $pdo = $this->pdo;
-        $query = 'DELETE FROM users WHERE email=:email AND password=:password';
-        
-        $statement = $pdo->prepare($query);
-        $statement->bindValue(':email', $email, PDO::PARAM_STR);
-        $statement->bindValue(':password', $password, PDO::PARAM_STR);
-        $statement->execute();
-        // $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-        // return $result;
-        return $statement->rowCount();
-    }
+            // return $result;
+            return $statement->rowCount();
+        }
     // -----[ Users | End ]-----
+
+    // -----[ Posts | Start ]-----
+        /**
+         * /posts endpoint
+         */
+        public function getAllPosts() 
+        {
+            $pdo = $this->pdo;
+            $query = 'SELECT * FROM posts';
+            
+            $statement = $pdo->prepare($query);
+            $statement->execute();
+
+            $result = array();
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                array_push($result, $row);
+            }
+
+            return $result;
+        }
+
+        /**
+         * /posts/id/{id} endpoint 
+         */
+        public function getPostById($id) 
+        {
+            $pdo = $this->pdo;
+            $query = 'SELECT * FROM posts WHERE id = :id';
+            
+            $statement = $pdo->prepare($query);
+            $statement->bindValue(':id', intval($id), PDO::PARAM_INT);
+            $statement->execute();
+            $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+            return $result;
+        }
+
+        /**
+         * /posts/user/{id} endpoint
+         */
+        public function getPostsForUserId($ownerId) 
+        {
+            $pdo = $this->pdo;
+            $query = 'SELECT * FROM posts WHERE ownerId = :ownerId';
+            
+            $statement = $pdo->prepare($query);
+            $statement->bindValue(':ownerId', intval($ownerId), PDO::PARAM_INT);
+            $statement->execute();
+
+            $result = array();
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                array_push($result, $row);
+            }
+
+            return $result;
+        }
+
+        /**
+         * /posts/add endpoint
+         */
+        public function addPost($name, $link, $ownerId) 
+        {
+            $pdo = $this->pdo;
+            $query = 'INSERT INTO posts (name, link, ownerId) VALUES (:name, :link, :ownerId)';
+            
+            $statement = $pdo->prepare($query);
+            $statement->bindValue(':name', $name, PDO::PARAM_STR);
+            $statement->bindValue(':link', $link, PDO::PARAM_STR);
+            $statement->bindValue(':ownerId', intval($ownerId), PDO::PARAM_INT);
+            $statement->execute();
+
+            return $this->pdo->lastInsertId();
+        }
+
+        /**
+         * /posts/update endpoint
+         */
+        public function updatePost($id, $name, $link, $ownerId) 
+        {
+            $pdo = $this->pdo;
+            $query = 'UPDATE posts SET name=:name, link=:link, ownerId=:ownerId WHERE id=:id';
+            
+            $statement = $pdo->prepare($query);
+            $statement->bindValue(':name', $name, PDO::PARAM_STR);
+            $statement->bindValue(':link', $link, PDO::PARAM_STR);
+            $statement->bindValue(':ownerId', intval($ownerId), PDO::PARAM_INT);
+            $statement->bindValue(':id', intval($id), PDO::PARAM_INT);
+
+            return $statement->execute();
+        }
+
+        /**
+         * /posts/delete endpoint
+         */
+        public function deletePost($id) 
+        {
+            $pdo = $this->pdo;
+            $query = 'DELETE FROM posts WHERE id=:id';
+            
+            $statement = $pdo->prepare($query);
+            $statement->bindValue(':id', intval($id), PDO::PARAM_INT);
+            $statement->execute();
+
+            return $statement->rowCount();
+        }
+    // -----[ Posts | End ]-----
+
+
+
+
+
+
+
+
+
+
 
 
 
