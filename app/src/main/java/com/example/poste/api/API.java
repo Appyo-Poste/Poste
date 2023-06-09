@@ -396,3 +396,31 @@ public class API {
         return client.newCall(request).execute();
     }
 }
+
+/*
+    Folder place WIP NOT DONE MK (will format and sort when done)
+     */
+
+    public static boolean addFolder(String name, int ownerId) throws MalformedResponseException, IncompleteRequestException {
+        try (Response response = endpointFoldersAdd(name, ownerId)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+
+            return responseJson.getBoolean("success");
+        } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+    }
+
+    private static Response endpointFoldersAdd(String name, int ownerId) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, String.format("name=%s&ownerId=%d", name, ownerId));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/folders/add")))
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
+
+        return client.newCall(request).execute();
+    }
