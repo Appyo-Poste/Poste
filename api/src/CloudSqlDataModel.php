@@ -377,7 +377,204 @@ class CloudSqlDataModel
 
             return $statement->rowCount();
         }
+
+        /**
+         * no accosiated endpoint
+         */
+        public function getArrayOfPosts($idArray) 
+        {
+            $pdo = $this->pdo;
+            $statmentVars = array();
+            $whereClause = "";
+            
+            foreach ($idArray as $id) {
+                $idIndex = array_search($id, $idArray);
+                if ($idIndex == 0) 
+                {
+                    $whereClause .= "id = :id{$idIndex}";
+                }
+                else 
+                {
+                    $whereClause .= " OR id = :id{$idIndex}";
+                }
+            }
+            
+            $query = "SELECT * FROM posts WHERE {$whereClause}";
+            
+            $statement = $pdo->prepare($query);
+            foreach ($idArray as $id) {
+                $idIndex = array_search($id, $idArray);
+                $statement->bindValue(":id{$idIndex}", intval($id), PDO::PARAM_INT);
+            }
+            $statement->execute();
+
+            $result = array();
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                array_push($result, $row);
+            }
+
+            return $result;
+        }
     // -----[ Posts | End ]-----
+
+    // -----[ Folders | Start ]-----
+        /**
+         * /folders endpoint
+         */
+        public function getAllFolders() 
+        {
+            $pdo = $this->pdo;
+            $query = 'SELECT * FROM folders';
+            
+            $statement = $pdo->prepare($query);
+            $statement->execute();
+
+            $result = array();
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                array_push($result, $row);
+            }
+
+            return $result;
+        }
+
+        /**
+         * /folders/id/{id} endpoint 
+         */
+        public function getFolderById($id) 
+        {
+            $pdo = $this->pdo;
+            $query = 'SELECT * FROM folder WHERE id = :id';
+            
+            $statement = $pdo->prepare($query);
+            $statement->bindValue(':id', intval($id), PDO::PARAM_INT);
+            $statement->execute();
+            $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+            return $result;
+        }
+
+        /**
+         * /folders/user/{id} endpoint
+         */
+        public function getFoldersForUserId($ownerId) 
+        {
+            $pdo = $this->pdo;
+            $query = 'SELECT * FROM folders WHERE ownerId = :ownerId';
+            
+            $statement = $pdo->prepare($query);
+            $statement->bindValue(':ownerId', intval($ownerId), PDO::PARAM_INT);
+            $statement->execute();
+
+            $result = array();
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                array_push($result, $row);
+            }
+
+            return $result;
+        }
+
+        /**
+         * /folders/add endpoint
+         */
+        public function addFolder($name, $ownerId) 
+        {
+            $pdo = $this->pdo;
+            $query = 'INSERT INTO folders (name, ownerId) VALUES (:name, :ownerId)';
+            
+            $statement = $pdo->prepare($query);
+            $statement->bindValue(':name', $name, PDO::PARAM_STR);
+            $statement->bindValue(':ownerId', intval($ownerId), PDO::PARAM_INT);
+            $statement->execute();
+
+            return $this->pdo->lastInsertId();
+        }
+
+        /**
+         * /folders/update endpoint
+         */
+        public function updateFolder($id, $name, $ownerId) 
+        {
+            $pdo = $this->pdo;
+            $query = 'UPDATE folders SET name=:name, ownerId=:ownerId WHERE id=:id';
+            
+            $statement = $pdo->prepare($query);
+            $statement->bindValue(':name', $name, PDO::PARAM_STR);
+            $statement->bindValue(':ownerId', intval($ownerId), PDO::PARAM_INT);
+            $statement->bindValue(':id', intval($id), PDO::PARAM_INT);
+
+            return $statement->execute();
+        }
+
+        /**
+         * /folder/delete endpoint
+         */
+        public function deleteFolder($id) 
+        {
+            $pdo = $this->pdo;
+            $query = 'DELETE FROM folder WHERE id=:id';
+            
+            $statement = $pdo->prepare($query);
+            $statement->bindValue(':id', intval($id), PDO::PARAM_INT);
+            $statement->execute();
+
+            return $statement->rowCount();
+        }
+    // -----[ Folders | End ]-----
+
+    // -----[ Posts-Folders | Start ]-----
+        /**
+         * /folders/posts endpoint 
+         */
+        public function getPostsInFolder($folderId) 
+        {
+            $pdo = $this->pdo;
+            $query = 'SELECT * FROM posts_folders WHERE folderId = :folderId';
+            
+            $statement = $pdo->prepare($query);
+            $statement->bindValue(':folderId', intval($folderId), PDO::PARAM_INT);
+            $statement->execute();
+
+            $postIds = array();
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                array_push($postIds, $row);
+            }
+
+            return getArrayOfPosts($postIds);
+        }
+
+        /**
+         * /folders/posts/add endpoint
+         */
+        public function addPostToFolder($folderId, $postId) 
+        {
+            $pdo = $this->pdo;
+            $query = 'INSERT INTO posts_folders (postId, folderId) VALUES (:postId, :folderId)';
+            
+            $statement = $pdo->prepare($query);
+            $statement->bindValue(':postId', intval($postId), PDO::PARAM_INT);
+            $statement->bindValue(':folderId', intval($folderId), PDO::PARAM_INT);
+            $statement->execute();
+            $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+            return $result;
+        }
+
+        /**
+         * /folders/posts/delete endpoint
+         */
+        public function deletePostFromFolder($folderId, $postId) 
+        {
+            $pdo = $this->pdo;
+            $query = 'DELETE FROM posts_folders WHERE folderId=:folderId AND postId=:postId';
+            
+            $statement = $pdo->prepare($query);
+            $statement->bindValue(':postId', intval($postId), PDO::PARAM_INT);
+            $statement->bindValue(':folderId', intval($folderId), PDO::PARAM_INT);
+            $statement->execute();
+
+            return $statement->rowCount();
+        }
+    // -----[ Posts-Folders | End ]-----
 
 
 
