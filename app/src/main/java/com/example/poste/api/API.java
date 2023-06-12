@@ -424,3 +424,26 @@ public class API {
 
         return client.newCall(request).execute();
     }
+
+    public static ArrayList<Post> getFoldersForOwnerId(int _id) throws MalformedResponseException, IncompleteRequestException {
+        ArrayList<Folder> folders = new ArrayList<>();
+
+        try (Response response = endpointPostsFolder(_id)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONArray responseJson = new JSONObject(response.body().string()).getJSONArray("result");
+
+            for (int i = 0; i < responseJson.length(); i++)
+            {
+                try {
+
+                    //TODO
+
+                    folders.add(new Folder(name, ownerId));
+                } catch (JSONException e) { throw new MalformedResponseException(); }
+            }
+        } catch (JSONException e) { throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+
+        return folders;
+    }
+
