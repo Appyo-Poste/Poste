@@ -466,20 +466,55 @@ public class API {
         return client.newCall(request).execute();
     }
 
-    // TODO: Implement body
-    private static Response endpointFolders() { }
+    private static Response endpointFolders() throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/folders")))
+                .build();
 
-    // TODO: Implement body
-    private static Response endpointFoldersId(int id) { }
+        return client.newCall(request).execute();
+    }
 
-    // TODO: Implement body
-    private static Response endpointFoldersUser(int id) { }
+    private static Response endpointFoldersId(int id) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL(String.format("/folders/id/%d", id))))
+                .build();
 
-    // TODO: Implement body
-    private static Response endpointFoldersPosts(int id) { }
+        return client.newCall(request).execute();
+    }
 
-    // TODO: Implement body
-    private static Response endpointFoldersUsers(int id) { }
+    private static Response endpointFoldersUser(int id) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL(String.format("/folders/user/%d", id))))
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private static Response endpointFoldersPosts(int id) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL(String.format("/folders/posts/%d", id))))
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private static Response endpointFoldersUsers(int id) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL(String.format("/folders/users/%d", id))))
+                .build();
+
+        return client.newCall(request).execute();
+    }
 
     private static Response endpointFoldersAdd(String name, int ownerId) throws IOException {
         OkHttpClient client = new OkHttpClient().newBuilder()
@@ -495,25 +530,105 @@ public class API {
         return client.newCall(request).execute();
     }
 
-    // TODO: Implement body
-    private static Response endpointFoldersUpdate(int id, String name, int ownerId) { }
+    private static Response endpointFoldersUpdate(int id, String name, int ownerId) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, String.format("id=%s&name=%s&ownerId=%d", id, name, ownerId));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/folders/update")))
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
 
-    // TODO: Implement body
-    private static Response endpointFoldersDelete(int id) { }
+        return client.newCall(request).execute();
+    }
 
-    // TODO: Implement body
-    private static Response endpointFoldersPostsAdd(int folderId, int postId) { }
+    private static Response endpointFoldersDelete(int id) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, String.format("id=%d", id));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/folders/delete")))
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
 
-    // TODO: Implement body
-    private static Response endpointFoldersPostsDelete(int folderId, int postId) { }
+        return client.newCall(request).execute();
+    }
 
-    // TODO: Implement body
-    private static Response endpointFoldersUsersAdd(int folderId, int postId, FolderAccess access) { }
+    private static Response endpointFoldersPostsAdd(int folderId, int postId) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&postId=%d", folderId, postId));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/folders/posts/add")))
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
 
-    // TODO: Implement body
-    private static Response endpointFoldersUsersUpdate(int folderId, int postId, FolderAccess access) { }
+        return client.newCall(request).execute();
+    }
 
-    // TODO: Implement body
-    private static Response endpointFoldersUsersDelete(int folderId, int postId) { }
+    private static Response endpointFoldersPostsDelete(int folderId, int postId) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&postId=%d", folderId, postId));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/folders/posts/delete")))
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    // TODO access
+    private static Response endpointFoldersUsersAdd(int folderId, int postId, FolderAccess access) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&postId=%d", folderId, postId));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/folders/users/add")))
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    // TODO: access
+    private static Response endpointFoldersUsersUpdate(int folderId, int postId, FolderAccess access) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&postId=%d", folderId, postId));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/folders/users/update")))
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
+
+        return client.newCall(request).execute();
+
+    }
+
+    private static Response endpointFoldersUsersDelete(int folderId, int postId) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&postId=%d", folderId, postId));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/folders/users/delete")))
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
+
+        return client.newCall(request).execute();
+    }
 }
 
