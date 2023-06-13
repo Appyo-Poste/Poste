@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 import okhttp3.MediaType;
@@ -241,10 +242,17 @@ public class API {
         catch (IOException e) { throw new IncompleteRequestException(); }
     }
 
-    public static ArrayList<Folder> getFoldersForOwnerId(int _id) throws MalformedResponseException, IncompleteRequestException {
+    // TODO: Implement body
+    public static ArrayList<Folder> getAllFolders() { }
+
+    // TODO: Implement body
+    public static Folder getFolderById(int id) { }
+
+    // TODO: Fix
+    public static ArrayList<Folder> getFoldersForUserId(int id) throws MalformedResponseException, IncompleteRequestException {
         ArrayList<Folder> folders = new ArrayList<>();
 
-        try (Response response = endpointPostsFolder(_id)) {
+        try (Response response = endpointPostsFolder(id)) {
             if (response.body() == null) { throw new MalformedResponseException(); }
             JSONArray responseJson = new JSONObject(response.body().string()).getJSONArray("result");
 
@@ -263,15 +271,44 @@ public class API {
         return folders;
     }
 
+    // TODO: Implement body
+    public static ArrayList<Post> getPostsForFolderId(int id) { }
+
+    // TODO: Implement body
+    public static HashMap<Integer, FolderAccess> getAccessForFolderId(int id) { }
+
     public static boolean addFolder(String name, int ownerId) throws MalformedResponseException, IncompleteRequestException {
         try (Response response = endpointFoldersAdd(name, ownerId)) {
             if (response.body() == null) { throw new MalformedResponseException(); }
             JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
-
+            // TODO: Add owner id to access table as owner
             return responseJson.getBoolean("success");
         } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
         catch (IOException e) { throw new IncompleteRequestException(); }
     }
+
+    // TODO: Implement body
+    public static boolean updateFolder(int folderId, String name, int ownerId) { }
+
+    // TODO: Implement body
+    public static boolean deleteFolder(int folderId) {
+        // TODO: Not only delete folder but also remove posts in folder and users with access
+    }
+
+    // TODO: Implement body
+    public static boolean addPostToFolder(int postId, int folderId) { }
+
+    // TODO: Implement body
+    public static boolean removePostFromFolder(int postId, int folderId) { }
+
+    // TODO: Implement body
+    public static boolean addUserToFolder(int userId, int folderId, FolderAccess access) { }
+
+    // TODO: Implement body
+    public static boolean updateUserAccessToFolder(int userId, int folderId, FolderAccess access) { }
+
+    // TODO: Implement body
+    public static boolean removeUserFromFolder(int userId, int folderId) { }
 
 
 
