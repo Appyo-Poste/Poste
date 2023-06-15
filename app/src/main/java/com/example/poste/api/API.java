@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 import okhttp3.MediaType;
@@ -243,7 +244,32 @@ public class API {
     }
 
     // TODO: Implement body
-    public static ArrayList<Folder> getAllFolders() { }
+    public static ArrayList<Folder> getAllFolders() throws MalformedResponseException, IncompleteRequestException{
+        ArrayList<Folder> folders = new ArrayList<>();
+
+        try (Response response = endpointFolders()) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONArray responseJson = new JSONObject(response.body().string()).getJSONArray("result");
+
+            for (int i = 0; i < responseJson.length(); i++)
+            {
+                try {
+                    JSONObject obj = responseJson.getJSONObject(i);
+
+                    int id = obj.getInt("id");
+                    String name = obj.getString("name");
+                    int folderId = obj.getInt("ownerId");
+                    //todo
+                    ArrayList<Post> posts = obj.getJSONArray(Posts);
+
+                    folders.add(new Folder(id, name, folderId, posts));
+                } catch (JSONException e) { throw new MalformedResponseException(); }
+            }
+        } catch (JSONException e) { throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+
+        return folders;
+    }
 
     // TODO: Implement body
     public static Folder getFolderById(int id) { }
@@ -252,7 +278,7 @@ public class API {
     public static ArrayList<Folder> getFoldersForUserId(int id) throws MalformedResponseException, IncompleteRequestException {
         ArrayList<Folder> folders = new ArrayList<>();
 
-        try (Response response = endpointPostsFolder(id)) {
+        try (Response response = endpointFolders(id)) {
             if (response.body() == null) { throw new MalformedResponseException(); }
             JSONArray responseJson = new JSONObject(response.body().string()).getJSONArray("result");
 
@@ -272,7 +298,9 @@ public class API {
     }
 
     // TODO: Implement body
-    public static ArrayList<Post> getPostsForFolderId(int id) { }
+    public static ArrayList<Post> getPostsForFolderId(int id) {
+
+    }
 
     // TODO: Implement body
     public static HashMap<Integer, FolderAccess> getAccessForFolderId(int id) { }
@@ -291,24 +319,59 @@ public class API {
     public static boolean updateFolder(int folderId, String name, int ownerId) { }
 
     // TODO: Implement body
-    public static boolean deleteFolder(int folderId) {
+    public static boolean deleteFolder(int folderId) throws MalformedResponseException, IncompleteRequestException {
+        try (Response response = endpointFoldersDelete(folderId)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+
+            return responseJson.getBoolean("success");
+        } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+
         // TODO: Not only delete folder but also remove posts in folder and users with access
     }
 
-    // TODO: Implement body
-    public static boolean addPostToFolder(int postId, int folderId) { }
+    public static boolean addPostToFolder(int postId, int folderId) throws MalformedResponseException, IncompleteRequestException{
+        try (Response response = endpointFoldersPostsAdd(folderId, postId)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+
+            return responseJson.getBoolean("success");
+        } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+    }
 
     // TODO: Implement body
-    public static boolean removePostFromFolder(int postId, int folderId) { }
+    public static boolean removePostFromFolder(int postId, int folderId) throws MalformedResponseException, IncompleteRequestException{
+        try (Response response = endpointFoldersPostsDelete(folderId, postId)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+
+            return responseJson.getBoolean("success");
+        } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+    }
 
     // TODO: Implement body
-    public static boolean addUserToFolder(int userId, int folderId, FolderAccess access) { }
+    public static boolean addUserToFolder(int userId, int folderId, FolderAccess access) {
+
+    }
 
     // TODO: Implement body
-    public static boolean updateUserAccessToFolder(int userId, int folderId, FolderAccess access) { }
+    public static boolean updateUserAccessToFolder(int userId, int folderId, FolderAccess access) {
 
-    // TODO: Implement body
-    public static boolean removeUserFromFolder(int userId, int folderId) { }
+    }
+
+    public static boolean removeUserFromFolder(int userId, int folderId) throws MalformedResponseException, IncompleteRequestException{
+
+        try (Response response = endpointFoldersUsersDelete(userId, folderId)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+
+            return responseJson.getBoolean("success");
+        } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+    }
 
 
 
