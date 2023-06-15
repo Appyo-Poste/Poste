@@ -19,6 +19,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import okhttp3.MediaType;
@@ -318,8 +319,24 @@ public class API {
     // TODO: Implement body
     public static boolean updateFolder(int folderId, String name, int ownerId) { }
 
-    // TODO: Implement body
     public static boolean deleteFolder(int folderId) throws MalformedResponseException, IncompleteRequestException {
+        ArrayList<Post> posts = getPostsForFolderId(folderId);
+        HashMap<Integer, FolderAccess> users = getAccessForFolderId(folderId);
+
+        for (int i = 0; i < posts.size(); i++) {
+            Post _post = posts.get(i);
+
+            try (Response response = endpointFoldersPostsDelete(folderId, _post.getId())) {
+                if (response.body() == null) { throw new MalformedResponseException(); }
+            } catch (IOException e) { throw new IncompleteRequestException(); }
+        }
+
+        for (Map.Entry<Integer, FolderAccess> set : users.entrySet()) {
+            try (Response response = endpointFoldersUsersDelete(folderId, set.getKey())) {
+                if (response.body() == null) { throw new MalformedResponseException(); }
+            } catch (IOException e) { throw new IncompleteRequestException(); }
+        }
+
         try (Response response = endpointFoldersDelete(folderId)) {
             if (response.body() == null) { throw new MalformedResponseException(); }
             JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
@@ -327,8 +344,6 @@ public class API {
             return responseJson.getBoolean("success");
         } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
         catch (IOException e) { throw new IncompleteRequestException(); }
-
-        // TODO: Not only delete folder but also remove posts in folder and users with access
     }
 
     public static boolean addPostToFolder(int postId, int folderId) throws MalformedResponseException, IncompleteRequestException{
@@ -341,7 +356,6 @@ public class API {
         catch (IOException e) { throw new IncompleteRequestException(); }
     }
 
-    // TODO: Implement body
     public static boolean removePostFromFolder(int postId, int folderId) throws MalformedResponseException, IncompleteRequestException{
         try (Response response = endpointFoldersPostsDelete(folderId, postId)) {
             if (response.body() == null) { throw new MalformedResponseException(); }
@@ -649,12 +663,11 @@ public class API {
         return client.newCall(request).execute();
     }
 
-    // TODO access
     private static Response endpointFoldersUsersAdd(int folderId, int postId, FolderAccess access) throws IOException {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&postId=%d", folderId, postId));
+        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&postId=%d&access=%d", folderId, postId, access.getValue()));
         Request request = new Request.Builder()
                 .url(Objects.requireNonNull(URL("/folders/users/add")))
                 .method("POST", body)
@@ -664,12 +677,11 @@ public class API {
         return client.newCall(request).execute();
     }
 
-    // TODO: access
     private static Response endpointFoldersUsersUpdate(int folderId, int postId, FolderAccess access) throws IOException {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&postId=%d", folderId, postId));
+        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&postId=%d&access=%d", folderId, postId, access.getValue()));
         Request request = new Request.Builder()
                 .url(Objects.requireNonNull(URL("/folders/users/update")))
                 .method("POST", body)
