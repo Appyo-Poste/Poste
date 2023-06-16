@@ -260,10 +260,10 @@ public class API {
                     int id = obj.getInt("id");
                     String name = obj.getString("name");
                     int folderId = obj.getInt("ownerId");
-                    //todo
-                    ArrayList<Post> posts = obj.getJSONArray(Posts);
 
-                    folders.add(new Folder(id, name, folderId, posts));
+
+                    folders.add(new Folder(id, name, folderId, getPostsForFolderId(folderId), getAccessForFolderId(folderId)));
+
                 } catch (JSONException e) { throw new MalformedResponseException(); }
             }
         } catch (JSONException e) { throw new MalformedResponseException(); }
@@ -272,8 +272,20 @@ public class API {
         return folders;
     }
 
-    // TODO: Implement body
-    public static Folder getFolderById(int id) { }
+    public static Folder getFolderById(int _id) throws MalformedResponseException, IncompleteRequestException{
+        try (Response response = endpointFoldersId(_id)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+
+            int id = responseJson.getInt("id");
+            String name = responseJson.getString("name");
+            int ownerId = responseJson.getInt("ownerId");
+
+
+            return new Folder(id, name, ownerId, getPostsForFolderId(_id), getAccessForFolderId(_id));
+        } catch (JSONException e) { throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+    }
 
     // TODO: Fix
     public static ArrayList<Folder> getFoldersForUserId(int id) throws MalformedResponseException, IncompleteRequestException {
@@ -300,11 +312,13 @@ public class API {
 
     // TODO: Implement body
     public static ArrayList<Post> getPostsForFolderId(int id) {
-
+        return
     }
 
     // TODO: Implement body
-    public static HashMap<Integer, FolderAccess> getAccessForFolderId(int id) { }
+    public static HashMap<Integer, FolderAccess> getAccessForFolderId(int id) {
+        return getFolderById(id)
+    }
 
     public static boolean addFolder(String name, int ownerId) throws MalformedResponseException, IncompleteRequestException {
         try (Response response = endpointFoldersAdd(name, ownerId)) {
@@ -366,8 +380,13 @@ public class API {
         catch (IOException e) { throw new IncompleteRequestException(); }
     }
 
-    // TODO: Implement body
-    public static boolean addUserToFolder(int userId, int folderId, FolderAccess access) {
+    public static boolean addUserToFolder(int userId, int folderId, FolderAccess access) throws MalformedResponseException, IncompleteRequestException {
+        try (Response response = endpointFoldersUsersAdd(userId, folderId, access){
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+            return responseJson.getBoolean("success");
+        } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
 
     }
 
