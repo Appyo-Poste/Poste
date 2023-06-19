@@ -13,4 +13,13 @@ public enum FolderAccess {
     }
 
     public int getValue() { return value; }
+
+    public static FolderAccess valueOf(int value) {
+        switch (value) {
+            case 1: return VIEW;
+            case 2: return MANAGE;
+            case 3: return OWNER;
+            default: return NONE;
+        }
+    }
 }
