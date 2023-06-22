@@ -308,6 +308,7 @@
 
 </details>
 
+
 <details>
     <summary>
         <code>POST</code>
@@ -619,6 +620,541 @@
 > --header 'Content-Type: application/x-www-form-urlencoded' \
 > --data-urlencode 'email=example@email.com' \
 > --data-urlencode 'password=passw0rd'
+> ```
+</details>
+
+<br>
+<br>
+
+</details>
+
+------------------------------------------------------------------------------------------
+
+### Folder Interactions
+
+
+<details>
+    <summary>
+        <code>GET</code>
+        <code><b>/folders</b></code>
+        <code>(retrieves all folders from the database)</code>
+    </summary>
+
+##### Parameters
+
+> None
+
+##### Responses
+
+> | http code | content-type | response |
+> |---|---|---|
+> | `200` | `text/plain;charset=UTF-8` | JSON String |
+
+##### Code Snippets
+
+<details>
+    <summary>
+        <code>cURL</code>
+    </summary>
+    
+> ```javascript
+> curl --location 'https://poste-388415.uc.r.appspot.com/folders'
+> ```
+</details>
+
+<br>
+<br>
+
+</details>
+
+
+<details>
+    <summary>
+        <code>GET</code>
+        <code><b>/folders/id/{id}</b></code>
+        <code>(retrieves a specific folders from the database)</code>
+    </summary>
+
+##### Parameters
+
+> | name | type | data type | description |
+> |---|---|---|---|
+> | `id` |  required | int | The id of the folder to retrieve |
+
+##### Responses
+
+> | http code | content-type | response |
+> |---|---|---|
+> | `200` | `text/plain;charset=UTF-8` | JSON String |
+> | `400` | `application/json` | JSON String |
+
+##### Code Snippets
+
+<details>
+    <summary>
+        <code>cURL</code>
+    </summary>
+    
+> ```javascript
+> curl --location 'https://poste-388415.uc.r.appspot.com/folders/id/1'
+> ```
+</details>
+
+<br>
+<br>
+
+</details>
+
+
+<details>
+    <summary>
+        <code>GET</code>
+        <code><b>/folders/user/{id}</b></code>
+        <code>(retrieves all folders owned by a specific user from the database)</code>
+    </summary>
+
+##### Parameters
+
+> | name | type | data type | description |
+> |---|---|---|---|
+> | `id` |  required | int | The id of the user to find folders for |
+
+##### Responses
+
+> | http code | content-type | response |
+> |---|---|---|
+> | `200` | `text/plain;charset=UTF-8` | JSON String |
+> | `400` | `application/json` | JSON String |
+
+##### Code Snippets
+
+<details>
+    <summary>
+        <code>cURL</code>
+    </summary>
+    
+> ```javascript
+> curl --location 'https://poste-388415.uc.r.appspot.com/folders/user/1'
+> ```
+</details>
+
+<br>
+<br>
+
+</details>
+
+
+<details>
+    <summary>
+        <code>GET</code>
+        <code><b>/folders/posts/{id}</b></code>
+        <code>(posts for a specific folder)</code>
+    </summary>
+
+##### Parameters
+
+> | name | type | data type | description |
+> |---|---|---|---|
+> | `id` |  required | int | The id of the folder |
+
+##### Responses
+
+> | http code | content-type | response |
+> |---|---|---|
+> | `200` | `text/plain;charset=UTF-8` | JSON String |
+> | `400` | `application/json` | JSON String |
+
+##### Code Snippets
+
+<details>
+    <summary>
+        <code>cURL</code>
+    </summary>
+    
+> ```javascript
+> curl --location 'https://poste-388415.uc.r.appspot.com/folders/posts/1'
+> ```
+</details>
+
+<br>
+<br>
+
+</details>
+
+
+<details>
+    <summary>
+        <code>GET</code>
+        <code><b>/folders/users/{id}</b></code>
+        <code>(retrieves all users with access to a specific folder)</code>
+    </summary>
+
+##### Parameters
+
+> | name | type | data type | description |
+> |---|---|---|---|
+> | `id` |  required | int | The id of the folder |
+
+##### Responses
+
+> | http code | content-type | response |
+> |---|---|---|
+> | `200` | `text/plain;charset=UTF-8` | JSON String |
+> | `400` | `application/json` | JSON String |
+
+##### Code Snippets
+
+<details>
+    <summary>
+        <code>cURL</code>
+    </summary>
+    
+> ```javascript
+> curl --location 'https://poste-388415.uc.r.appspot.com/folders/users/1'
+> ```
+</details>
+
+<br>
+<br>
+
+</details>
+
+
+<details>
+    <summary>
+        <code>POST</code>
+        <code><b>/folders/add</b></code>
+        <code>(adds a folder)</code>
+    </summary>
+
+##### Parameters
+
+> | name | type | data type | description |
+> |---|---|---|---|
+> | `name` |  required | string | The name of the folder |
+> | `ownerId` |  required | int | The id of the folder owner |
+
+##### Responses
+
+> | http code | content-type | response |
+> |---|---|---|
+> | `201` | `text/plain;charset=UTF-8` | JSON String |
+> | `400` | `application/json` | JSON String |
+
+##### Code Snippets
+
+<details>
+    <summary>
+        <code>cURL</code>
+    </summary>
+    
+> ```javascript
+> curl --location 'https://poste-388415.uc.r.appspot.com/folders/add' \
+> --header 'Content-Type: application/x-www-form-urlencoded' \
+> --data-urlencode 'name=Folder Name' \
+> --data-urlencode 'ownerId=1'
+> ```
+</details>
+
+<br>
+<br>
+
+</details>
+
+
+<details>
+    <summary>
+        <code>POST</code>
+        <code><b>/folders/update</b></code>
+        <code>(updates a folder)</code>
+    </summary>
+
+##### Parameters
+
+> | name | type | data type | description |
+> |---|---|---|---|
+> | `id` |  required | int | The id of the folder |
+> | `name` |  required | string | The name of the folder |
+> | `ownerId` |  required | int | The id of the folder owner |
+
+##### Responses
+
+> | http code | content-type | response |
+> |---|---|---|
+> | `201` | `text/plain;charset=UTF-8` | JSON String |
+> | `400` | `application/json` | JSON String |
+
+##### Code Snippets
+
+<details>
+    <summary>
+        <code>cURL</code>
+    </summary>
+    
+> ```javascript
+> curl --location 'https://poste-388415.uc.r.appspot.com/folders/update' \
+> --data-urlencode 'id=1' \
+> --data-urlencode 'name=Folder Name' \
+> --data-urlencode 'ownerId=1'
+> ```
+</details>
+
+<br>
+<br>
+
+</details>
+
+
+<details>
+    <summary>
+        <code>POST</code>
+        <code><b>/folders/delete</b></code>
+        <code>(deletes a folder)</code>
+    </summary>
+
+##### Parameters
+
+> | name | type | data type | description |
+> |---|---|---|---|
+> | `id` |  required | int | The id of the folder |
+
+##### Responses
+
+> | http code | content-type | response |
+> |---|---|---|
+> | `201` | `text/plain;charset=UTF-8` | JSON String |
+> | `400` | `application/json` | JSON String |
+
+##### Code Snippets
+
+<details>
+    <summary>
+        <code>cURL</code>
+    </summary>
+    
+> ```javascript
+> curl --location 'https://poste-388415.uc.r.appspot.com/folders/delete' \
+> --header 'Content-Type: application/x-www-form-urlencoded' \
+> --data-urlencode 'id=1'
+> ```
+</details>
+
+<br>
+<br>
+
+</details>
+
+
+<details>
+    <summary>
+        <code>POST</code>
+        <code><b>/folders/posts/add</b></code>
+        <code>(adds a post to a folder)</code>
+    </summary>
+
+##### Parameters
+
+> | name | type | data type | description |
+> |---|---|---|---|
+> | `folderId` |  required | int | The id of the folder |
+> | `postId` |  required | int | The id of the post |
+
+
+##### Responses
+
+> | http code | content-type | response |
+> |---|---|---|
+> | `201` | `text/plain;charset=UTF-8` | JSON String |
+> | `400` | `application/json` | JSON String |
+
+##### Code Snippets
+
+<details>
+    <summary>
+        <code>cURL</code>
+    </summary>
+    
+> ```javascript
+> curl --location 'https://poste-388415.uc.r.appspot.com/folders/posts/add' \
+> --header 'Content-Type: application/x-www-form-urlencoded' \
+> --data-urlencode 'folderId=1' \
+> --data-urlencode 'postId=1'
+> ```
+</details>
+
+<br>
+<br>
+
+</details>
+
+
+<details>
+    <summary>
+        <code>POST</code>
+        <code><b>/folders/posts/delete</b></code>
+        <code>(removes a post from a folder)</code>
+    </summary>
+
+##### Parameters
+
+> | name | type | data type | description |
+> |---|---|---|---|
+> | `folderId` |  required | int | The id of the folder |
+> | `postId` |  required | int | The id of the post |
+
+
+##### Responses
+
+> | http code | content-type | response |
+> |---|---|---|
+> | `201` | `text/plain;charset=UTF-8` | JSON String |
+> | `400` | `application/json` | JSON String |
+
+##### Code Snippets
+
+<details>
+    <summary>
+        <code>cURL</code>
+    </summary>
+    
+> ```javascript
+> curl --location 'https://poste-388415.uc.r.appspot.com/folders/posts/delete' \
+> --header 'Content-Type: application/x-www-form-urlencoded' \
+> --data-urlencode 'folderId=1' \
+> --data-urlencode 'postId=1'
+> ```
+</details>
+
+<br>
+<br>
+
+</details>
+
+
+<details>
+    <summary>
+        <code>POST</code>
+        <code><b>/folders/users/add</b></code>
+        <code>(adds a user to a folder)</code>
+    </summary>
+
+##### Parameters
+
+> | name | type | data type | description |
+> |---|---|---|---|
+> | `folderId` |  required | int | The id of the folder |
+> | `userId` |  required | int | The id of the user |
+> | `access` |  required | int | The level of access for the user |
+
+
+##### Responses
+
+> | http code | content-type | response |
+> |---|---|---|
+> | `201` | `text/plain;charset=UTF-8` | JSON String |
+> | `400` | `application/json` | JSON String |
+
+##### Code Snippets
+
+<details>
+    <summary>
+        <code>cURL</code>
+    </summary>
+    
+> ```javascript
+> curl --location 'https://poste-388415.uc.r.appspot.com/folders/users/add' \
+> --header 'Content-Type: application/x-www-form-urlencoded' \
+> --data-urlencode 'folderId=1' \
+> --data-urlencode 'userId=1' \
+> --data-urlencode 'access=3'
+> ```
+</details>
+
+<br>
+<br>
+
+</details>
+
+
+<details>
+    <summary>
+        <code>POST</code>
+        <code><b>/folders/users/update</b></code>
+        <code>(updates a user's access to a folder)</code>
+    </summary>
+
+##### Parameters
+
+> | name | type | data type | description |
+> |---|---|---|---|
+> | `folderId` |  required | int | The id of the folder |
+> | `userId` |  required | int | The id of the user |
+> | `access` |  required | int | The level of access for the user |
+
+
+##### Responses
+
+> | http code | content-type | response |
+> |---|---|---|
+> | `201` | `text/plain;charset=UTF-8` | JSON String |
+> | `400` | `application/json` | JSON String |
+
+##### Code Snippets
+
+<details>
+    <summary>
+        <code>cURL</code>
+    </summary>
+    
+> ```javascript
+> curl --location 'https://poste-388415.uc.r.appspot.com/folders/users/update' \
+> --header 'Content-Type: application/x-www-form-urlencoded' \
+> --data-urlencode 'folderId=1' \
+> --data-urlencode 'userId=1' \
+> --data-urlencode 'access=1'
+> ```
+</details>
+
+<br>
+<br>
+
+</details>
+
+
+<details>
+    <summary>
+        <code>POST</code>
+        <code><b>/folders/users/delete</b></code>
+        <code>(removes a user from a folder)</code>
+    </summary>
+
+##### Parameters
+
+> | name | type | data type | description |
+> |---|---|---|---|
+> | `folderId` |  required | int | The id of the folder |
+> | `userId` |  required | int | The id of the user |
+
+
+##### Responses
+
+> | http code | content-type | response |
+> |---|---|---|
+> | `201` | `text/plain;charset=UTF-8` | JSON String |
+> | `400` | `application/json` | JSON String |
+
+##### Code Snippets
+
+<details>
+    <summary>
+        <code>cURL</code>
+    </summary>
+    
+> ```javascript
+> curl --location 'https://poste-388415.uc.r.appspot.com/folders/users/delete' \
+> --header 'Content-Type: application/x-www-form-urlencoded' \
+> --data-urlencode 'folderId=1' \
+> --data-urlencode 'userId=1'
 > ```
 </details>
 

@@ -547,6 +547,504 @@ $app->get('/', function (Request $request, Response $response) use ($container) 
 
 // -----[ Posts | End ]-----
 
+// -----[ Folders | Start ]-----
+
+    /**
+     * GET /folders
+     */
+    $app->get('/folders', function (Request $request, Response $response) use ($container) {
+        $data = $container->get('cloudsql')->getAllFolders();
+
+        $response->getBody()->write(json_encode(array(
+            "code" => 200,
+            "message" => "Successfully retreived all folders",
+            "result" => $data
+        )));
+        return $response
+            ->withStatus(200, "Successfully retreived all folders");
+    });
+
+    /**
+     * GET /folders/id/{id}
+     */
+    $app->get('/folders/id/{id}', function (Request $request, Response $response, $args) use ($container) {
+        $missingProperties = array();
+        if (!array_key_exists("id", $args)) { array_push($missingProperties, "id"); }
+        
+        if (!empty($missingProperties)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Missing the following properties: " . implode(", ", $missingProperties),
+                "result" => "{}"
+            )));
+            
+            return $response
+                ->withStatus(400, "Missing the following properties: " . implode(", ", $missingProperties));
+        }
+        
+        $data = $container->get('cloudsql')->getFolderById($args["id"]);
+        
+        $response->getBody()->write(json_encode(array(
+            "code" => 200,
+            "message" => "Successfully retreived folder with id " . $args["id"],
+            "result" => $data
+        )));
+        return $response
+            ->withStatus(200, "Successfully retreived folder with id " . $args["id"]);
+    });
+
+    /**
+     * GET /folders/user/{id}
+     */
+    $app->get('/folders/user/{id}', function (Request $request, Response $response, $args) use ($container) {
+        $missingProperties = array();
+        if (!array_key_exists("id", $args)) { array_push($missingProperties, "id"); }
+        
+        if (!empty($missingProperties)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Missing the following properties: " . implode(", ", $missingProperties),
+                "result" => "{}"
+            )));
+            
+            return $response
+                ->withStatus(400, "Missing the following properties: " . implode(", ", $missingProperties));
+        }
+        
+        $data = $container->get('cloudsql')->getFoldersForUserId($args["id"]);
+        
+        $response->getBody()->write(json_encode(array(
+            "code" => 200,
+            "message" => "Successfully retreived all folders for user with id " . $args["id"],
+            "result" => $data
+        )));
+        return $response
+            ->withStatus(200, "Successfully retreived all folders for user with id " . $args["id"]);
+    });
+
+    /**
+     * POST /folders/add
+     */
+    $app->post('/folders/add', function (Request $request, Response $response) use ($container) {
+        $body = $request->getParsedBody();
+
+        if (empty($body)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Cannot process empty body",
+                "result" => "{}"
+            )));
+            return $response->withStatus(400, "Cannot process empty body");
+        }
+
+        $missingProperties = array();
+        if (!array_key_exists("name", $body)) { array_push($missingProperties, "name"); }
+        if (!array_key_exists("ownerId", $body)) { array_push($missingProperties, "ownerId"); }
+        
+        if (!empty($missingProperties)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Missing the following properties: " . implode(", ", $missingProperties),
+                "result" => "{}"
+            )));
+            
+            return $response
+                ->withStatus(400, "Missing the following properties: " . implode(", ", $missingProperties));
+        }
+
+        $data = $container->get('cloudsql')->addFolder($body["name"], $body["ownerId"]);
+
+        $response->getBody()->write(json_encode(array(
+            "code" => 201,
+            "message" => "New folder created",
+            "result" => array(
+                "success" => true,
+                "message" => "Successfully created new folder",
+                "newFolderId" => $data
+            )
+        )));
+        return $response
+            ->withStatus(201);
+    });
+
+    /**
+     * POST /folders/update
+     */
+    $app->post('/folders/update', function (Request $request, Response $response) use ($container) {
+        $body = $request->getParsedBody();
+
+        if (empty($body)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Cannot process empty body",
+                "result" => "{}"
+            )));
+            return $response->withStatus(400, "Cannot process empty body");
+        }
+
+        $missingProperties = array();
+        if (!array_key_exists("id", $body)) { array_push($missingProperties, "id"); }
+        if (!array_key_exists("name", $body)) { array_push($missingProperties, "name"); }
+        if (!array_key_exists("ownerId", $body)) { array_push($missingProperties, "ownerId"); }
+        
+        if (!empty($missingProperties)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Missing the following properties: " . implode(", ", $missingProperties),
+                "result" => "{}"
+            )));
+            
+            return $response
+                ->withStatus(400, "Missing the following properties: " . implode(", ", $missingProperties));
+        }
+
+        $data = $container->get('cloudsql')->updateFolder($body["id"], $body["name"], $body["ownerId"]);
+
+        $response->getBody()->write(json_encode(array(
+            "code" => 201,
+            "message" => "Folder updated",
+            "result" => array(
+                "success" => true,
+                "message" => "Successfully updated folder"
+            )
+        )));
+        return $response
+            ->withStatus(201);
+    });
+
+    /**
+     * POST /folders/delete
+     */
+    $app->post('/folders/delete', function (Request $request, Response $response) use ($container) {
+        $body = $request->getParsedBody();
+
+        if (empty($body)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Cannot process empty body",
+                "result" => "{}"
+            )));
+            return $response->withStatus(400, "Cannot process empty body");
+        }
+
+        $missingProperties = array();
+        if (!array_key_exists("id", $body)) { array_push($missingProperties, "id"); }
+        
+        if (!empty($missingProperties)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Missing the following properties: " . implode(", ", $missingProperties),
+                "result" => "{}"
+            )));
+            
+            return $response
+                ->withStatus(400, "Missing the following properties: " . implode(", ", $missingProperties));
+        }
+
+        $data = $container->get('cloudsql')->deleteFolder($body["id"]);
+
+        $response->getBody()->write(json_encode(array(
+            "code" => 201,
+            "message" => "Folder deleted",
+            "result" => array(
+                "success" => true,
+                "message" => "Successfully deleted folder"
+            )
+        )));
+        return $response
+            ->withStatus(201);
+    });
+
+// -----[ Folders | End ]-----
+
+// -----[ Posts-Folders | Start ]-----
+
+    /**
+     * GET /folders/posts/{id}
+     */
+    $app->get('/folders/posts/{id}', function (Request $request, Response $response, $args) use ($container) {
+        $missingProperties = array();
+        if (!array_key_exists("id", $args)) { array_push($missingProperties, "id"); }
+        
+        if (!empty($missingProperties)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Missing the following properties: " . implode(", ", $missingProperties),
+                "result" => "{}"
+            )));
+            
+            return $response
+                ->withStatus(400, "Missing the following properties: " . implode(", ", $missingProperties));
+        }
+        
+        $data = $container->get('cloudsql')->getPostsInFolder($args["id"]);
+
+        $response->getBody()->write(json_encode(array(
+            "code" => 200,
+            "message" => "Successfully retreived all posts in folder",
+            "result" => $data
+        )));
+        return $response
+            ->withStatus(200, "Successfully retreived all folders");
+    });
+
+    /**
+     * POST /folders/posts/add
+     */
+    $app->post('/folders/posts/add', function (Request $request, Response $response) use ($container) {
+        $body = $request->getParsedBody();
+
+        if (empty($body)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Cannot process empty body",
+                "result" => "{}"
+            )));
+            return $response->withStatus(400, "Cannot process empty body");
+        }
+
+        $missingProperties = array();
+        if (!array_key_exists("folderId", $body)) { array_push($missingProperties, "folderId"); }
+        if (!array_key_exists("postId", $body)) { array_push($missingProperties, "postId"); }
+        
+        if (!empty($missingProperties)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Missing the following properties: " . implode(", ", $missingProperties),
+                "result" => "{}"
+            )));
+            
+            return $response
+                ->withStatus(400, "Missing the following properties: " . implode(", ", $missingProperties));
+        }
+
+        $data = $container->get('cloudsql')->addPostToFolder($body["folderId"], $body["postId"]);
+
+        $response->getBody()->write(json_encode(array(
+            "code" => 201,
+            "message" => "Added post to folder",
+            "result" => array(
+                "success" => true,
+                "message" => "Successfully added post to folder"
+            )
+        )));
+        return $response
+            ->withStatus(201);
+    });
+
+    /**
+     * POST /folders/posts/delete
+     */
+    $app->post('/folders/posts/delete', function (Request $request, Response $response) use ($container) {
+        $body = $request->getParsedBody();
+
+        if (empty($body)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Cannot process empty body",
+                "result" => "{}"
+            )));
+            return $response->withStatus(400, "Cannot process empty body");
+        }
+
+        $missingProperties = array();
+        if (!array_key_exists("folderId", $body)) { array_push($missingProperties, "folderId"); }
+        if (!array_key_exists("postId", $body)) { array_push($missingProperties, "postId"); }
+        
+        if (!empty($missingProperties)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Missing the following properties: " . implode(", ", $missingProperties),
+                "result" => "{}"
+            )));
+            
+            return $response
+                ->withStatus(400, "Missing the following properties: " . implode(", ", $missingProperties));
+        }
+
+        $data = $container->get('cloudsql')->deletePostFromFolder($body["folderId"], $body["postId"]);
+
+        $response->getBody()->write(json_encode(array(
+            "code" => 201,
+            "message" => "Added deleted to folder",
+            "result" => array(
+                "success" => true,
+                "message" => "Successfully deleted post to folder"
+            )
+        )));
+        return $response
+            ->withStatus(201);
+    });
+
+// -----[ Posts-Folders | End ]-----
+
+// -----[ Users-Folders | Start ]-----
+
+    /**
+     * GET /folders/users/{id}
+     */
+    $app->get('/folders/users/{id}', function (Request $request, Response $response, $args) use ($container) {
+        $missingProperties = array();
+        if (!array_key_exists("id", $args)) { array_push($missingProperties, "id"); }
+        
+        if (!empty($missingProperties)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Missing the following properties: " . implode(", ", $missingProperties),
+                "result" => "{}"
+            )));
+            
+            return $response
+                ->withStatus(400, "Missing the following properties: " . implode(", ", $missingProperties));
+        }
+        
+        $data = $container->get('cloudsql')->getUsersInFolder($args["id"]);
+
+        $response->getBody()->write(json_encode(array(
+            "code" => 200,
+            "message" => "Successfully retreived all users in folder",
+            "result" => $data
+        )));
+        return $response
+            ->withStatus(200, "Successfully retreived all users in folders");
+    });
+
+    /**
+     * POST /folders/users/add
+     */
+    $app->post('/folders/users/add', function (Request $request, Response $response) use ($container) {
+        $body = $request->getParsedBody();
+
+        if (empty($body)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Cannot process empty body",
+                "result" => "{}"
+            )));
+            return $response->withStatus(400, "Cannot process empty body");
+        }
+
+        $missingProperties = array();
+        if (!array_key_exists("folderId", $body)) { array_push($missingProperties, "folderId"); }
+        if (!array_key_exists("userId", $body)) { array_push($missingProperties, "userId"); }
+        if (!array_key_exists("access", $body)) { array_push($missingProperties, "access"); }
+        
+        if (!empty($missingProperties)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Missing the following properties: " . implode(", ", $missingProperties),
+                "result" => "{}"
+            )));
+            
+            return $response
+                ->withStatus(400, "Missing the following properties: " . implode(", ", $missingProperties));
+        }
+
+        $data = $container->get('cloudsql')->addUserToFolder($body["folderId"], $body["userId"], $body["access"]);
+
+        $response->getBody()->write(json_encode(array(
+            "code" => 201,
+            "message" => "Added user to folder",
+            "result" => array(
+                "success" => true,
+                "message" => "Successfully added user to folder"
+            )
+        )));
+        return $response
+            ->withStatus(201);
+    });
+
+    /**
+     * POST /folders/users/update
+     */
+    $app->post('/folders/users/update', function (Request $request, Response $response) use ($container) {
+        $body = $request->getParsedBody();
+
+        if (empty($body)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Cannot process empty body",
+                "result" => "{}"
+            )));
+            return $response->withStatus(400, "Cannot process empty body");
+        }
+
+        $missingProperties = array();
+        if (!array_key_exists("folderId", $body)) { array_push($missingProperties, "folderId"); }
+        if (!array_key_exists("userId", $body)) { array_push($missingProperties, "userId"); }
+        if (!array_key_exists("access", $body)) { array_push($missingProperties, "access"); }
+        
+        if (!empty($missingProperties)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Missing the following properties: " . implode(", ", $missingProperties),
+                "result" => "{}"
+            )));
+            
+            return $response
+                ->withStatus(400, "Missing the following properties: " . implode(", ", $missingProperties));
+        }
+
+        $data = $container->get('cloudsql')->updateUserInFolder($body["folderId"], $body["userId"], $body["access"]);
+
+        $response->getBody()->write(json_encode(array(
+            "code" => 201,
+            "message" => "Updated user in folder",
+            "result" => array(
+                "success" => true,
+                "message" => "Successfully updated user in folder"
+            )
+        )));
+        return $response
+            ->withStatus(201);
+    });
+
+    /**
+     * POST /folders/users/delete
+     */
+    $app->post('/folders/users/delete', function (Request $request, Response $response) use ($container) {
+        $body = $request->getParsedBody();
+
+        if (empty($body)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Cannot process empty body",
+                "result" => "{}"
+            )));
+            return $response->withStatus(400, "Cannot process empty body");
+        }
+
+        $missingProperties = array();
+        if (!array_key_exists("folderId", $body)) { array_push($missingProperties, "folderId"); }
+        if (!array_key_exists("userId", $body)) { array_push($missingProperties, "userId"); }
+        
+        if (!empty($missingProperties)) {
+            $response->getBody()->write(json_encode(array(
+                "code" => 400,
+                "message" => "Missing the following properties: " . implode(", ", $missingProperties),
+                "result" => "{}"
+            )));
+            
+            return $response
+                ->withStatus(400, "Missing the following properties: " . implode(", ", $missingProperties));
+        }
+
+        $data = $container->get('cloudsql')->deleteUserFromFolder($body["folderId"], $body["userId"]);
+
+        $response->getBody()->write(json_encode(array(
+            "code" => 201,
+            "message" => "Added deleted user from folder",
+            "result" => array(
+                "success" => true,
+                "message" => "Successfully deleted user from folder"
+            )
+        )));
+        return $response
+            ->withStatus(201);
+    });
+
+// -----[ Users-Folders | End ]-----
+
 
 
 

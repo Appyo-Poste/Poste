@@ -4,6 +4,8 @@ import com.example.poste.api.exceptions.EmailAlreadyUsedException;
 import com.example.poste.api.exceptions.IncompleteRequestException;
 import com.example.poste.api.exceptions.MalformedResponseException;
 import com.example.poste.api.exceptions.NoUserFoundException;
+import com.example.poste.api.models.Folder;
+import com.example.poste.api.models.FolderAccess;
 import com.example.poste.api.models.Post;
 import com.example.poste.api.models.User;
 
@@ -15,6 +17,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import okhttp3.MediaType;
@@ -239,6 +244,221 @@ public class API {
         catch (IOException e) { throw new IncompleteRequestException(); }
     }
 
+    public static ArrayList<Folder> getAllFolders() throws MalformedResponseException, IncompleteRequestException{
+        ArrayList<Folder> folders = new ArrayList<>();
+
+        try (Response response = endpointFolders()) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONArray responseJson = new JSONObject(response.body().string()).getJSONArray("result");
+
+            for (int i = 0; i < responseJson.length(); i++)
+            {
+                try {
+                    JSONObject obj = responseJson.getJSONObject(i);
+
+                    int id = obj.getInt("id");
+                    String name = obj.getString("name");
+                    int ownerId = obj.getInt("ownerId");
+
+
+                    folders.add(new Folder(id, name, ownerId, getPostsForFolderId(id), getAccessForFolderId(id)));
+
+                } catch (JSONException e) { throw new MalformedResponseException(); }
+            }
+        } catch (JSONException e) { throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+
+        return folders;
+    }
+
+    public static Folder getFolderById(int _id) throws MalformedResponseException, IncompleteRequestException{
+        try (Response response = endpointFoldersId(_id)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+
+            int id = responseJson.getInt("id");
+            String name = responseJson.getString("name");
+            int ownerId = responseJson.getInt("ownerId");
+
+
+            return new Folder(id, name, ownerId, getPostsForFolderId(_id), getAccessForFolderId(_id));
+        } catch (JSONException e) { throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+    }
+
+    public static ArrayList<Folder> getFoldersForUserId(int id) throws MalformedResponseException, IncompleteRequestException {
+        ArrayList<Folder> folders = new ArrayList<>();
+
+        try (Response response = endpointFoldersUser(id)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONArray responseJson = new JSONObject(response.body().string()).getJSONArray("result");
+
+            for (int i = 0; i < responseJson.length(); i++)
+            {
+                try {
+                    JSONObject obj = responseJson.getJSONObject(i);
+
+                    int folderId = obj.getInt("id");
+                    String name = obj.getString("name");
+                    int ownerId = obj.getInt("ownerId");
+
+                    folders.add(new Folder(folderId, name, ownerId, getPostsForFolderId(folderId), getAccessForFolderId(folderId)));
+                } catch (JSONException e) { throw new MalformedResponseException(); }
+            }
+        } catch (JSONException e) { throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+
+        return folders;
+    }
+
+    // TODO: Implement body
+    public static ArrayList<Post> getPostsForFolderId(int id) throws MalformedResponseException, IncompleteRequestException {
+        ArrayList<Post> posts = new ArrayList<>();
+
+        try (Response response = endpointFoldersPosts(id)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONArray responseJson = new JSONObject(response.body().string()).getJSONArray("result");
+
+            for (int i = 0; i < responseJson.length(); i++)
+            {
+                try {
+                    JSONObject obj = responseJson.getJSONObject(i);
+
+                    int postId = obj.getInt("id");
+                    String name = obj.getString("name");
+                    String link = obj.getString("link");
+                    int ownerId = obj.getInt("ownerId");
+
+                    posts.add(new Post(postId, name, link, ownerId));
+                } catch (JSONException e) { throw new MalformedResponseException(); }
+            }
+        } catch (JSONException e) { throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+
+        return posts;
+    }
+
+    // TODO: Implement body
+    public static HashMap<Integer, FolderAccess> getAccessForFolderId(int id) throws MalformedResponseException, IncompleteRequestException {
+        HashMap<Integer, FolderAccess> access = new HashMap<>();
+
+        try (Response response = endpointFoldersPosts(id)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONArray responseJson = new JSONObject(response.body().string()).getJSONArray("result");
+
+            for (int i = 0; i < responseJson.length(); i++)
+            {
+                try {
+                    JSONObject obj = responseJson.getJSONObject(i);
+
+                    int userId = obj.getInt("userId");
+                    int _access = obj.getInt("access");
+
+                    access.put(userId, FolderAccess.valueOf(_access));
+                } catch (JSONException e) { throw new MalformedResponseException(); }
+            }
+        } catch (JSONException e) { throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+
+        return access;
+    }
+
+    public static boolean addFolder(String name, int ownerId) throws MalformedResponseException, IncompleteRequestException {
+        try (Response response = endpointFoldersAdd(name, ownerId)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+
+            return responseJson.getBoolean("success");
+        } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+    }
+
+    public static boolean updateFolder(int folderId, String name, int ownerId) throws MalformedResponseException, IncompleteRequestException {
+        try (Response response = endpointFoldersUpdate(folderId, name, ownerId)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+
+            return responseJson.getBoolean("success");
+        } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+    }
+
+    public static boolean deleteFolder(int folderId) throws MalformedResponseException, IncompleteRequestException {
+        ArrayList<Post> posts = getPostsForFolderId(folderId);
+        HashMap<Integer, FolderAccess> users = getAccessForFolderId(folderId);
+
+        for (int i = 0; i < posts.size(); i++) {
+            Post _post = posts.get(i);
+
+            try (Response response = endpointFoldersPostsDelete(folderId, _post.getId())) {
+                if (response.body() == null) { throw new MalformedResponseException(); }
+            } catch (IOException e) { throw new IncompleteRequestException(); }
+        }
+
+        for (Map.Entry<Integer, FolderAccess> set : users.entrySet()) {
+            try (Response response = endpointFoldersUsersDelete(folderId, set.getKey())) {
+                if (response.body() == null) { throw new MalformedResponseException(); }
+            } catch (IOException e) { throw new IncompleteRequestException(); }
+        }
+
+        try (Response response = endpointFoldersDelete(folderId)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+
+            return responseJson.getBoolean("success");
+        } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+    }
+
+    public static boolean addPostToFolder(int postId, int folderId) throws MalformedResponseException, IncompleteRequestException{
+        try (Response response = endpointFoldersPostsAdd(folderId, postId)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+
+            return responseJson.getBoolean("success");
+        } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+    }
+
+    public static boolean removePostFromFolder(int postId, int folderId) throws MalformedResponseException, IncompleteRequestException{
+        try (Response response = endpointFoldersPostsDelete(folderId, postId)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+
+            return responseJson.getBoolean("success");
+        } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+    }
+
+    public static boolean addUserToFolder(int userId, int folderId, FolderAccess access) throws MalformedResponseException, IncompleteRequestException {
+        try (Response response = endpointFoldersUsersAdd(userId, folderId, access)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+            return responseJson.getBoolean("success");
+        } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+    }
+
+    // TODO: Implement body
+    public static boolean updateUserAccessToFolder(int userId, int folderId, FolderAccess access) throws MalformedResponseException, IncompleteRequestException {
+        try (Response response = endpointFoldersUsersUpdate(userId, folderId, access)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+            return responseJson.getBoolean("success");
+        } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+    }
+
+    public static boolean removeUserFromFolder(int userId, int folderId) throws MalformedResponseException, IncompleteRequestException{
+
+        try (Response response = endpointFoldersUsersDelete(userId, folderId)) {
+            if (response.body() == null) { throw new MalformedResponseException(); }
+            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+
+            return responseJson.getBoolean("success");
+        } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
+        catch (IOException e) { throw new IncompleteRequestException(); }
+    }
 
 
 
@@ -395,4 +615,168 @@ public class API {
 
         return client.newCall(request).execute();
     }
+
+    private static Response endpointFolders() throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/folders")))
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private static Response endpointFoldersId(int id) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL(String.format("/folders/id/%d", id))))
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private static Response endpointFoldersUser(int id) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL(String.format("/folders/user/%d", id))))
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private static Response endpointFoldersPosts(int id) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL(String.format("/folders/posts/%d", id))))
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private static Response endpointFoldersUsers(int id) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL(String.format("/folders/users/%d", id))))
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private static Response endpointFoldersAdd(String name, int ownerId) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, String.format("name=%s&ownerId=%d", name, ownerId));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/folders/add")))
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private static Response endpointFoldersUpdate(int id, String name, int ownerId) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, String.format("id=%s&name=%s&ownerId=%d", id, name, ownerId));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/folders/update")))
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private static Response endpointFoldersDelete(int id) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, String.format("id=%d", id));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/folders/delete")))
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private static Response endpointFoldersPostsAdd(int folderId, int postId) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&postId=%d", folderId, postId));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/folders/posts/add")))
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private static Response endpointFoldersPostsDelete(int folderId, int postId) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&postId=%d", folderId, postId));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/folders/posts/delete")))
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private static Response endpointFoldersUsersAdd(int folderId, int postId, FolderAccess access) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&postId=%d&access=%d", folderId, postId, access.getValue()));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/folders/users/add")))
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    private static Response endpointFoldersUsersUpdate(int folderId, int postId, FolderAccess access) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&postId=%d&access=%d", folderId, postId, access.getValue()));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/folders/users/update")))
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
+
+        return client.newCall(request).execute();
+
+    }
+
+    private static Response endpointFoldersUsersDelete(int folderId, int postId) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&postId=%d", folderId, postId));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/folders/users/delete")))
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
+
+        return client.newCall(request).execute();
+    }
 }
+
