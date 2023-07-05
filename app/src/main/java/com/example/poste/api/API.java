@@ -311,7 +311,6 @@ public class API {
         return folders;
     }
 
-    // TODO: Implement body
     public static ArrayList<Post> getPostsForFolderId(int id) throws MalformedResponseException, IncompleteRequestException {
         ArrayList<Post> posts = new ArrayList<>();
 
@@ -338,7 +337,6 @@ public class API {
         return posts;
     }
 
-    // TODO: Implement body
     public static HashMap<Integer, FolderAccess> getAccessForFolderId(int id) throws MalformedResponseException, IncompleteRequestException {
         HashMap<Integer, FolderAccess> access = new HashMap<>();
 
