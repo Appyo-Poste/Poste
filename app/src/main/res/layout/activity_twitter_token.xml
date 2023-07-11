@@ -5,7 +5,7 @@
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TwitterTokenActivity" >
+    tools:context=".activities.TwitterTokenActivity" >
 
     <Button
         android:id="@+id/twitter_token_api_call_btn"
