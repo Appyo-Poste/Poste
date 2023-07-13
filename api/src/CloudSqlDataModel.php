@@ -541,7 +541,7 @@ class CloudSqlDataModel
         public function deleteFolder($id) 
         {
             $pdo = $this->pdo;
-            $query = 'DELETE FROM folder WHERE id=:id';
+            $query = 'DELETE FROM folders WHERE id=:id';
             
             $statement = $pdo->prepare($query);
             $statement->bindValue(':id', intval($id), PDO::PARAM_INT);
