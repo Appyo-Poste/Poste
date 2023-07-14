@@ -464,15 +464,40 @@ class CloudSqlDataModel
         public function getFoldersForUserId($ownerId) 
         {
             $pdo = $this->pdo;
-            $query = 'SELECT * FROM folders WHERE ownerId = :ownerId';
+            // $query = 'SELECT * FROM folders WHERE ownerId = :ownerId';
+            
+            // $statement = $pdo->prepare($query);
+            // $statement->bindValue(':ownerId', intval($ownerId), PDO::PARAM_INT);
+            // $statement->execute();
+
+            // $result = array();
+            // while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            //     $access = $this->getUserAccessForFolder($row["id"], $ownerId);
+                
+            //     array_push($result, array(
+            //         "id" => $row["id"],
+            //         "name" => $row["name"],
+            //         "ownerId" => $row["ownerId"],
+            //         "access" => $access
+            //     ));
+            // }
+
+            $query = 'SELECT * FROM users_folders WHERE userId = :userId';
             
             $statement = $pdo->prepare($query);
-            $statement->bindValue(':ownerId', intval($ownerId), PDO::PARAM_INT);
+            $statement->bindValue(':userId', intval($ownerId), PDO::PARAM_INT);
             $statement->execute();
 
             $result = array();
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-                array_push($result, $row);
+                $folder = $this->getFolderById($row["folderId"]);
+                
+                array_push($result, array(
+                    "id" => $folder["id"],
+                    "name" => $folder["name"],
+                    "ownerId" => $folder["ownerId"],
+                    "access" => $row["access"]
+                ));
             }
 
             return $result;
@@ -516,7 +541,7 @@ class CloudSqlDataModel
         public function deleteFolder($id) 
         {
             $pdo = $this->pdo;
-            $query = 'DELETE FROM folder WHERE id=:id';
+            $query = 'DELETE FROM folders WHERE id=:id';
             
             $statement = $pdo->prepare($query);
             $statement->bindValue(':id', intval($id), PDO::PARAM_INT);
@@ -541,7 +566,7 @@ class CloudSqlDataModel
 
             $postIds = array();
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-                array_push($postIds, $row);
+                array_push($postIds, $row["postId"]);
             }
 
             return $this->getArrayOfPosts($postIds);
@@ -582,6 +607,20 @@ class CloudSqlDataModel
     // -----[ Posts-Folders | End ]-----
 
     // -----[ Users-Folders | Start ]-----
+        private function getUserAccessForFolder($folderId, $userId) 
+        {
+            $pdo = $this->pdo;
+            $query = 'SELECT access FROM users_folders WHERE folderId = :folderId and userId = :userId';
+            
+            $statement = $pdo->prepare($query);
+            $statement->bindValue(':folderId', intval($folderId), PDO::PARAM_INT);
+            $statement->bindValue(':userId', intval($userId), PDO::PARAM_INT);
+            $statement->execute();
+            $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+            return $result["access"];
+        }
+
         /**
          * /folders/users/{id} endpoint 
          */

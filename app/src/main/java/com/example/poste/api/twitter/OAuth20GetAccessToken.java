@@ -2,14 +2,9 @@ package com.example.poste.api.twitter;
 
 import android.app.Application;
 
-import com.example.PosteApplication;
+import com.example.poste.PosteApplication;
 import com.example.poste.BuildConfig;
-import com.example.poste.api.API;
-import com.example.poste.database.AppRepository;
-import com.example.poste.database.entity.ItemFolder;
-import com.example.poste.database.entity.PosteItem;
-import com.example.poste.database.entity.TwitterToken;
-import com.example.poste.database.entity.UserFolder;
+import com.example.poste.api.poste.API;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.pkce.PKCE;
 import com.github.scribejava.core.pkce.PKCECodeChallengeMethod;
@@ -45,31 +40,32 @@ public class OAuth20GetAccessToken {
 
     public static String apiCall(Application app) {
 
-        AppRepository appRepository = new AppRepository(app);
-        TwitterToken twitterToken = appRepository.getTwitterToken();
+//        AppRepository appRepository = new AppRepository(app);
+//        TwitterToken twitterToken = appRepository.getTwitterToken();
 
-        TwitterCredentialsOAuth2 credentials = new TwitterCredentialsOAuth2(BuildConfig.TWITTER_CLIENT_KEY,
-                BuildConfig.TWITTER_CLIENT_SECRET,
-                twitterToken.access_token,
-                twitterToken.refresh_token);
+//        TwitterCredentialsOAuth2 credentials = new TwitterCredentialsOAuth2(BuildConfig.TWITTER_CLIENT_KEY,
+//                BuildConfig.TWITTER_CLIENT_SECRET,
+//                twitterToken.access_token,
+//                twitterToken.refresh_token);
 
-        return callApi(credentials, app);
+//        return callApi(credentials, app);
+        return null;
     }
 
     public static List<Tweet> getTweets() {
 
-        AppRepository appRepository = new AppRepository(PosteApplication.getApp());
-        TwitterToken twitterToken = appRepository.getTwitterToken();
-
-        TwitterCredentialsOAuth2 credentials = new TwitterCredentialsOAuth2(BuildConfig.TWITTER_CLIENT_KEY,
-                BuildConfig.TWITTER_CLIENT_SECRET,
-                twitterToken.access_token,
-                twitterToken.refresh_token);
-
-        TwitterApi apiInstance = new TwitterApi(credentials);
+//        AppRepository appRepository = new AppRepository(PosteApplication.getApp());
+//        TwitterToken twitterToken = appRepository.getTwitterToken();
+//
+//        TwitterCredentialsOAuth2 credentials = new TwitterCredentialsOAuth2(BuildConfig.TWITTER_CLIENT_KEY,
+//                BuildConfig.TWITTER_CLIENT_SECRET,
+//                twitterToken.access_token,
+//                twitterToken.refresh_token);
+//
+//        TwitterApi apiInstance = new TwitterApi(credentials);
 
         // Set the params values
-        String id = twitterToken.twitter_id; // String | The ID of the authenticated source User for whom to return results.
+//        String id = twitterToken.twitter_id; // String | The ID of the authenticated source User for whom to return results.
         Integer maxResults = 56; // Integer | The maximum number of results.
         //String paginationToken = "paginationToken_example"; // String | This parameter is used to get the next 'page' of results.
         String tweetFieldsString = "attachments, author_id, context_annotations, conversation_id, created_at, entities, edit_controls, geo, id, in_reply_to_user_id, lang, possibly_sensitive, referenced_tweets, reply_settings, source, text, withheld";
@@ -85,53 +81,53 @@ public class OAuth20GetAccessToken {
         Set<String> pollFields = new HashSet<>(Arrays.asList(pollFieldsString.split(", "))); // Set<String> | A comma separated list of Poll fields to display.
         Set<String> userFields = new HashSet<>(Arrays.asList(userFieldsString.split(", "))); // Set<String> | A comma separated list of User fields to display.
         Set<String> placeFields = new HashSet<>(Arrays.asList(placeFieldsString.split(", "))); // Set<String> | A comma separated list of Place fields to display.
-        try {
-            Get2UsersIdBookmarksResponse result = apiInstance.bookmarks().getUsersIdBookmarks(id)
-                    .tweetFields(tweetFields)
-                    .expansions(expansions)
-                    .mediaFields(mediaFields)
-                    .pollFields(pollFields)
-                    .userFields(userFields)
-                    .placeFields(placeFields)
-                    .execute();
-            System.out.println(result.getData());
-            List<Tweet> tweetList = result.getData();
-
-            List<Media> mediaList = result.getIncludes().getMedia();
-            HashMap<String, String> mediaHash = new HashMap<String, String>();
-            Photo mediaPhoto = null;
-            for (Media media: mediaList){
-                if(media.getType().equals("photo")) {
-                    mediaPhoto = (Photo) media;
-                    mediaHash.put(media.getMediaKey(), mediaPhoto.getUrl().toString());
-                }
-            }
-
-            for (Tweet tweet: tweetList
-                 ) {
-                PosteItem newTweet = new PosteItem();
-                newTweet.poste_item_id = tweet.getId();
-                newTweet.text = tweet.getText();
-                if(tweet.getAttachments() != null)
-                    newTweet.media_key = tweet.getAttachments().getMediaKeys().get(0);
-                newTweet.media_url = mediaHash.get(newTweet.media_key);
-                appRepository.insertPosteItem(newTweet);
-                ItemFolder itemFolder = new ItemFolder();
-                itemFolder.folder_id = appRepository.getTwitterToken().twitter_folder_id;
-                itemFolder.poste_item_id = newTweet.poste_item_id;
-                appRepository.insertItemFolder(itemFolder);
-            }
-
-            return result.getData();
-        } catch (ApiException e) {
-            System.err.println("Exception when calling BookmarksApi#getUsersIdBookmarks");
-            System.err.println("Status code: " + e.getCode());
-            System.err.println("Reason: " + e.getResponseBody());
-            System.err.println("Response headers: " + e.getResponseHeaders());
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Get2UsersIdBookmarksResponse result = apiInstance.bookmarks().getUsersIdBookmarks(id)
+//                    .tweetFields(tweetFields)
+//                    .expansions(expansions)
+//                    .mediaFields(mediaFields)
+//                    .pollFields(pollFields)
+//                    .userFields(userFields)
+//                    .placeFields(placeFields)
+//                    .execute();
+//            System.out.println(result.getData());
+//            List<Tweet> tweetList = result.getData();
+//
+//            List<Media> mediaList = result.getIncludes().getMedia();
+//            HashMap<String, String> mediaHash = new HashMap<String, String>();
+//            Photo mediaPhoto = null;
+//            for (Media media: mediaList){
+//                if(media.getType().equals("photo")) {
+//                    mediaPhoto = (Photo) media;
+//                    mediaHash.put(media.getMediaKey(), mediaPhoto.getUrl().toString());
+//                }
+//            }
+//
+//            for (Tweet tweet: tweetList
+//                 ) {
+//                PosteItem newTweet = new PosteItem();
+//                newTweet.poste_item_id = tweet.getId();
+//                newTweet.text = tweet.getText();
+//                if(tweet.getAttachments() != null)
+//                    newTweet.media_key = tweet.getAttachments().getMediaKeys().get(0);
+//                newTweet.media_url = mediaHash.get(newTweet.media_key);
+//                appRepository.insertPosteItem(newTweet);
+//                ItemFolder itemFolder = new ItemFolder();
+//                itemFolder.folder_id = appRepository.getTwitterToken().twitter_folder_id;
+//                itemFolder.poste_item_id = newTweet.poste_item_id;
+//                appRepository.insertItemFolder(itemFolder);
+//            }
+//
+//            return result.getData();
+//        } catch (ApiException e) {
+//            System.err.println("Exception when calling BookmarksApi#getUsersIdBookmarks");
+//            System.err.println("Status code: " + e.getCode());
+//            System.err.println("Reason: " + e.getResponseBody());
+//            System.err.println("Response headers: " + e.getResponseHeaders());
+//            e.printStackTrace();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         return null;
     }
 
