@@ -566,7 +566,7 @@ class CloudSqlDataModel
 
             $postIds = array();
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-                array_push($postIds, $row);
+                array_push($postIds, $row["postId"]);
             }
 
             return $this->getArrayOfPosts($postIds);

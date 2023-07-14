@@ -45,7 +45,24 @@ public class FolderViewActivity extends AppCompatActivity {
         // Get current folder
         int currentFolderId = getIntent().getIntExtra("folderId", -1);
         try {
-            API.getFolderById(currentFolderId);
+            currentFolder = API.getFolderById(currentFolderId);
+
+            // Set PostAdapter as the adapter for RecyclerView.
+            postAdapter = new PostAdapter(
+                    new PostAdapter.ClickListener() {
+                        @Override
+                        public void onItemClick(int position, Post model) {
+//                            Toast.makeText(FolderViewActivity.this, "Share this folder", Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onItemLongClick(int position, Post model) {
+//                            Toast.makeText(FolderViewActivity.this, "Share this folder", Toast.LENGTH_LONG).show();
+                        }
+                    },
+                    currentFolder.getPosts()
+            );
+            postRecyclerView.setAdapter(postAdapter);
         } catch (APIException e) {
             throw new RuntimeException(e);
         }
@@ -54,57 +71,57 @@ public class FolderViewActivity extends AppCompatActivity {
         // new AsyncGetTweets().execute(folderId);
     }
 
-    private class AsyncGetTweets extends AsyncTask<String, String, String> {
-        ProgressDialog pdLoading = new ProgressDialog(FolderViewActivity.this);
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            //this method will be running on UI thread
-            pdLoading.setMessage("\tLoading...");
-            pdLoading.setCancelable(false);
-            pdLoading.show();
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                postAdapter = new PostAdapter(
-                    new PostAdapter.ClickListener() {
-                        @Override
-                        public void onItemClick(int position, Post model) {
-                            Toast.makeText(FolderViewActivity.this, "Share this folder", Toast.LENGTH_LONG).show();
-
-                        }
-
-                        @Override
-                        public void onItemLongClick(int position, Post model) {
-                            Toast.makeText(FolderViewActivity.this, "Share this folder", Toast.LENGTH_LONG).show();
-
-                        }
-                    },
-                    currentFolder.getPosts()
-                );
-                // Set PostAdapter as the adapter for RecyclerView.
-                runOnUiThread(() -> postRecyclerView.setAdapter(postAdapter));
-                return "Success";
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                return "exception";
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-
-            //this method will be running on UI thread
-
-            pdLoading.dismiss();
-
-        }
-    }
+//    private class AsyncGetTweets extends AsyncTask<String, String, String> {
+//        ProgressDialog pdLoading = new ProgressDialog(FolderViewActivity.this);
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//
+//            //this method will be running on UI thread
+//            pdLoading.setMessage("\tLoading...");
+//            pdLoading.setCancelable(false);
+//            pdLoading.show();
+//
+//        }
+//
+//        @Override
+//        protected String doInBackground(String... params) {
+//            try {
+//                postAdapter = new PostAdapter(
+//                    new PostAdapter.ClickListener() {
+//                        @Override
+//                        public void onItemClick(int position, Post model) {
+//                            Toast.makeText(FolderViewActivity.this, "Share this folder", Toast.LENGTH_LONG).show();
+//
+//                        }
+//
+//                        @Override
+//                        public void onItemLongClick(int position, Post model) {
+//                            Toast.makeText(FolderViewActivity.this, "Share this folder", Toast.LENGTH_LONG).show();
+//
+//                        }
+//                    },
+//                    currentFolder.getPosts()
+//                );
+//                // Set PostAdapter as the adapter for RecyclerView.
+//                runOnUiThread(() -> postRecyclerView.setAdapter(postAdapter));
+//                return "Success";
+//            } catch (Exception e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//                return "exception";
+//            }
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String result) {
+//
+//            //this method will be running on UI thread
+//
+//            pdLoading.dismiss();
+//
+//        }
+//    }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
