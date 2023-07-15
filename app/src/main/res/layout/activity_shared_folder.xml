@@ -45,12 +45,13 @@
         android:id="@+id/share_folder_email"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_marginBottom="52dp"
+        android:layout_marginBottom="20dp"
         android:ems="10"
         android:hint="Email"
         android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/share_folder_name"
+        app:layout_constraintBottom_toTopOf="@+id/spinner"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -92,5 +93,15 @@
             android:textColor="#B0BC2C2C" />
 
     </LinearLayout>
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="210dp"
+        android:layout_height="25dp"
+        android:layout_marginBottom="18dp"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/share_folder_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

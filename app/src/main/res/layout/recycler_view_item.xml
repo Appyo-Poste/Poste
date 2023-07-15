@@ -8,6 +8,8 @@
     tools:srcCompat="@drawable/folder_icon"
     >
 
+
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -19,12 +21,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
+
         <ImageView
             android:id="@+id/recycler_image_view"
             android:layout_width="match_parent"
             android:layout_height="198dp"
             android:maxHeight="400dp"
             android:scaleType="fitCenter" />
+
 
         <TextView
             android:id="@+id/recyclerTextView"
@@ -33,4 +38,6 @@
             android:text="TextView"
             android:textColor="@color/poste_icon_background" />
     </LinearLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

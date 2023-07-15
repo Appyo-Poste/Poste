@@ -40,4 +40,10 @@
     <string name="poste_logo_description">Poste Logo</string>
     <string name="title_activity_twitter_token">TwitterToken</string>
     <!--=====[ Misc | End ]=====-->
+
+    <string-array name="spinner_values">
+        <item>No Access</item>
+        <item>View Access</item>
+        <item>Manage Access</item>
+    </string-array>
 </resources>

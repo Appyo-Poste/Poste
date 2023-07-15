@@ -8,6 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,9 @@ public class Shared_Folder extends AppCompatActivity {
 
         TextView folderNameView = findViewById(R.id.share_folder_name);
         EditText emailView = findViewById(R.id.share_folder_email);
+
+        Spinner spinner = findViewById(R.id.spinner);
+        String selectedValue = spinner.getSelectedItem().toString();
 
         Intent intent = getIntent();
         folderNameView.setText(intent.getStringExtra("folderName"));
