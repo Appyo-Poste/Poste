@@ -29,10 +29,30 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/* *******JAVA API CLASS*******
+
+Documentation by Jacob Paulin and Michael Khmourovitch.
+
+For all intents and purposes this is the most important Java class in this project.
+
+As the name implies, this class is responsible for performing HTTP requests to the Poste URL,
+which is essentially the backbone of the entire application.
+
+Existing documentation for endpoints by Jacob Paulin is available on Github.
+
+*/
 public class API {
 
+    // This is the host URL for the API, will change as the app switches owners.
     private static final String HOST_URL = "https://poste-388415.uc.r.appspot.com/";
 
+    /**
+     * Constructor for the URL object, uses the host URL and attaches the given endpoint.
+     *
+     * @param endpoint that gets appended to the URL string.
+     * @return URL Object that is properly formatted if successful.
+     *         If a MalformedURLException occurs, return null instead of a broken link.
+     */
     public static URL URL(String endpoint) {
         try {
             return new URL(String.join("", HOST_URL, endpoint));
@@ -42,6 +62,13 @@ public class API {
         }
     }
 
+    /**
+     * Executes a given HTTP request. Takes in a request object, and returns a response.
+     *
+     * @param request HTTP Request object
+     * @return response object for the given request.
+     *         Returns null by default if an exception occurs.
+     */
     private static final Response performHttpRequest(Request request) {
         Response result = null;
         HTTPRequest httpRequest = new HTTPRequest();
