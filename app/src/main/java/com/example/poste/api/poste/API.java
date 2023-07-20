@@ -683,9 +683,9 @@ public class API {
                 .build());
     }
 
-    private static Response endpointFoldersUsersAdd(int folderId, int postId, FolderAccess access) throws IOException {
+    private static Response endpointFoldersUsersAdd(int folderId, int userId, FolderAccess access) throws IOException {
         MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&postId=%d&access=%d", folderId, postId, access.getValue()));
+        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&userId=%d&access=%d", folderId, userId, access.getValue()));
         return performHttpRequest(new Request.Builder()
                 .url(Objects.requireNonNull(URL("/folders/users/add")))
                 .method("POST", body)
@@ -693,9 +693,9 @@ public class API {
                 .build());
     }
 
-    private static Response endpointFoldersUsersUpdate(int folderId, int postId, FolderAccess access) throws IOException {
+    private static Response endpointFoldersUsersUpdate(int folderId, int userId, FolderAccess access) throws IOException {
         MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&postId=%d&access=%d", folderId, postId, access.getValue()));
+        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&userId=%d&access=%d", folderId, userId, access.getValue()));
         return performHttpRequest(new Request.Builder()
                 .url(Objects.requireNonNull(URL("/folders/users/update")))
                 .method("POST", body)
@@ -703,9 +703,9 @@ public class API {
                 .build());
     }
 
-    private static Response endpointFoldersUsersDelete(int folderId, int postId) throws IOException {
+    private static Response endpointFoldersUsersDelete(int folderId, int userId) throws IOException {
         MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&postId=%d", folderId, postId));
+        RequestBody body = RequestBody.create(mediaType, String.format("folderId=%d&userId=%d", folderId, userId));
         return performHttpRequest(new Request.Builder()
                 .url(Objects.requireNonNull(URL("/folders/users/delete")))
                 .method("POST", body)

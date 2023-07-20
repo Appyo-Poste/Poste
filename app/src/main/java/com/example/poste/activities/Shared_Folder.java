@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -19,7 +20,10 @@ import com.example.poste.api.poste.exceptions.APIException;
 import com.example.poste.api.poste.exceptions.IncompleteRequestException;
 import com.example.poste.api.poste.exceptions.MalformedResponseException;
 import com.example.poste.api.poste.models.Folder;
+import com.example.poste.api.poste.models.FolderAccess;
 import com.example.poste.api.poste.models.User;
+
+import java.util.HashMap;
 
 public class Shared_Folder extends AppCompatActivity {
     @Override
@@ -33,8 +37,10 @@ public class Shared_Folder extends AppCompatActivity {
         TextView folderNameView = findViewById(R.id.share_folder_name);
         EditText emailView = findViewById(R.id.share_folder_email);
 
-        Spinner spinner = findViewById(R.id.spinner);
-        String selectedValue = spinner.getSelectedItem().toString();
+        Spinner spinner = findViewById(R.id.share_folder_spinner);
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.spinner_values, android.R.layout.simple_spinner_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
 
         Intent intent = getIntent();
         folderNameView.setText(intent.getStringExtra("folderName"));
@@ -45,37 +51,36 @@ public class Shared_Folder extends AppCompatActivity {
         Button cancelBtn = findViewById(R.id.share_folder_cancel_btn);
 
         saveBtn.setOnClickListener(view -> {
-            try {
-                API.getFolderById(folderId);
-            } catch (APIException e) {
-                throw new RuntimeException(e);
-            }
-
-
-//            Folder folder = new Folder();
-//            folder.folder_id = folderId;
-//            folder.folder_name = folderName;
-//            folder.shared = true;
             Intent newIntent = new Intent(Shared_Folder.this, DashboardActivity.class);
-//            AppRepository appRepository = new AppRepository(PosteApplication.getApp());
-//            appRepository.updateFolder(folder);
-//            UserFolder userFolder = new UserFolder();
-            String username = emailView.getText().toString();
-//            userFolder.email = username;
-//            userFolder.folder_id = String.valueOf(folderId);
+            String selectedAccessValue = spinner.getSelectedItem().toString();
             try {
-                User user = API.getUserByEmail(username);
-                if(user != null) {
-//                    appRepository.insertUserFolder(userFolder);
-//                    appRepository.updateFolder(folder);
+                Folder targetFolder = API.getFolderById(folderId);
+                User targetUser = API.getUserByEmail(emailView.getText().toString());
+                FolderAccess selectedAccess = null;
+                switch (selectedAccessValue) {
+                    case "View Access": selectedAccess = FolderAccess.VIEW; break;
+                    case "Manage Access": selectedAccess = FolderAccess.MANAGE; break;
+                    default: selectedAccess = FolderAccess.NONE; break;
+                }
+
+                HashMap<Folder, FolderAccess> targetUserFolders = API.getFoldersForUserId(targetUser.getId());
+
+                boolean result = false;
+                if (targetUserFolders.keySet().contains(targetFolder)) {
+                    result = API.updateUserAccessToFolder(targetUser.getId(), targetFolder.getId(), selectedAccess);
+                } else {
+                    result = API.updateUserAccessToFolder(targetUser.getId(), targetFolder.getId(), selectedAccess);
+                }
+
+                if (result) {
+                    Toast.makeText(this, R.string.shared_folder_share_success, Toast.LENGTH_LONG).show();
                     startActivity(newIntent);
                     finish();
-                }else{
-                    Toast.makeText(this, "User does not exist", Toast.LENGTH_LONG).show();
                 }
-            }catch(Exception e){
+
+            } catch (APIException e) {
                 e.printStackTrace();
-                Toast.makeText(this, "Unsuccessful", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.internal_error, Toast.LENGTH_LONG).show();
             }
         });
 
