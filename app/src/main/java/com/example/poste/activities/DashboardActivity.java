@@ -79,6 +79,27 @@ public class DashboardActivity extends PActivity {
                 showCreateItemDialog();
             }
         });
+
+        // Fill folder view (Recycler View)
+        folderRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+        folderAdapter = new FolderAdapter(
+                new FolderAdapter.ClickListener() {
+                    @Override
+                    public void onItemClick(int position, Folder model) {
+                        Intent intent = new Intent(DashboardActivity.this, FolderViewActivity.class );
+                        intent.putExtra("folderId", model.getId());
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onItemLongClick(int position, Folder model) {
+                        Toast.makeText(DashboardActivity.this, getString(R.string.share_folder), Toast.LENGTH_LONG).show();
+                    }
+                },
+                new ArrayList<>(userFolders.keySet())
+        );
+        folderRecyclerView.setAdapter(folderAdapter);
+        registerForContextMenu(folderRecyclerView);
     }
 
     private void showCreateItemDialog() {
@@ -139,29 +160,6 @@ public class DashboardActivity extends PActivity {
         // Show the AlertDialog
         AlertDialog dialog = builder.create();
         dialog.show();
-    }
-
-    {
-        // Fill folder view (Recycler View)
-        folderRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-        folderAdapter = new FolderAdapter(
-                new FolderAdapter.ClickListener() {
-                    @Override
-                    public void onItemClick(int position, Folder model) {
-                        Intent intent = new Intent(DashboardActivity.this, FolderViewActivity.class );
-                        intent.putExtra("folderId", model.getId());
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onItemLongClick(int position, Folder model) {
-                        Toast.makeText(DashboardActivity.this, getString(R.string.share_folder), Toast.LENGTH_LONG).show();
-                    }
-                },
-                new ArrayList<>(userFolders.keySet())
-                );
-        folderRecyclerView.setAdapter(folderAdapter);
-        registerForContextMenu(folderRecyclerView);
     }
 
     // menu item select listener
