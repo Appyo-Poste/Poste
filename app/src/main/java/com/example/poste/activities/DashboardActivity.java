@@ -1,17 +1,21 @@
 package com.example.poste.activities;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,7 +57,7 @@ public class DashboardActivity extends PActivity {
         currentUser = PosteApplication.getCurrentUser();
         optionsView = findViewById(R.id.Optionsbtn);
         folderRecyclerView = findViewById(R.id.folder_recycler_view);
-        Button buttonAddFolder = findViewById(R.id.dashboard_add_folder_btn);
+        Button addButton = findViewById(R.id.dashboard_add_folder_btn);
         try {
             userFolders = API.getFoldersForUserId(currentUser.getId());
         } catch (APIException e) {
@@ -66,35 +70,78 @@ public class DashboardActivity extends PActivity {
             startActivity(intent);
         });
 
+
         // Add folder button
-        buttonAddFolder.setOnClickListener(view -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(getString(R.string.new_folder));
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show the create item dialog
+                showCreateItemDialog();
+            }
+        });
+    }
 
-            // Set up the input
-            final EditText input = new EditText(this);
-            input.setInputType(InputType.TYPE_CLASS_TEXT);
-            builder.setView(input);
+    private void showCreateItemDialog() {
+        // Inflate the layout for the dialog
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.layout_dialog_create_post, null);
 
-            // Create button
-            builder.setPositiveButton(getString(R.string.create), (dialog, which) -> {
-                try {
-                    int newFolderId = API.addFolder(input.getText().toString(), currentUser.getId());
-                    API.addUserToFolder(currentUser.getId(), newFolderId, FolderAccess.OWNER);
+        // Find the RadioGroup and EditText fields in the dialog
+        RadioGroup radioGroupItemType = dialogView.findViewById(R.id.radioGroupItemType);
+        EditText editTextItemName = dialogView.findViewById(R.id.editTextItemName);
+        EditText editTextItemLink = dialogView.findViewById(R.id.editTextItemLink);
+        Button buttonCreateItem = dialogView.findViewById(R.id.buttonCreateItem);
 
-                    userFolders = API.getFoldersForUserId(currentUser.getId());
-                    folderAdapter.notifyItemInserted(userFolders.size() - 1);
-                } catch (APIException e) {
-                    throw new RuntimeException(e);
+        // Create the AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        builder.setTitle("Create Item");
+
+        // Set the positive button (Create button) click listener
+        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Get the selected item type (folder or post)
+                boolean isFolder = radioGroupItemType.getCheckedRadioButtonId() == R.id.radioButtonFolder;
+
+                // Get the item name and link from the EditText fields
+                String itemName = editTextItemName.getText().toString().trim();
+                String itemLink = editTextItemLink.getText().toString().trim();
+
+                if (isFolder) {
+                    // Handle folder creation logic
+                    try {
+                        int newFolderId = API.addFolder(itemName, currentUser.getId());
+                        API.addUserToFolder(currentUser.getId(), newFolderId, FolderAccess.OWNER);
+
+                        userFolders = API.getFoldersForUserId(currentUser.getId());
+                        folderAdapter.notifyItemInserted(userFolders.size() - 1);
+                    } catch (APIException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    // Handle post creation logic
+                    // For simplicity, let's just display a toast message with the post details
+                    Toast.makeText(DashboardActivity.this, "Post created:\nName: " + itemName + "\nLink: " + itemLink, Toast.LENGTH_LONG).show();
                 }
-            });
-
-            // Cancel button
-            builder.setNegativeButton(getString(R.string.cancel), (dialog, which) -> dialog.cancel());
-
-            builder.show();
+            }
         });
 
+        // Set the negative button (Cancel button) click listener
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Dismiss the dialog (do nothing)
+                dialog.dismiss();
+            }
+        });
+
+        // Show the AlertDialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    {
         // Fill folder view (Recycler View)
         folderRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         folderAdapter = new FolderAdapter(
@@ -158,3 +205,4 @@ public class DashboardActivity extends PActivity {
     }
 
 }
+

@@ -35,6 +35,7 @@
                     android:contentDescription="@string/poste_logo_description"
                     app:srcCompat="@drawable/poste_logo_inpixio" />
 
+
                 <Button
                     android:id="@+id/dashboard_add_folder_btn"
                     android:layout_width="36dp"
