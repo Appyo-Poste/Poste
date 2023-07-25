@@ -69,7 +69,7 @@ public class Shared_Folder extends AppCompatActivity {
                 if (targetUserFolders.keySet().contains(targetFolder)) {
                     result = API.updateUserAccessToFolder(targetUser.getId(), targetFolder.getId(), selectedAccess);
                 } else {
-                    result = API.updateUserAccessToFolder(targetUser.getId(), targetFolder.getId(), selectedAccess);
+                    result = API.addUserToFolder(targetUser.getId(), targetFolder.getId(), selectedAccess);
                 }
 
                 if (result) {

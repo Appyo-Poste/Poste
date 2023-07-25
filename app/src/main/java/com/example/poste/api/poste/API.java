@@ -471,7 +471,7 @@ public class API {
     }
 
     public static boolean addUserToFolder(int userId, int folderId, FolderAccess access) throws MalformedResponseException, IncompleteRequestException {
-        try (Response response = endpointFoldersUsersAdd(userId, folderId, access)) {
+        try (Response response = endpointFoldersUsersAdd(folderId, userId, access)) {
             if (response.body() == null) { throw new MalformedResponseException(); }
             JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
             return responseJson.getBoolean("success");
