@@ -15,7 +15,6 @@ import com.example.poste.R;
 import java.util.Objects;
 
 public class AccountActivity extends AppCompatActivity {
-    public Button buttonSave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,15 +26,13 @@ public class AccountActivity extends AppCompatActivity {
         setContentView(R.layout.activity_account);
 
         // Prep vars
-        buttonSave = (Button) findViewById(R.id.AccountSavebtn);
+        Button buttonSave = (Button) findViewById(R.id.AccountSavebtn);
 
         // Save account button
-        buttonSave.setOnClickListener(new View.OnClickListener() { //Creating the link to Login page
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(AccountActivity.this, Login.class);
-                startActivity(intent);
-            }
+        buttonSave.setOnClickListener(view -> {
+            // Send to login page
+            Intent intent = new Intent(AccountActivity.this, Login.class);
+            startActivity(intent);
         });
     }
 }

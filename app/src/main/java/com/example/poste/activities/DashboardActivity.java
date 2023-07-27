@@ -60,8 +60,9 @@ public class DashboardActivity extends PActivity {
             throw new RuntimeException(e);
         }
 
-        // Options button
+        // Options button click handler
         optionsView.setOnClickListener(view -> {
+            // Send to Options activity
             Intent intent = new Intent(DashboardActivity.this, OptionsActivity.class);
             startActivity(intent);
         });
@@ -101,6 +102,7 @@ public class DashboardActivity extends PActivity {
                 new FolderAdapter.ClickListener() {
                     @Override
                     public void onItemClick(int position, Folder model) {
+                        // Send to that folder's view
                         Intent intent = new Intent(DashboardActivity.this, FolderViewActivity.class );
                         intent.putExtra("folderId", model.getId());
                         startActivity(intent);
@@ -108,6 +110,7 @@ public class DashboardActivity extends PActivity {
 
                     @Override
                     public void onItemLongClick(int position, Folder model) {
+                        // Prompt to share folder
                         Toast.makeText(DashboardActivity.this, getString(R.string.share_folder), Toast.LENGTH_LONG).show();
                     }
                 },
@@ -148,6 +151,7 @@ public class DashboardActivity extends PActivity {
                         } catch (APIException e) { }
                     });
 
+                    // Delete the folder
                     API.deleteFolder(folder.getId());
                 } catch (APIException e) {
                     throw new RuntimeException(e);
