@@ -76,14 +76,6 @@
             android:inputType="textPersonName"
             android:textSize="24sp" />
 
-        <Switch
-            android:id="@+id/edit_folder_shared_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_marginBottom="24dp"
-            android:text="Shared"
-            android:textSize="24sp" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -103,6 +95,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="#B0BC2C2C"
+                android:textColor="@color/white"
                 android:text="@string/save"
                 style="?android:attr/buttonBarButtonStyle" />
         </LinearLayout>
