@@ -73,7 +73,7 @@
                 android:orientation="vertical"
                 tools:layoutManager="GridLayoutManager"
                 tools:listitem="@layout/folder_view_item"
-                tools:spanCount="4" />
+                tools:spanCount="3" />
 
         </LinearLayout>
     </ScrollView>
