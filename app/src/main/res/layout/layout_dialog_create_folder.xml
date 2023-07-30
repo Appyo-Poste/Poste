@@ -11,19 +11,9 @@
         android:id="@+id/editTextItemName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Item Name" />
+        android:hint="Folder Name" />
 
-    <EditText
-        android:id="@+id/editTextItemLink"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Item Link" />
 
-    <EditText
-        android:id="@+id/editTextItemFoldrToAdd"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Name of Folder" />
 
     <Button
         android:id="@+id/buttonCreateItem"
