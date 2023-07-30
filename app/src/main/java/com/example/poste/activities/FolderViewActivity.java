@@ -2,11 +2,14 @@ package com.example.poste.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +23,7 @@ import com.example.poste.api.poste.exceptions.APIException;
 import com.example.poste.api.poste.models.Folder;
 import com.example.poste.api.poste.models.Post;
 
+import java.net.URL;
 import java.util.Objects;
 
 public class FolderViewActivity extends AppCompatActivity {
@@ -38,6 +42,7 @@ public class FolderViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_folder_view);
 
         // Prep vars
+        TextView emptyText = findViewById(R.id.folderViewEmptyText);
         postRecyclerView = findViewById(R.id.posts_recycler_view);
         postRecyclerView.setLayoutManager(new LinearLayoutManager(FolderViewActivity.this));
         registerForContextMenu(postRecyclerView);
@@ -47,12 +52,24 @@ public class FolderViewActivity extends AppCompatActivity {
         try {
             currentFolder = API.getFolderById(currentFolderId);
 
+            // Remove empty text if posts exist in folder
+            if (currentFolder.getPosts().size() > 0) {
+                emptyText.setVisibility(View.GONE);
+            }
+
             // Set PostAdapter as the adapter for RecyclerView.
             postAdapter = new PostAdapter(
                     new PostAdapter.ClickListener() {
                         @Override
-                        public void onItemClick(int position, Post model) {
+                        public void onItemClick(int position, Post post) {
 //                            Toast.makeText(FolderViewActivity.this, "Share this folder", Toast.LENGTH_LONG).show();
+                            try {
+                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(post.getLink()));
+                                startActivity(browserIntent);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Toast.makeText(FolderViewActivity.this, R.string.internal_error, Toast.LENGTH_LONG).show();
+                            }
                         }
 
                         @Override
@@ -66,62 +83,7 @@ public class FolderViewActivity extends AppCompatActivity {
         } catch (APIException e) {
             throw new RuntimeException(e);
         }
-
-
-        // new AsyncGetTweets().execute(folderId);
     }
-
-//    private class AsyncGetTweets extends AsyncTask<String, String, String> {
-//        ProgressDialog pdLoading = new ProgressDialog(FolderViewActivity.this);
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//
-//            //this method will be running on UI thread
-//            pdLoading.setMessage("\tLoading...");
-//            pdLoading.setCancelable(false);
-//            pdLoading.show();
-//
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... params) {
-//            try {
-//                postAdapter = new PostAdapter(
-//                    new PostAdapter.ClickListener() {
-//                        @Override
-//                        public void onItemClick(int position, Post model) {
-//                            Toast.makeText(FolderViewActivity.this, "Share this folder", Toast.LENGTH_LONG).show();
-//
-//                        }
-//
-//                        @Override
-//                        public void onItemLongClick(int position, Post model) {
-//                            Toast.makeText(FolderViewActivity.this, "Share this folder", Toast.LENGTH_LONG).show();
-//
-//                        }
-//                    },
-//                    currentFolder.getPosts()
-//                );
-//                // Set PostAdapter as the adapter for RecyclerView.
-//                runOnUiThread(() -> postRecyclerView.setAdapter(postAdapter));
-//                return "Success";
-//            } catch (Exception e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//                return "exception";
-//            }
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//
-//            //this method will be running on UI thread
-//
-//            pdLoading.dismiss();
-//
-//        }
-//    }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -133,6 +95,21 @@ public class FolderViewActivity extends AppCompatActivity {
                 intent.putExtra("folderId", currentFolder.getId());
                 intent.putExtra("postId", post.getId());
                 startActivity(intent);
+                break;
+            case R.id.ctx_menu_delete_post:
+                try {
+                    // Remove post from folder
+                    API.removePostFromFolder(post.getId(), currentFolder.getId());
+
+                    // Delete post
+                    API.deletePost(post.getId());
+                } catch (APIException e) {
+                    e.printStackTrace();
+                    Toast.makeText(FolderViewActivity.this, R.string.internal_error, Toast.LENGTH_LONG).show();
+                }
+
+                Intent newIntent = new Intent(FolderViewActivity.this, DashboardActivity.class);
+                startActivity(newIntent);
                 break;
         }
         return true;
