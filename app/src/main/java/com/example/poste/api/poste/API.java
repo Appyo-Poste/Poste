@@ -255,12 +255,12 @@ public class API {
         return posts;
     }
 
-    public static boolean addPost(String name, String link, int ownerId) throws MalformedResponseException, IncompleteRequestException {
+    public static int addPost(String name, String link, int ownerId) throws MalformedResponseException, IncompleteRequestException {
         try (Response response = endpointPostsAdd(name, link, ownerId)) {
             if (response.body() == null) { throw new MalformedResponseException(); }
             JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
 
-            return responseJson.getBoolean("success");
+            return responseJson.getInt("newPostId");
         } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
         catch (IOException e) { throw new IncompleteRequestException(); }
     }

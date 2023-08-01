@@ -2,11 +2,14 @@ package com.example.poste.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -14,14 +17,20 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.poste.PosteApplication;
 import com.example.poste.R;
+import com.example.poste.adapters.FolderAdapter;
 import com.example.poste.api.poste.API;
 import com.example.poste.api.poste.exceptions.APIException;
+import com.example.poste.api.poste.models.Folder;
+import com.example.poste.api.poste.models.FolderAccess;
+import com.example.poste.api.poste.models.User;
 import com.example.poste.api.poste.exceptions.IncompleteRequestException;
 import com.example.poste.api.poste.exceptions.MalformedResponseException;
 import com.example.poste.api.poste.models.Folder;

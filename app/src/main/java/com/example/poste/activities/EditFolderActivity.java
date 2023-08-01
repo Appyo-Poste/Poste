@@ -1,19 +1,33 @@
 package com.example.poste.activities;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.poste.PosteApplication;
 import com.example.poste.R;
+import com.example.poste.adapters.FolderAdapter;
 import com.example.poste.api.poste.API;
 import com.example.poste.api.poste.exceptions.APIException;
 import com.example.poste.api.poste.models.Folder;
+import com.example.poste.api.poste.models.FolderAccess;
+import com.example.poste.api.poste.models.User;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 @SuppressLint("UseSwitchCompatOrMaterialCode")

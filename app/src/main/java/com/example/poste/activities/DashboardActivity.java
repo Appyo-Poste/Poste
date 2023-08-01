@@ -1,17 +1,24 @@
 package com.example.poste.activities;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,6 +46,7 @@ public class DashboardActivity extends PActivity {
     private RecyclerView folderRecyclerView;
     private FolderAdapter folderAdapter;
     public ImageView optionsView;
+    public HashMap<String, Integer> folderIdNameMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +61,12 @@ public class DashboardActivity extends PActivity {
         currentUser = PosteApplication.getCurrentUser();
         optionsView = findViewById(R.id.Optionsbtn);
         folderRecyclerView = findViewById(R.id.folder_recycler_view);
-        Button buttonAddFolder = findViewById(R.id.dashboard_add_folder_btn);
+        Button addButton = findViewById(R.id.dashboard_add_folder_btn);
         try {
             userFolders = API.getFoldersForUserId(currentUser.getId());
+            for (Folder folder: userFolders.keySet()) {
+                folderIdNameMap.put(String.format("(%d) %s", folder.getId(), folder.getName()), folder.getId());
+            }
         } catch (APIException e) {
             throw new RuntimeException(e);
         }
@@ -67,33 +78,14 @@ public class DashboardActivity extends PActivity {
             startActivity(intent);
         });
 
+
         // Add folder button
-        buttonAddFolder.setOnClickListener(view -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(getString(R.string.new_folder));
-
-            // Set up the input
-            final EditText input = new EditText(this);
-            input.setInputType(InputType.TYPE_CLASS_TEXT);
-            builder.setView(input);
-
-            // Create button
-            builder.setPositiveButton(getString(R.string.create), (dialog, which) -> {
-                try {
-                    int newFolderId = API.addFolder(input.getText().toString(), currentUser.getId());
-                    API.addUserToFolder(currentUser.getId(), newFolderId, FolderAccess.OWNER);
-
-                    userFolders = API.getFoldersForUserId(currentUser.getId());
-                    folderAdapter.notifyItemInserted(userFolders.size() - 1);
-                } catch (APIException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-
-            // Cancel button
-            builder.setNegativeButton(getString(R.string.cancel), (dialog, which) -> dialog.cancel());
-
-            builder.show();
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show the create item dialog
+                showCreateItemDialog();
+            }
         });
 
         // Fill folder view (Recycler View)
@@ -115,9 +107,164 @@ public class DashboardActivity extends PActivity {
                     }
                 },
                 new ArrayList<>(userFolders.keySet())
-                );
+        );
         folderRecyclerView.setAdapter(folderAdapter);
         registerForContextMenu(folderRecyclerView);
+    }
+
+
+    private void showCreateItemDialog() {
+        // Find the [+] button on the dashboard
+        Button addButton = findViewById(R.id.dashboard_add_folder_btn);
+
+        // Create a PopupMenu
+        PopupMenu popupMenu = new PopupMenu(this, addButton);
+        popupMenu.inflate(R.menu.menu_create_item);
+
+        // Set a MenuItemClickListener to handle the selection
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_folder:
+                        // Handle folder creation
+                        showCreateFolderDialog();
+                        return true;
+                    case R.id.menu_post:
+                        // Handle post creation
+                        showCreatePostDialog();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+
+        // Show the PopupMenu
+        popupMenu.show();
+    }
+
+
+    private void showCreatePostDialog() {
+        // Inflate the layout for the dialog
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.layout_dialog_create_post, null);
+
+        // Find the RadioGroup and EditText fields in the dialog
+        EditText editTextItemName = dialogView.findViewById(R.id.editTextItemName);
+        EditText editTextItemLink = dialogView.findViewById(R.id.editTextItemLink);
+        Spinner spinnerNewPostFolder = dialogView.findViewById(R.id.spinnerNewPostFolder);
+
+        // Setup for the dropdown menu
+        ArrayAdapter<String> adapter= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new ArrayList<>(folderIdNameMap.keySet()));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerNewPostFolder.setAdapter(adapter);
+
+        // Create the AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        builder.setTitle("Create Post");
+
+        // Set the positive button (Create button) click listener
+        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Get the item name and link from the EditText fields
+                String itemName = editTextItemName.getText().toString().trim();
+                String itemLink = editTextItemLink.getText().toString().trim();
+                String selectedFolderName = spinnerNewPostFolder.getSelectedItem().toString();
+                Integer selectedFolderId = folderIdNameMap.get(selectedFolderName);
+
+                if (itemName == null || itemName == "" || itemLink == null || itemLink == "") {
+                    Toast.makeText(DashboardActivity.this, "Cannot create post, please enter name and link", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                // Handle post creation logic
+                try {
+                    // Create the post in the API
+                    int newPostID = API.addPost(itemName, itemLink, currentUser.getId());
+
+                    // Update the post's folder in the API
+                    API.addPostToFolder(newPostID, selectedFolderId);
+                } catch (APIException e) {
+                    throw new RuntimeException(e);
+                }
+
+                // For simplicity, let's just display a toast message with the post details
+                Toast.makeText(DashboardActivity.this, "Post created:\nName: " + itemName + "\nLink: " + itemLink, Toast.LENGTH_LONG).show();
+                dialog.dismiss();
+
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(getIntent());
+                overridePendingTransition(0, 0);
+            }
+        });
+
+        // Set the negative button (Cancel button) click listener
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Dismiss the dialog (do nothing)
+                dialog.dismiss();
+            }
+        });
+
+        // Show the AlertDialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
+    private void showCreateFolderDialog() {
+        // Inflate the layout for the dialog
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.layout_dialog_create_folder, null);
+
+        // Find the RadioGroup and EditText fields in the dialog
+        EditText editTextItemName = dialogView.findViewById(R.id.editTextItemName);
+
+        // Create the AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        builder.setTitle("Create Folder");
+
+        // Set the positive button (Create button) click listener
+        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+
+                // Get the item name and link from the EditText fields
+                String itemName = editTextItemName.getText().toString().trim();
+
+                // Handle folder creation logic
+                try {
+                    int newFolderId = API.addFolder(itemName, currentUser.getId());
+                    API.addUserToFolder(currentUser.getId(), newFolderId, FolderAccess.OWNER);
+
+                    userFolders = API.getFoldersForUserId(currentUser.getId());
+                    folderAdapter.notifyItemInserted(userFolders.size() - 1);
+                } catch (APIException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        });
+
+        // Set the negative button (Cancel button) click listener
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Dismiss the dialog (do nothing)
+                dialog.dismiss();
+            }
+        });
+
+        // Show the AlertDialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     // menu item select listener
@@ -162,3 +309,4 @@ public class DashboardActivity extends PActivity {
     }
 
 }
+

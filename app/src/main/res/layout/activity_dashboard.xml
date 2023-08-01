@@ -35,6 +35,7 @@
                     android:contentDescription="@string/poste_logo_description"
                     app:srcCompat="@drawable/poste_logo_inpixio" />
 
+
                 <Button
                     android:id="@+id/dashboard_add_folder_btn"
                     android:layout_width="36dp"
@@ -66,9 +67,9 @@
                 android:id="@+id/folder_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="0dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
                 android:layoutDirection="inherit"
                 android:orientation="vertical"
                 tools:layoutManager="GridLayoutManager"
