@@ -16,6 +16,10 @@
     <string name="login_invalid_credentials">Invalid username or password</string>
     <!--=====[ Login | End ]=====-->
 
+    <!--=====[ Shared Folder | Start ]=====-->
+    <string name="shared_folder_share_success">Share successful</string>
+    <!--=====[ Shared Folder | End ]=====-->
+
     <!--=====[ Words | Start ]=====-->
     <string name="cancel">Cancel</string>
     <string name="create">Create</string>

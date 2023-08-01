@@ -33,14 +33,6 @@ import java.util.Objects;
 @SuppressLint("UseSwitchCompatOrMaterialCode")
 public class EditFolderActivity extends AppCompatActivity {
 
-    private EditText folderNameView;
-    private User currentUser;
-    private HashMap<Folder, FolderAccess> userFolders;
-
-    private FolderAdapter folderAdapter;
-
-    public ImageView optionsView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Init
@@ -50,18 +42,14 @@ public class EditFolderActivity extends AppCompatActivity {
 
         // Prep vars
         Intent intent = getIntent();
-        Switch folderSharedSwitch = findViewById(R.id.edit_folder_shared_switch);
+        Button cancelBtn = findViewById(R.id.edit_folder_cancel_btn);
         Button saveBtn = findViewById(R.id.edit_folder_save_button);
-        folderNameView = findViewById(R.id.edit_folder_folder_name);
-        Button addButton = findViewById(R.id.dashboard_add_folder_btn);
-        currentUser = PosteApplication.getCurrentUser();
-        optionsView = findViewById(R.id.Optionsbtn);
+        EditText folderNameView = findViewById(R.id.edit_folder_folder_name);
 
         // Set text and checked
         folderNameView.setText(intent.getStringExtra("folderName"));
-        folderSharedSwitch.setChecked(intent.getBooleanExtra("folderShared", false));
 
-        // Save button
+        // Save button push
         saveBtn.setOnClickListener(view -> {
             try {
                 // Find folder
@@ -77,9 +65,12 @@ public class EditFolderActivity extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
 
-            // Send back to dashboard
-            Intent newIntent = new Intent(EditFolderActivity.this, DashboardActivity.class);
-            startActivity(newIntent);
+            sendToDashboard();
+        });
+
+        // Cancel button push
+        cancelBtn.setOnClickListener(view -> {
+            sendToDashboard();
         });
 
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -221,5 +212,10 @@ public class EditFolderActivity extends AppCompatActivity {
         // Show the AlertDialog
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void sendToDashboard() {
+        Intent newIntent = new Intent(EditFolderActivity.this, DashboardActivity.class);
+        startActivity(newIntent);
     }
 }

@@ -33,7 +33,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
 
         public ViewHolder(View view) {
             super(view);
-            // Define click listener for the ViewHolder's View
+            // Define variables for the view
             imageView = view.findViewById(R.id.folder_image_view);
             textView = view.findViewById(R.id.folder_text_view);
             itemView.setOnClickListener(this);
@@ -84,10 +84,6 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
         void onItemLongClick(int position, Folder model);
     }
 
-    /**
-     * Initialize the dataset of the Adapter
-     *
-     */
     public FolderAdapter(ClickListener clickListener, List<Folder> folderList) {
         this.clickListener = clickListener;
         localDataSet = folderList;
@@ -106,12 +102,12 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
+
         try {
+            // Set the folder name
             viewHolder.getTextView().setText(localDataSet.get(position).getName());
-            //viewHolder.imageView.setImageResource(R.drawable.folder_icon);
         }catch(Exception e){
             Log.e("hello", e.getLocalizedMessage() );
         }

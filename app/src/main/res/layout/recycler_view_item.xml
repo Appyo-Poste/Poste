@@ -5,17 +5,15 @@
     android:layout_height="wrap_content"
     android:layout_margin="32dp"
     tools:src="@tools:sample/avatars"
-    tools:srcCompat="@drawable/folder_icon"
-    >
-
-
+    tools:srcCompat="@drawable/post_icon">
 
     <LinearLayout
+        android:visibility="gone"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginStart="1dp"
         android:layout_marginEnd="1dp"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,18 +23,22 @@
 
         <ImageView
             android:id="@+id/recycler_image_view"
-            android:layout_width="match_parent"
-            android:layout_height="198dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:maxHeight="400dp"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:src="@drawable/post_icon"/>
 
 
         <TextView
             android:id="@+id/recyclerTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textAlignment="center"
+            android:textSize="25sp"
             android:text="TextView"
-            android:textColor="@color/poste_icon_background" />
+            android:textColor="#3B3B3B" />
     </LinearLayout>
 
 

@@ -1,4 +1,4 @@
-package com.example.legacy;
+package com.example.poste.api.reddit;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

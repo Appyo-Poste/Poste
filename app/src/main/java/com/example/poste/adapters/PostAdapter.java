@@ -2,6 +2,7 @@ package com.example.poste.adapters;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -38,9 +39,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
         public ViewHolder(View view) {
             super(view);
-            // Define click listener for the ViewHolder's View
-            imageView = (ImageView) view.findViewById(R.id.recycler_image_view);
-            textView = (TextView) view.findViewById(R.id.recyclerTextView);
+            // Define variables for the view
+            imageView = view.findViewById(R.id.recycler_image_view);
+            textView = view.findViewById(R.id.recyclerTextView);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
             view.setOnCreateContextMenuListener(this);
@@ -72,6 +73,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             //menuInfo is null
             menu.add(Menu.NONE, R.id.ctx_menu_edit_post,
                     Menu.NONE, R.string.edit);
+            menu.add(Menu.NONE, R.id.ctx_menu_delete_post,
+                    Menu.NONE, R.string.delete);
         }
     }
 
@@ -102,17 +105,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
+
         try {
+            // Set the post name
             viewHolder.getTextView().setText(localDataSet.get(position).getName());
-            ImageView imageView = viewHolder.getImageView();
-            imageView.setVisibility(View.GONE);
-//            if(localDataSet.get(position).media_url != null)
-//                new DownloadImageFromInternet(imageView).execute(localDataSet.get(position).media_url);
-//            else
-//                imageView.setVisibility(View.GONE);
         }catch(Exception e){
             Log.e("hello", e.getLocalizedMessage() );
         }
@@ -122,28 +120,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return localDataSet.size();
-    }
-
-    private class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
-        ImageView imageView;
-        public DownloadImageFromInternet(ImageView imageView) {
-            this.imageView=imageView;
-        }
-        protected Bitmap doInBackground(String... urls) {
-            String imageURL=urls[0];
-            Bitmap bimage=null;
-            try {
-                InputStream in=new java.net.URL(imageURL).openStream();
-                bimage= BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error Message", e.getMessage());
-                e.printStackTrace();
-            }
-            return bimage;
-        }
-        protected void onPostExecute(Bitmap result) {
-            imageView.setImageBitmap(result);
-        }
     }
 
     public List<Post> getLocalDataSet(){
