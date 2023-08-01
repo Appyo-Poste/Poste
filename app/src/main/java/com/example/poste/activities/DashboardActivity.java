@@ -12,11 +12,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,6 +46,7 @@ public class DashboardActivity extends PActivity {
     private RecyclerView folderRecyclerView;
     private FolderAdapter folderAdapter;
     public ImageView optionsView;
+    public HashMap<String, Integer> folderIdNameMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +64,9 @@ public class DashboardActivity extends PActivity {
         Button addButton = findViewById(R.id.dashboard_add_folder_btn);
         try {
             userFolders = API.getFoldersForUserId(currentUser.getId());
+            for (Folder folder: userFolders.keySet()) {
+                folderIdNameMap.put(String.format("(%d) %s", folder.getId(), folder.getName()), folder.getId());
+            }
         } catch (APIException e) {
             throw new RuntimeException(e);
         }
@@ -147,7 +153,13 @@ public class DashboardActivity extends PActivity {
         // Find the RadioGroup and EditText fields in the dialog
         EditText editTextItemName = dialogView.findViewById(R.id.editTextItemName);
         EditText editTextItemLink = dialogView.findViewById(R.id.editTextItemLink);
+        Spinner spinnerNewPostFolder = dialogView.findViewById(R.id.spinnerNewPostFolder);
         Button buttonCreateItem = dialogView.findViewById(R.id.buttonCreateItem);
+
+        // Setup for the dropdown menu
+        ArrayAdapter<String> adapter= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new ArrayList<>(folderIdNameMap.keySet()));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerNewPostFolder.setAdapter(adapter);
 
         // Create the AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -158,17 +170,36 @@ public class DashboardActivity extends PActivity {
         builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
-
                 // Get the item name and link from the EditText fields
                 String itemName = editTextItemName.getText().toString().trim();
                 String itemLink = editTextItemLink.getText().toString().trim();
+                String selectedFolderName = spinnerNewPostFolder.getSelectedItem().toString();
+                Integer selectedFolderId = folderIdNameMap.get(selectedFolderName);
 
+                if (itemName == null || itemName == "" || itemLink == null || itemLink == "") {
+                    Toast.makeText(DashboardActivity.this, "Cannot create post, please enter name and link", Toast.LENGTH_LONG).show();
+                    return;
+                }
 
-                    // Handle post creation logic
-                    // For simplicity, let's just display a toast message with the post details
-                    Toast.makeText(DashboardActivity.this, "Post created:\nName: " + itemName + "\nLink: " + itemLink, Toast.LENGTH_LONG).show();
+                // Handle post creation logic
+                try {
+                    // Create the post in the API
+                    int newPostID = API.addPost(itemName, itemLink, currentUser.getId());
 
+                    // Update the post's folder in the API
+                    API.addPostToFolder(newPostID, selectedFolderId);
+                } catch (APIException e) {
+                    throw new RuntimeException(e);
+                }
+
+                // For simplicity, let's just display a toast message with the post details
+                Toast.makeText(DashboardActivity.this, "Post created:\nName: " + itemName + "\nLink: " + itemLink, Toast.LENGTH_LONG).show();
+                dialog.dismiss();
+
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(getIntent());
+                overridePendingTransition(0, 0);
             }
         });
 
@@ -210,16 +241,16 @@ public class DashboardActivity extends PActivity {
                 // Get the item name and link from the EditText fields
                 String itemName = editTextItemName.getText().toString().trim();
 
-                    // Handle folder creation logic
-                    try {
-                        int newFolderId = API.addFolder(itemName, currentUser.getId());
-                        API.addUserToFolder(currentUser.getId(), newFolderId, FolderAccess.OWNER);
+                // Handle folder creation logic
+                try {
+                    int newFolderId = API.addFolder(itemName, currentUser.getId());
+                    API.addUserToFolder(currentUser.getId(), newFolderId, FolderAccess.OWNER);
 
-                        userFolders = API.getFoldersForUserId(currentUser.getId());
-                        folderAdapter.notifyItemInserted(userFolders.size() - 1);
-                    } catch (APIException e) {
-                        throw new RuntimeException(e);
-                    }
+                    userFolders = API.getFoldersForUserId(currentUser.getId());
+                    folderAdapter.notifyItemInserted(userFolders.size() - 1);
+                } catch (APIException e) {
+                    throw new RuntimeException(e);
+                }
 
             }
         });

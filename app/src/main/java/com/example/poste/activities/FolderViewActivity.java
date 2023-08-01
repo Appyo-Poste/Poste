@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -79,6 +80,7 @@ public class FolderViewActivity extends AppCompatActivity {
             }
 
             // Set PostAdapter as the adapter for RecyclerView.
+            Log.i("FolderViewActivity", "current folder posts: " + currentFolder.getPosts().size());
             postAdapter = new PostAdapter(
                     new PostAdapter.ClickListener() {
                         @Override

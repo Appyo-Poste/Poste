@@ -15,11 +15,11 @@
 
 
 
-    <Button
-        android:id="@+id/buttonCreateItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp" />
+<!--    <Button-->
+<!--        android:id="@+id/buttonCreateItem"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Create"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:layout_marginTop="16dp" />-->
 </LinearLayout>
