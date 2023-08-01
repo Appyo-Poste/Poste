@@ -154,7 +154,6 @@ public class DashboardActivity extends PActivity {
         EditText editTextItemName = dialogView.findViewById(R.id.editTextItemName);
         EditText editTextItemLink = dialogView.findViewById(R.id.editTextItemLink);
         Spinner spinnerNewPostFolder = dialogView.findViewById(R.id.spinnerNewPostFolder);
-        Button buttonCreateItem = dialogView.findViewById(R.id.buttonCreateItem);
 
         // Setup for the dropdown menu
         ArrayAdapter<String> adapter= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new ArrayList<>(folderIdNameMap.keySet()));
@@ -225,7 +224,6 @@ public class DashboardActivity extends PActivity {
 
         // Find the RadioGroup and EditText fields in the dialog
         EditText editTextItemName = dialogView.findViewById(R.id.editTextItemName);
-        Button buttonCreateItem = dialogView.findViewById(R.id.buttonCreateItem);
 
         // Create the AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
