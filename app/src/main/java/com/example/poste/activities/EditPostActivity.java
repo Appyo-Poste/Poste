@@ -83,12 +83,7 @@ public class EditPostActivity extends AppCompatActivity {
         // Set the default values
         postNameField.setText(currentPost.getName());
         postLinkField.setText(currentPost.getLink());
-        Log.i("EditPostActivity:DEBUG", "folderIdNameMap.size() = " + folderIdNameMap.size());
-        Log.i("EditPostActivity:DEBUG", "currentFolderTitle = " + currentFolderTitle);
-        Log.i("EditPostActivity:DEBUG", "adapter.getPosition(currentFolderTitle) = " + adapter.getPosition(currentFolderTitle));
-        Log.i("EditPostActivity:DEBUG", "folderIdNameMap.getOrDefault(currentFolderTitle, 0) = " + folderIdNameMap.getOrDefault(currentFolderTitle, 0));
         spinner.setSelection(adapter.getPosition(currentFolderTitle));
-        Log.i("EditPostActivity:DEBUG", "Succ");
 
         // Cancel button click handler
         cancelBtn.setOnClickListener(view -> {
