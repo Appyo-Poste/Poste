@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,6 +53,7 @@ public class EditPostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_post);
 
         // Prep vars
+        String currentFolderTitle;
         Post currentPost;
         Folder currentFolder;
         HashMap<Folder, FolderAccess> userFolders;
@@ -62,8 +64,9 @@ public class EditPostActivity extends AppCompatActivity {
         Button cancelBtn = findViewById(R.id.edit_post_cancel_btn);
         Button saveBtn = findViewById(R.id.edit_post_save_button);
         try {
-            currentPost = API.getPostById(Integer.parseInt(getIntent().getStringExtra("postId")));
-            currentFolder = API.getFolderById(Integer.parseInt(getIntent().getStringExtra("folderId")));
+            currentPost = API.getPostById(getIntent().getIntExtra("postId", 0));
+            currentFolder = API.getFolderById(getIntent().getIntExtra("folderId", 0));
+            currentFolderTitle = String.format("(%d) %s", currentFolder.getId(), currentFolder.getName());
             userFolders = API.getFoldersForUserId(PosteApplication.getCurrentUser().getId());
             for (Folder folder: userFolders.keySet()) {
                 folderIdNameMap.put(String.format("(%d) %s", folder.getId(), folder.getName()), folder.getId());
@@ -73,14 +76,24 @@ public class EditPostActivity extends AppCompatActivity {
         }
 
         // Setup for the dropdown menu
-        ArrayAdapter<String> adapter= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new ArrayList<>(folderIdNameMap.keySet()));
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new ArrayList<>(folderIdNameMap.keySet()));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
+        // Set the default values
+        postNameField.setText(currentPost.getName());
+        postLinkField.setText(currentPost.getLink());
+        Log.i("EditPostActivity:DEBUG", "folderIdNameMap.size() = " + folderIdNameMap.size());
+        Log.i("EditPostActivity:DEBUG", "currentFolderTitle = " + currentFolderTitle);
+        Log.i("EditPostActivity:DEBUG", "adapter.getPosition(currentFolderTitle) = " + adapter.getPosition(currentFolderTitle));
+        Log.i("EditPostActivity:DEBUG", "folderIdNameMap.getOrDefault(currentFolderTitle, 0) = " + folderIdNameMap.getOrDefault(currentFolderTitle, 0));
+        spinner.setSelection(adapter.getPosition(currentFolderTitle));
+        Log.i("EditPostActivity:DEBUG", "Succ");
 
         // Cancel button click handler
         cancelBtn.setOnClickListener(view -> {
             // Send back to folder view
-            goToFolderView(currentFolder.getId());
+            sendToDashboard();
         });
 
         // Save button click handler
@@ -92,7 +105,7 @@ public class EditPostActivity extends AppCompatActivity {
                 // Save the post in the API
                 if (currentPost.getName() != postNameField.getText().toString() ||
                         currentPost.getLink() != postLinkField.getText().toString()) {
-                    API.updatePost(currentPost.getId(), postLinkField.getText().toString(), postNameField.getText().toString(), currentPost.getOwnerId());
+                    API.updatePost(currentPost.getId(), postNameField.getText().toString(), postLinkField.getText().toString(), currentPost.getOwnerId());
                 }
 
                 // Update the post in the API
@@ -102,7 +115,7 @@ public class EditPostActivity extends AppCompatActivity {
                 }
 
                 // Send back to folder view
-                goToFolderView(currentFolder.getId());
+                sendToDashboard();
             } catch (APIException e) {
                 throw new RuntimeException(e);
             }
@@ -110,9 +123,8 @@ public class EditPostActivity extends AppCompatActivity {
 
     }
 
-    private void goToFolderView(int folderId) {
-        Intent intent = new Intent(EditPostActivity.this, FolderViewActivity.class);
-        intent.putExtra("folderId", folderId);
-        startActivity(intent);
+    private void sendToDashboard() {
+        Intent newIntent = new Intent(EditPostActivity.this, DashboardActivity.class);
+        startActivity(newIntent);
     }
 }
