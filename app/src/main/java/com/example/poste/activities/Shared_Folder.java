@@ -85,7 +85,8 @@ public class Shared_Folder extends AppCompatActivity {
         });
 
         cancelBtn.setOnClickListener(view -> {
-            finish();
+            Intent newIntent = new Intent(Shared_Folder.this, DashboardActivity.class);
+            startActivity(newIntent);
         });
     }
 }
