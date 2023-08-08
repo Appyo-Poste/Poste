@@ -6,41 +6,57 @@
     android:layout_height="match_parent"
     tools:context=".activities.OptionsActivity">
 
-    <TextView
-        android:id="@+id/Titletxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Options"
-        android:textSize="48sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Titletxt">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/options_link_accounts_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_marginBottom="16dp"
-            android:backgroundTint="#B0BC2C2C"
-            android:text="Link Accounts" />
+        <ImageView
+            android:id="@+id/ACLogo"
+            android:layout_width="132dp"
+            android:layout_height="55dp"
+            app:srcCompat="@drawable/poste_logo_inpixio" />
 
-        <Button
-            android:id="@+id/Signoutbtn"
+        <TextView
+            android:id="@+id/Titletxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#B0BC2C2C"
-            android:text="Signout" />
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:text="Options"
+            android:textSize="38sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_margin="10dp" >
+
+            <Button
+                android:id="@+id/options_link_accounts_btn"
+                android:layout_width="200dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:backgroundTint="#B0BC2C2C"
+                android:text="Link Accounts" />
+
+            <Button
+                android:id="@+id/Signoutbtn"
+                android:layout_width="200dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:backgroundTint="#B0BC2C2C"
+                android:text="Signout" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
