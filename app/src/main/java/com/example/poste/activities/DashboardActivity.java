@@ -180,6 +180,11 @@ public class DashboardActivity extends PActivity {
                     return;
                 }
 
+                if (!itemLink.matches("^((http|https):\\/\\/)(www.)?[a-zA-Z0-9@:%._\\\\+~#?&/=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\\\+~#?&/=]*)$")) {
+                    Toast.makeText(DashboardActivity.this, "Invalid Link", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 // Handle post creation logic
                 try {
                     // Create the post in the API
@@ -250,6 +255,14 @@ public class DashboardActivity extends PActivity {
                     throw new RuntimeException(e);
                 }
 
+                // For simplicity, let's just display a toast message with the post details
+                Toast.makeText(DashboardActivity.this, "Folder created", Toast.LENGTH_LONG).show();
+                dialog.dismiss();
+
+//                finish();
+//                overridePendingTransition(0, 0);
+//                startActivity(getIntent());
+//                overridePendingTransition(0, 0);
             }
         });
 
@@ -300,6 +313,10 @@ public class DashboardActivity extends PActivity {
 
                     // Delete the folder
                     API.deleteFolder(folder.getId());
+                    userFolders = API.getFoldersForUserId(currentUser.getId());
+                    folderAdapter.notifyItemInserted(userFolders.size() - 1);
+//                    finish();
+//                    startActivity(getIntent());
                 } catch (APIException e) {
                     throw new RuntimeException(e);
                 }

@@ -63,7 +63,6 @@ public class FolderViewActivity extends AppCompatActivity {
         // Prep vars
         TextView emptyText = findViewById(R.id.folderViewEmptyText);
         postRecyclerView = findViewById(R.id.posts_recycler_view);
-        postRecyclerView.setLayoutManager(new LinearLayoutManager(FolderViewActivity.this));
         currentUser = PosteApplication.getCurrentUser();
         registerForContextMenu(postRecyclerView);
 
@@ -77,8 +76,8 @@ public class FolderViewActivity extends AppCompatActivity {
                 emptyText.setVisibility(View.GONE);
             }
 
-            // Set PostAdapter as the adapter for RecyclerView.
-            Log.i("FolderViewActivity", "current folder posts: " + currentFolder.getPosts().size());
+            // Fill post view (Recycler View)
+            postRecyclerView.setLayoutManager(new LinearLayoutManager(FolderViewActivity.this));
             postAdapter = new PostAdapter(
                     new PostAdapter.ClickListener() {
                         @Override
@@ -101,6 +100,7 @@ public class FolderViewActivity extends AppCompatActivity {
                     currentFolder.getPosts()
             );
             postRecyclerView.setAdapter(postAdapter);
+            registerForContextMenu(postRecyclerView);
         } catch (APIException e) {
             throw new RuntimeException(e);
         }
