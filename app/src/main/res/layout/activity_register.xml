@@ -65,14 +65,13 @@
 
             <EditText
                 android:id="@+id/RNameTxt"
-                android:layout_width="278dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="2dp"
                 android:ems="10"
                 android:hint="Name"
-                android:inputType="textPersonName"
-                android:textSize="24sp" />
+                android:inputType="textPersonName" />
 
             <TextView
                 android:id="@+id/RPasswordLbl"
