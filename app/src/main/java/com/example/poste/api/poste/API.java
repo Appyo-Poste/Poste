@@ -29,18 +29,16 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-/* *******JAVA API CLASS*******
-
-Documentation by Jacob Paulin and Michael Khmourovitch.
-
-For all intents and purposes this is the most important Java class in this project.
-
-As the name implies, this class is responsible for performing HTTP requests to the Poste URL,
-which is essentially the backbone of the entire application.
-
-Existing documentation for endpoints by Jacob Paulin is available on Github.
-
-*/
+/**
+ * Documentation by Jacob Paulin and Michael Khmourovitch.
+ *
+ * For all intents and purposes this is the most important Java class in this project.
+ *
+ * As the name implies, this class is responsible for performing HTTP requests to the Poste URL,
+ * which is essentially the backbone of the entire application.
+ *
+ * Existing documentation for endpoints by Jacob Paulin is available on Github.
+ */
 public class API {
 
     // This is the host URL for the API, will change as the app switches owners.

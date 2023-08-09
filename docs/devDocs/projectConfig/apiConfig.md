@@ -68,4 +68,5 @@ cd ~/api && gcloud app deploy
 When prompted enter `y`
 
 ### Step 10 - Update Code
-Update all instances of the API URL in the codebase.
+In the code in the API class located in the com.example.poste.api.poste package update the string on line 45 to be using the new URL.
+<img src="https://i.imgur.com/1xcvILI.png">
