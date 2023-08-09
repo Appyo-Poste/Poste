@@ -28,6 +28,8 @@ import com.example.poste.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -35,21 +37,33 @@ import android.widget.Toast;
 
 import java.util.HashMap;
 
+/**
+ * The MainActivity class adds functionality to the activity_main.xml layout
+ */
 public class MainActivity extends AppCompatActivity {
-
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
-
     private User currentUser;
     private HashMap<Folder, FolderAccess> userFolders;
-
     private FolderAdapter folderAdapter;
     public ImageView optionsView;
 
+    /**
+     * Called when the activity is created
+     *
+     * @param savedInstanceState A bundle containing the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Configure window settings for fullscreen mode
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getSupportActionBar().hide();
+
+        // Set the activity layout
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 

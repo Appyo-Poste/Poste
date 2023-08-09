@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -44,12 +46,27 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The EditPostActivity class adds functionality to the activity_edit_post.xml layout
+ */
 public class EditPostActivity extends AppCompatActivity {
 
+    /**
+     * Called when the activity is created
+     *
+     * @param savedInstanceState A bundle containing the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Init
         super.onCreate(savedInstanceState);
+
+        // Configure window settings for fullscreen mode
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getSupportActionBar().hide();
+
+        // Set the activity layout
         setContentView(R.layout.activity_edit_post);
 
         // Prep vars

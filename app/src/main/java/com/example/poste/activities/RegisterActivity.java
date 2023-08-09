@@ -20,6 +20,9 @@ import com.example.poste.api.poste.models.User;
 
 import java.util.Objects;
 
+/**
+ * The RegisterActivity class adds functionality to the activity_register.xml layout
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     // Vars
@@ -28,13 +31,22 @@ public class RegisterActivity extends AppCompatActivity {
     public static final int READ_TIMEOUT=15000;
     private static User newUser;
 
+    /**
+     * Called when the activity is created
+     *
+     * @param savedInstanceState A bundle containing the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Init
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);//will hide the title
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //show the activity in full screen
+
+        // Configure window settings for fullscreen mode
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
+
+        // Set the activity layout
         setContentView(R.layout.activity_register);
 
         // Init vars

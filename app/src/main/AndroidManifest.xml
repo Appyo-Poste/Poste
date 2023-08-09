@@ -69,7 +69,7 @@
             android:name=".activities.Shared_Folder"
             android:exported="false" />
         <activity
-            android:name=".activities.Intro"
+            android:name=".activities.IntroActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -87,7 +87,7 @@
             android:name=".activities.AccountActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.Login"
+            android:name=".activities.LoginActivity"
             android:exported="false" />
         <activity
             android:name=".activities.RegisterActivity"

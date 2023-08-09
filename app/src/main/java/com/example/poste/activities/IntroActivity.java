@@ -1,20 +1,19 @@
 package com.example.poste.activities;
 
-import android.content.Intent;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-
-import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent;
 
 import com.example.poste.R;
 
 /**
- * The LinkAccounts class adds functionality to the activity_link_account.xml layout
+ * The IntroActivity class adds functionality to the activity_intro.xml layout
  */
-public class LinkAccounts extends AppCompatActivity {
+public class IntroActivity extends AppCompatActivity {
     /**
      * Called when the activity is created
      *
@@ -31,14 +30,21 @@ public class LinkAccounts extends AppCompatActivity {
         getSupportActionBar().hide();
 
         // Set the activity layout
-        setContentView(R.layout.activity_link_accounts);
+        setContentView(R.layout.activity_intro);
 
         // Prep vars
-        Button buttonTwitter = findViewById(R.id.start_twitter_activity_btn);
+        Button buttonRegister = findViewById(R.id.ACCreateAccountbtn2);
+        Button buttonLogin = findViewById(R.id.ACCLoginbtn);
 
-        // Click listener for the twitter button
-        buttonTwitter.setOnClickListener(view -> {
-            Intent intent = new Intent(LinkAccounts.this, TwitterTokenActivity.class);
+        // Click listener for the register button
+        buttonRegister.setOnClickListener(view -> {
+            Intent intent = new Intent(IntroActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        });
+
+        // Click listener for the login button
+        buttonLogin.setOnClickListener(view -> {
+            Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
             startActivity(intent);
         });
     }

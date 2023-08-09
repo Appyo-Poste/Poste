@@ -17,6 +17,10 @@ import com.example.poste.api.poste.models.Folder;
 
 import java.util.List;
 
+/**
+ * The FolderAdapter class is a custom RecyclerView adapter used to display a list of folders
+ * It binds the folder data to the corresponding views and handles user interactions
+ */
 public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder> {
 
     private final ClickListener clickListener;
@@ -24,8 +28,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
     public int position;
 
     /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder)
+     * Custom ViewHolder class that holds the views of a single item in the RecyclerView.
      */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, View.OnCreateContextMenuListener {
         private final TextView textView;
@@ -59,26 +62,21 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
         @Override
         public boolean onLongClick(View v) {
             position = this.getAdapterPosition();
-            return false;/*
-            if (position >= 0) {
-                clickListener.onItemLongClick(position, localDataSet.get(position));
-                return true;
-            }
-            return false;*/
+            return false;
         }
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            //menuInfo is null
-            menu.add(Menu.NONE, R.id.ctx_menu_edit_folder,
-                    Menu.NONE, R.string.edit);
-            menu.add(Menu.NONE, R.id.ctx_menu_share_folder,
-                    Menu.NONE, R.string.share);
-            menu.add(Menu.NONE, R.id.ctx_menu_delete_folder,
-                    Menu.NONE, R.string.delete);
+            // Add context menu items (e.g., edit, share, delete) for each folder item
+            menu.add(Menu.NONE, R.id.ctx_menu_edit_folder, Menu.NONE, R.string.edit);
+            menu.add(Menu.NONE, R.id.ctx_menu_share_folder, Menu.NONE, R.string.share);
+            menu.add(Menu.NONE, R.id.ctx_menu_delete_folder, Menu.NONE, R.string.delete);
         }
     }
 
+    /**
+     * Interface to define click listeners for folder items.
+     */
     public interface ClickListener {
         void onItemClick(int position, Folder model);
         void onItemLongClick(int position, Folder model);
@@ -102,14 +100,11 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
-
         try {
             // Set the folder name
             viewHolder.getTextView().setText(localDataSet.get(position).getName());
-        }catch(Exception e){
-            Log.e("hello", e.getLocalizedMessage() );
+        } catch (Exception e) {
+            Log.e("FolderAdapter", e.getLocalizedMessage());
         }
     }
 
@@ -121,7 +116,6 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
         return localDataSet.get(position);
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return localDataSet.size();

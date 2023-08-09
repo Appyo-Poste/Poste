@@ -40,6 +40,9 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * The DashboardActivity class adds functionality to the activity_dashboard.xml layout
+ */
 public class DashboardActivity extends PActivity {
     private User currentUser;
     private HashMap<Folder, FolderAccess> userFolders;
@@ -48,16 +51,25 @@ public class DashboardActivity extends PActivity {
     public ImageView optionsView;
     public HashMap<String, Integer> folderIdNameMap = new HashMap<>();
 
+    /**
+     * Called when the activity is created
+     *
+     * @param savedInstanceState A bundle containing the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Init
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE); //will hide the title
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //show the activity in full screen
+
+        // Configure window settings for fullscreen mode
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
+
+        // Set the activity layout
         setContentView(R.layout.activity_dashboard);
 
-        // Define vars
+        // Prep vars
         currentUser = PosteApplication.getCurrentUser();
         optionsView = findViewById(R.id.Optionsbtn);
         folderRecyclerView = findViewById(R.id.folder_recycler_view);
@@ -71,7 +83,7 @@ public class DashboardActivity extends PActivity {
             throw new RuntimeException(e);
         }
 
-        // Options button click handler
+        // Click listener for the options button
         optionsView.setOnClickListener(view -> {
             // Send to Options activity
             Intent intent = new Intent(DashboardActivity.this, OptionsActivity.class);
@@ -79,13 +91,10 @@ public class DashboardActivity extends PActivity {
         });
 
 
-        // Add folder button
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Show the create item dialog
-                showCreateItemDialog();
-            }
+        // Click listener for the add folder button
+        addButton.setOnClickListener(v -> {
+            // Show the create item dialog
+            showCreateItemDialog();
         });
 
         // Fill folder view (Recycler View)
@@ -258,11 +267,6 @@ public class DashboardActivity extends PActivity {
                 // For simplicity, let's just display a toast message with the post details
                 Toast.makeText(DashboardActivity.this, "Folder created", Toast.LENGTH_LONG).show();
                 dialog.dismiss();
-
-//                finish();
-//                overridePendingTransition(0, 0);
-//                startActivity(getIntent());
-//                overridePendingTransition(0, 0);
             }
         });
 
@@ -315,8 +319,6 @@ public class DashboardActivity extends PActivity {
                     API.deleteFolder(folder.getId());
                     userFolders = API.getFoldersForUserId(currentUser.getId());
                     folderAdapter.notifyItemInserted(userFolders.size() - 1);
-//                    finish();
-//                    startActivity(getIntent());
                 } catch (APIException e) {
                     throw new RuntimeException(e);
                 }

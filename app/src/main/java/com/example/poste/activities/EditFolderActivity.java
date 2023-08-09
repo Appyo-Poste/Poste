@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,15 +32,29 @@ import com.example.poste.api.poste.models.User;
 import java.util.HashMap;
 import java.util.Objects;
 
+/**
+ * The EditFolderActivity class adds functionality to the activity_edit_folder.xml layout
+ */
 @SuppressLint("UseSwitchCompatOrMaterialCode")
 public class EditFolderActivity extends AppCompatActivity {
 
+    /**
+     * Called when the activity is created
+     *
+     * @param savedInstanceState A bundle containing the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Init
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_folder);
+
+        // Configure window settings for fullscreen mode
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN); //show the activity in full screen
         getSupportActionBar().hide();
+
+        // Set the activity layout
+        setContentView(R.layout.activity_edit_folder);
 
         // Prep vars
         Intent intent = getIntent();

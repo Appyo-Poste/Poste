@@ -16,6 +16,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+/**
+ * The OptionsActivity class adds functionality to the activity_options.xml layout
+ */
 public class OptionsActivity extends AppCompatActivity {
 
     GoogleSignInOptions gso;
@@ -23,12 +26,22 @@ public class OptionsActivity extends AppCompatActivity {
     Button Signoutbtn;
 
 
+    /**
+     * Called when the activity is created
+     *
+     * @param savedInstanceState A bundle containing the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);//will hide the title
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //show the activity in full screen
+
+        // Configure window settings for fullscreen mode
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
+
+        // Set the activity layout
         setContentView(R.layout.activity_options);
 
         Button linkAccountsBtn = findViewById(R.id.options_link_accounts_btn);
@@ -59,7 +72,7 @@ public class OptionsActivity extends AppCompatActivity {
             @Override
             public void onComplete(Task<Void> task) {
                 finish();
-                startActivity(new Intent(OptionsActivity.this, Login.class));
+                startActivity(new Intent(OptionsActivity.this, LoginActivity.class));
             }
         });
 

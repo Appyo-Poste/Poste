@@ -25,13 +25,26 @@ import com.example.poste.api.poste.models.User;
 
 import java.util.HashMap;
 
+/**
+ * The AccountActivity class adds functionality to the activity_shared_folder.xml layout
+ */
 public class Shared_Folder extends AppCompatActivity {
+    /**
+     * Called when the activity is created
+     *
+     * @param savedInstanceState A bundle containing the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);//will hide the title
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //show the activity in full screen
+
+        // Configure window settings for fullscreen mode
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
+
+        // Set the activity layout
         setContentView(R.layout.activity_shared_folder);
 
         TextView folderNameView = findViewById(R.id.share_folder_name);

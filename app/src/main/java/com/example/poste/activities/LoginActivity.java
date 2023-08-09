@@ -1,10 +1,7 @@
 package com.example.poste.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -20,29 +17,36 @@ import com.example.poste.api.poste.API;
 import com.example.poste.api.poste.exceptions.APIException;
 import com.example.poste.api.poste.models.User;
 
-public class Login extends AppCompatActivity {
-
-    //public Button buttonForgotPassword;
+/**
+ * The LoginActivity class adds functionality to the activity_login.xml layout
+ */
+public class LoginActivity extends AppCompatActivity {
     public Button buttonLoginSubmit;
     private Switch rememberMeSwitch;
-    public static final int CONNECTION_TIMEOUT=10000;
-    public static final int READ_TIMEOUT=15000;
-
-
     private EditText usernameField,passwordField;
     private String email;
     private String password;
-
     private User loginUser;
 
+    /**
+     * Called when the activity is created
+     *
+     * @param savedInstanceState A bundle containing the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);//will hide the title
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //show the activity in full screen
+
+        // Configure window settings for fullscreen mode
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
+
+        // Set the activity layout
         setContentView(R.layout.activity_login);
 
+        // Prep vars
         usernameField = findViewById(R.id.LoginEmailEntertxt);
         passwordField = findViewById(R.id.LoginPassword);
         rememberMeSwitch = findViewById(R.id.login_remember_me_switch);
@@ -50,13 +54,7 @@ public class Login extends AppCompatActivity {
         //Email = findViewById(R.poste_item_id.LoginEmailEntertxt);
 
         //Page Navigation starts
-        //buttonForgotPassword = findViewById(R.id.ForgotPasswordbtn);
         buttonLoginSubmit = findViewById(R.id.LoginLoginbtn);
-        //Creating the link to AccountPage page
-        /*buttonForgotPassword.setOnClickListener(view -> {
-            Intent intent = new Intent(Login.this, Account.class);
-            startActivity(intent);
-        });*/
 
         //Creating the link to Dashboard page
         buttonLoginSubmit.setOnClickListener(view -> checkLogin());
@@ -65,7 +63,7 @@ public class Login extends AppCompatActivity {
 
     void navigateToDashboard(){
         finish();
-        Intent intent = new Intent(Login.this, DashboardActivity.class);
+        Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
         startActivity(intent);
     }
 
@@ -79,22 +77,20 @@ public class Login extends AppCompatActivity {
         if(email.isEmpty() || password.isEmpty())
             Toast.makeText(this, "Please enter your login details", Toast.LENGTH_LONG).show();
         else {
-            // Initialize  AsyncLogin() class with email and password
-//            new AsyncLogin().execute(email, password);
             try {
                 boolean validLogin = API.validateUserLogin(email, password);
 
                 loginUser = API.getUserByEmail(email);
                 if (validLogin) {
-                    Toast.makeText(Login.this, getString(R.string.login_successful), Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, getString(R.string.login_successful), Toast.LENGTH_LONG).show();
                     PosteApplication.setCurrentUser(loginUser);
                     navigateToDashboard();
                 } else {
-                    Toast.makeText(Login.this, getString(R.string.login_invalid_credentials), Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, getString(R.string.login_invalid_credentials), Toast.LENGTH_LONG).show();
                 }
             } catch (APIException e) {
                 e.printStackTrace();
-                Toast.makeText(Login.this, getString(R.string.internal_error), Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, getString(R.string.internal_error), Toast.LENGTH_LONG).show();
             }
         }
     }

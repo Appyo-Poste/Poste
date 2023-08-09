@@ -23,6 +23,10 @@ import com.example.poste.api.poste.models.Post;
 import java.io.InputStream;
 import java.util.List;
 
+/**
+ * The PostAdapter class is a custom RecyclerView adapter used to display a list of posts
+ * It binds the folder data to the corresponding views and handles user interactions
+ */
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     private ClickListener clickListener;
@@ -30,8 +34,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     public int position;
 
     /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder)
+     * Custom ViewHolder class that holds the views of a single item in the RecyclerView.
      */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, View.OnCreateContextMenuListener {
         private final TextView textView;
@@ -70,23 +73,20 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            //menuInfo is null
-            menu.add(Menu.NONE, R.id.ctx_menu_edit_post,
-                    Menu.NONE, R.string.edit);
-            menu.add(Menu.NONE, R.id.ctx_menu_delete_post,
-                    Menu.NONE, R.string.delete);
+            // Add context menu items (e.g., edit, delete) for each folder item
+            menu.add(Menu.NONE, R.id.ctx_menu_edit_post, Menu.NONE, R.string.edit);
+            menu.add(Menu.NONE, R.id.ctx_menu_delete_post, Menu.NONE, R.string.delete);
         }
     }
 
+    /**
+     * Interface to define click listeners for post items.
+     */
     public interface ClickListener {
         void onItemClick(int position, Post model);
         void onItemLongClick(int position, Post model);
     }
 
-    /**
-     * Initialize the dataset of the Adapter
-     *
-     */
     public PostAdapter(ClickListener clickListener, List<Post> postList) {
         this.clickListener = clickListener;
         localDataSet = postList;
@@ -105,21 +105,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
-
         try {
             // Set the post name
             viewHolder.getTextView().setText(localDataSet.get(position).getName());
-        }catch(Exception e){
-            Log.e("hello", e.getLocalizedMessage() );
+        } catch (Exception e) {
+            Log.e("FolderAdapter", e.getLocalizedMessage());
         }
-    }
-
-    // Return the size of your dataset (invoked by the layout manager)
-    @Override
-    public int getItemCount() {
-        return localDataSet.size();
     }
 
     public List<Post> getLocalDataSet(){
@@ -128,5 +119,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     public Post getLocalDataSetItem(){
         return localDataSet.get(position);
+    }
+
+    @Override
+    public int getItemCount() {
+        return localDataSet.size();
     }
 }

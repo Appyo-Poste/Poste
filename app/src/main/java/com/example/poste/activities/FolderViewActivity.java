@@ -39,25 +39,35 @@ import java.util.HashMap;
 import java.net.URL;
 import java.util.Objects;
 
+/**
+ * The FolderViewActivity class adds functionality to the activity_folder_view.xml layout
+ */
 public class FolderViewActivity extends AppCompatActivity {
 
     private Folder currentFolder;
     private PostAdapter postAdapter;
     private RecyclerView postRecyclerView;
-
     private User currentUser;
     private HashMap<Folder, FolderAccess> userFolders;
-
     private FolderAdapter folderAdapter;
     public ImageView optionsView;
 
+    /**
+     * Called when the activity is created
+     *
+     * @param savedInstanceState A bundle containing the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Init
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);//will hide the title
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //show the activity in full screen
+
+        // Configure window settings for fullscreen mode
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
+
+        // Set the activity layout
         setContentView(R.layout.activity_folder_view);
 
         // Prep vars
@@ -82,7 +92,6 @@ public class FolderViewActivity extends AppCompatActivity {
                     new PostAdapter.ClickListener() {
                         @Override
                         public void onItemClick(int position, Post post) {
-//                            Toast.makeText(FolderViewActivity.this, "Share this folder", Toast.LENGTH_LONG).show();
                             try {
                                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(post.getLink()));
                                 startActivity(browserIntent);
