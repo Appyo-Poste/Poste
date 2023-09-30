@@ -42,7 +42,7 @@ import okhttp3.Response;
 public class API {
 
     // This is the host URL for the API, will change as the app switches owners.
-    private static final String HOST_URL = "https://poste-388415.uc.r.appspot.com/";
+    private static final String HOST_URL = "http://10.0.2.2/api";
 
     /**
      * Constructor for the URL object, uses the host URL and attaches the given endpoint.
