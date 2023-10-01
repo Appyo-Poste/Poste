@@ -68,12 +68,12 @@ public class RegisterActivity extends AppCompatActivity {
             if(password.equals(confirmedPassword))
             {
                 // Necessary to avoid NetworkOnMainThreadException
-                new RegisterActivity.AsyncLogin().execute(email, username, password);
-                //try{
-                //    User newuser = User.create(email, username, password);
-                //} catch (EmailAlreadyUsedException e) {
-                //    throw new RuntimeException(e);
-                //}
+                //new RegisterActivity.AsyncLogin().execute(email, username, password);
+                try{
+                    User newuser = User.create(email, username, password);
+                } catch (EmailAlreadyUsedException e) {
+                    throw new RuntimeException(e);
+                }
 
 
 //                User user = new User();

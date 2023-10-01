@@ -603,9 +603,10 @@ public class API {
                 MediaType.parse("application/json; charset=utf-8"),
                 jsonObject.toString()
         );
-        Log.d("API", "URL: " + URL("/users/add/"));
+        String endpoint = "/users/";
+        Log.d("API", "URL: " + URL(endpoint));
         Request request = new Request.Builder()
-                .url(Objects.requireNonNull(URL("/users/add/")))
+                .url(Objects.requireNonNull(URL(endpoint)))
                 .post(body)
                 .build();
         return(performHttpRequest(request));
