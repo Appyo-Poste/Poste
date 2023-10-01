@@ -12,6 +12,7 @@ import com.example.poste.R;
 
 /**
  * The IntroActivity class adds functionality to the activity_intro.xml layout
+ * This is the first page the user sees when they open the app
  */
 public class IntroActivity extends AppCompatActivity {
     /**
@@ -36,13 +37,13 @@ public class IntroActivity extends AppCompatActivity {
         Button buttonRegister = findViewById(R.id.ACCreateAccountbtn2);
         Button buttonLogin = findViewById(R.id.ACCLoginbtn);
 
-        // Click listener for the register button
+        // Click listener for the register button -- takes user to register page (RegisterActivity)
         buttonRegister.setOnClickListener(view -> {
             Intent intent = new Intent(IntroActivity.this, RegisterActivity.class);
             startActivity(intent);
         });
 
-        // Click listener for the login button
+        // Click listener for the login button -- takes user to login page (LoginActivity)
         buttonLogin.setOnClickListener(view -> {
             Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
             startActivity(intent);
