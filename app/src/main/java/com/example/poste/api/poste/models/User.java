@@ -1,6 +1,7 @@
 package com.example.poste.api.poste.models;
 
 import com.example.poste.api.poste.API;
+import com.example.poste.api.poste.exceptions.APIException;
 import com.example.poste.api.poste.exceptions.EmailAlreadyUsedException;
 import com.example.poste.api.poste.exceptions.IncompleteRequestException;
 import com.example.poste.api.poste.exceptions.MalformedResponseException;
@@ -24,16 +25,16 @@ public class User {
      * Creates a new user via API call and returns the newly created user (by another API call)
      * Room for improvement here, as we don't need 2 API calls for this.
      * @param email The user's email
-     * @param username The user's username
+     * @param name The user's username
      * @param password The user's password
      * @return The newly created user
      * @throws EmailAlreadyUsedException If the email is already in use
      */
-    public static User create(String email, String username, String password) throws EmailAlreadyUsedException {
+    public static User create(String email, String name, String password) throws EmailAlreadyUsedException {
         try {
-            API.addUser(email, username, password);
+            API.addUser(email, name, password);
             return API.getUserByEmail(email);
-        } catch (IncompleteRequestException | MalformedResponseException | NoUserFoundException e) {
+        } catch (APIException e) {
             throw new RuntimeException(e);
         }
     }

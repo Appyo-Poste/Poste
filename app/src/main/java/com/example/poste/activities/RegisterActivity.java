@@ -60,7 +60,7 @@ public class RegisterActivity extends AppCompatActivity {
         // Create account button
         Button submit = findViewById(R.id.RCreateAccountBtn);
         submit.setOnClickListener(v -> {
-            String username = nameView.getText().toString();
+            String name = nameView.getText().toString();
             String email = emailView.getText().toString();
             String password = passwordView.getText().toString();
             String confirmedPassword = confirmedPasswordView.getText().toString();
@@ -70,7 +70,7 @@ public class RegisterActivity extends AppCompatActivity {
                 // Necessary to avoid NetworkOnMainThreadException
                 //new RegisterActivity.AsyncLogin().execute(email, username, password);
                 try{
-                    User newuser = User.create(email, username, password);
+                    User newuser = User.create(email, name, password);
                 } catch (EmailAlreadyUsedException e) {
                     throw new RuntimeException(e);
                 }

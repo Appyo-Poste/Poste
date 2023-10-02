@@ -6,6 +6,7 @@ import com.example.poste.api.poste.exceptions.EmailAlreadyUsedException;
 import com.example.poste.api.poste.exceptions.IncompleteRequestException;
 import com.example.poste.api.poste.exceptions.MalformedResponseException;
 import com.example.poste.api.poste.exceptions.NoUserFoundException;
+import com.example.poste.api.poste.exceptions.UserCreationException;
 import com.example.poste.api.poste.models.Folder;
 import com.example.poste.api.poste.models.FolderAccess;
 import com.example.poste.api.poste.models.Post;
@@ -199,23 +200,36 @@ public class API {
      * Attempts to create a User via API call. Returns true if successful, else false.
      * Called by RegisterActivity.AsyncLogin.doInBackground() when user clicks register button.
      * @param email email to use for new user
-     * @param username username to use for new user
+     * @param name name to use for new user
      * @param password password to use for new user
      * @return true if successful, else false
      * @throws MalformedResponseException if response was malformed
      * @throws IncompleteRequestException if incomplete request provided
      * @throws EmailAlreadyUsedException if email already in use
      */
-    public static boolean addUser(String email, String username, String password) throws MalformedResponseException, IncompleteRequestException, EmailAlreadyUsedException {
-        try (Response response = endpointUsersAdd(email, username, password)) {
+    public static boolean addUser(String email, String name, String password) throws MalformedResponseException, IncompleteRequestException, EmailAlreadyUsedException, UserCreationException {
+        try (Response response = endpointUsersAdd(email, name, password)) {
             if (response.body() == null) {
                 throw new MalformedResponseException();
             }
-            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
-
-            if (responseJson.getString("message").equals("Email already in use")) { throw new EmailAlreadyUsedException(); }
-
-            return responseJson.getBoolean("success");
+            // check if 201 (succeeded) or 400 (failed)
+            if (!response.isSuccessful()){
+                JSONObject responseJson = new JSONObject(response.body().string());
+                if (responseJson.has("email")){
+                    String error = responseJson.getJSONArray("email").getString(0);
+                    throw new UserCreationException(error);
+                } else if (responseJson.has("name")){
+                    String error = responseJson.getJSONArray("name").getString(0);
+                    throw new UserCreationException(error);
+                } else if (responseJson.has("password")){
+                    String error = responseJson.getJSONArray("password").getString(0);
+                    throw new UserCreationException(error);
+                } else {
+                    throw new UserCreationException();
+                }
+            } else {
+                return true;
+            }
         } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
         catch (IOException e) { throw new IncompleteRequestException(); }
     }
@@ -590,12 +604,12 @@ public class API {
         return(performHttpRequest(request));
     }
 
-    private static Response endpointUsersAdd(String email, String username, String password) throws IOException {
+    private static Response endpointUsersAdd(String email, String name, String password) throws IOException {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("email", email);
             jsonObject.put("password", password);
-            jsonObject.put("username", username);
+            jsonObject.put("name", name);
         } catch (JSONException exception) {
             System.out.println("Something happened");
         }
