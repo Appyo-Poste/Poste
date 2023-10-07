@@ -1,7 +1,7 @@
 package com.example.poste.api.poste.models;
 
 /**
- * This Class is use to create objects that represent a post saved by the user
+ * This class is used to create objects that represent a post saved by the user
  */
 public class Post {
 
@@ -68,14 +68,14 @@ public class Post {
     }
 
     /**
-     * @return The ID number of this posts owner
+     * @return The ID number of this post's owner
      */
     public int getOwnerId() {
         return ownerId;
     }
 
     /**
-     * @param ownerId The ID number of this posts owner
+     * @param ownerId The ID number of this post's owner
      */
     public void setOwnerId(int ownerId) {
         this.ownerId = ownerId;
