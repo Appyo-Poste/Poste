@@ -6,6 +6,7 @@ import com.example.poste.api.poste.exceptions.EmailAlreadyUsedException;
 import com.example.poste.api.poste.exceptions.IncompleteRequestException;
 import com.example.poste.api.poste.exceptions.MalformedResponseException;
 import com.example.poste.api.poste.exceptions.NoUserFoundException;
+import com.example.poste.api.poste.exceptions.UserCreationException;
 import com.example.poste.api.poste.models.Folder;
 import com.example.poste.api.poste.models.FolderAccess;
 import com.example.poste.api.poste.models.Post;
@@ -25,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -41,8 +43,14 @@ import okhttp3.Response;
  */
 public class API {
 
-    // This is the host URL for the API, will change as the app switches owners.
-    private static final String HOST_URL = "https://poste-388415.uc.r.appspot.com/";
+    /**
+     * Base URL for API
+     * Currently, this is configured to use PosteBackend API Django Project when run locally
+     * See https://github.com/Appyo-Poste/PosteBackend for more details
+     * Note: While the PosteBackend Django project runs locally at localhost:8000, Android Studio
+     * uses the special URL "10.0.2.2" to access something running locally on the same host.
+     */
+    private static final String HOST_URL = "http://10.0.2.2:8000/api";
 
     /**
      * Constructor for the URL object, uses the host URL and attaches the given endpoint.
@@ -62,6 +70,8 @@ public class API {
 
     /**
      * Executes a given HTTP request. Takes in a request object, and returns a response.
+     * Note: This should be performed on a separate thread. An example exists in
+     * RegisterActivity.AsyncLogin.doInBackground().
      *
      * @param request HTTP Request object
      * @return response object for the given request.
@@ -125,7 +135,9 @@ public class API {
         catch (IOException e) { throw new IncompleteRequestException(); }
     }
 
+
     public static User getUserByEmail(String _email) throws MalformedResponseException, IncompleteRequestException, NoUserFoundException {
+
         try (Response response = endpointUsersEmail(_email)) {
             if (response.body() == null) { throw new MalformedResponseException(); }
             JSONObject resultJson = new JSONObject(response.body().string());
@@ -154,14 +166,70 @@ public class API {
         catch (IOException e) { throw new IncompleteRequestException(); }
     }
 
-    public static boolean addUser(String email, String username, String password) throws MalformedResponseException, IncompleteRequestException, EmailAlreadyUsedException {
-        try (Response response = endpointUsersAdd(email, username, password)) {
-            if (response.body() == null) { throw new MalformedResponseException(); }
+    /**
+     * Attempts to login. Returns User object if successful, else null.
+     * @param email email address to login
+     * @param password password to authenticate
+     * @return User if validated credentials, else null
+     * @throws MalformedResponseException
+     * @throws IncompleteRequestException
+     */
+    public static User login(String email, String password) throws MalformedResponseException, IncompleteRequestException {
+        try (Response response = endpointUsersLogin(email, password)) {
+            if (response.body() == null) {
+                throw new MalformedResponseException();
+            }
             JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
+            if (responseJson.getBoolean("success")) {
+                // request worked; create a user
+                JSONObject userJson = responseJson.getJSONObject("user");
+                int id = userJson.getInt("id");
+                String username = userJson.getString("username");
+                return new User(id, email, username, password);
+            } else {
+                return null;
+            }
+        } catch (JSONException e) {
+            throw new MalformedResponseException();
+        } catch (IOException e) {
+            throw new IncompleteRequestException();
+        }
+    }
 
-            if (responseJson.getString("message").equals("Email already in use")) { throw new EmailAlreadyUsedException(); }
-
-            return responseJson.getBoolean("success");
+    /**
+     * Attempts to create a User via API call. Returns true if successful, else false.
+     * Called by RegisterActivity.AsyncLogin.doInBackground() when user clicks register button.
+     * @param email email to use for new user
+     * @param name name to use for new user
+     * @param password password to use for new user
+     * @return true if successful, else false
+     * @throws MalformedResponseException if response was malformed
+     * @throws IncompleteRequestException if incomplete request provided
+     * @throws EmailAlreadyUsedException if email already in use
+     */
+    public static boolean addUser(String email, String name, String password) throws MalformedResponseException, IncompleteRequestException, EmailAlreadyUsedException, UserCreationException {
+        try (Response response = endpointUsersAdd(email, name, password)) {
+            if (response.body() == null) {
+                throw new MalformedResponseException();
+            }
+            // check if 201 (succeeded) or 400 (failed)
+            if (!response.isSuccessful()){
+                JSONObject responseJson = new JSONObject(response.body().string());
+                if (responseJson.has("email")){
+                    String error = responseJson.getJSONArray("email").getString(0);
+                    throw new UserCreationException(error);
+                } else if (responseJson.has("name")){
+                    String error = responseJson.getJSONArray("name").getString(0);
+                    throw new UserCreationException(error);
+                } else if (responseJson.has("password")){
+                    String error = responseJson.getJSONArray("password").getString(0);
+                    throw new UserCreationException(error);
+                } else {
+                    throw new UserCreationException();
+                }
+            } else {
+                return true;
+            }
         } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
         catch (IOException e) { throw new IncompleteRequestException(); }
     }
@@ -518,19 +586,44 @@ public class API {
     }
 
     private static Response endpointUsersLogin(String email, String password) throws IOException {
-        return performHttpRequest(new Request.Builder()
-                .url(Objects.requireNonNull(URL(String.format("/users/login/%s/%s", email, password))))
-                .build());
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("email", email);
+            jsonObject.put("password", password);
+        } catch (JSONException exception) {
+            System.out.println("Something happened");
+        }
+        RequestBody body = RequestBody.create(
+                MediaType.parse("application/json; charset=utf-8"),
+                jsonObject.toString()
+        );
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL("/login/")))
+                .post(body)
+                .build();
+        return(performHttpRequest(request));
     }
 
-    private static Response endpointUsersAdd(String email, String username, String password) throws IOException {
-        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-        RequestBody body = RequestBody.create(mediaType, String.format("email=%s&username=%s&password=%s", email, username, password));
-        return performHttpRequest(new Request.Builder()
-                .url(Objects.requireNonNull(URL("/users/add")))
-                .method("POST", body)
-                .addHeader("Content-Type", "application/x-www-form-urlencoded")
-                .build());
+    private static Response endpointUsersAdd(String email, String name, String password) throws IOException {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("email", email);
+            jsonObject.put("password", password);
+            jsonObject.put("name", name);
+        } catch (JSONException exception) {
+            System.out.println("Something happened");
+        }
+        RequestBody body = RequestBody.create(
+                MediaType.parse("application/json; charset=utf-8"),
+                jsonObject.toString()
+        );
+        String endpoint = "/users/";
+        Log.d("API", "URL: " + URL(endpoint));
+        Request request = new Request.Builder()
+                .url(Objects.requireNonNull(URL(endpoint)))
+                .post(body)
+                .build();
+        return(performHttpRequest(request));
     }
 
     private static Response endpointUsersUpdate(String email, String username, String password) throws IOException {

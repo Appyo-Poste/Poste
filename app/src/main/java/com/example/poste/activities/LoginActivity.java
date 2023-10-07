@@ -67,21 +67,22 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // Triggers when LOGIN Button clicked
-    public void checkLogin() {
 
-        // Get text from email and password field
+    /**
+     * Triggers when LOGIN Button clicked from LOGIN page.
+     * Parses email and password from text fields, and sends an API call to validate user.
+     * If user is validated, sets as current user and return to dashboard.
+     * Otherwise, display error.
+     */
+    public void checkLogin() {
         email = usernameField.getText().toString();
         password = passwordField.getText().toString();
-
         if(email.isEmpty() || password.isEmpty())
             Toast.makeText(this, "Please enter your login details", Toast.LENGTH_LONG).show();
         else {
             try {
-                boolean validLogin = API.validateUserLogin(email, password);
-
-                loginUser = API.getUserByEmail(email);
-                if (validLogin) {
+                User user = API.login(email, password);
+                if (user != null) {
                     Toast.makeText(LoginActivity.this, getString(R.string.login_successful), Toast.LENGTH_LONG).show();
                     PosteApplication.setCurrentUser(loginUser);
                     navigateToDashboard();
@@ -92,6 +93,7 @@ public class LoginActivity extends AppCompatActivity {
                 e.printStackTrace();
                 Toast.makeText(LoginActivity.this, getString(R.string.internal_error), Toast.LENGTH_LONG).show();
             }
+
         }
     }
 }

@@ -16,12 +16,14 @@ import com.example.poste.PosteApplication;
 import com.example.poste.R;
 import com.example.poste.api.poste.API;
 import com.example.poste.api.poste.exceptions.APIException;
+import com.example.poste.api.poste.exceptions.EmailAlreadyUsedException;
 import com.example.poste.api.poste.models.User;
 
 import java.util.Objects;
 
 /**
  * The RegisterActivity class adds functionality to the activity_register.xml layout
+ * Called when user clicks on the register button on the intro page
  */
 public class RegisterActivity extends AppCompatActivity {
 
@@ -32,7 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
     private static User newUser;
 
     /**
-     * Called when the activity is created
+     * Called when the activity is created (when user clicks on register button on intro page)
      *
      * @param savedInstanceState A bundle containing the saved instance state
      */
@@ -58,14 +60,21 @@ public class RegisterActivity extends AppCompatActivity {
         // Create account button
         Button submit = findViewById(R.id.RCreateAccountBtn);
         submit.setOnClickListener(v -> {
-            String username = nameView.getText().toString();
+            String name = nameView.getText().toString();
             String email = emailView.getText().toString();
             String password = passwordView.getText().toString();
             String confirmedPassword = confirmedPasswordView.getText().toString();
 
             if(password.equals(confirmedPassword))
             {
-                new RegisterActivity.AsyncLogin().execute(email, username, password);
+                // Necessary to avoid NetworkOnMainThreadException
+                //new RegisterActivity.AsyncLogin().execute(email, username, password);
+                try{
+                    User newuser = User.create(email, name, password);
+                } catch (EmailAlreadyUsedException e) {
+                    throw new RuntimeException(e);
+                }
+
 
 //                User user = new User();
 //                user.email = username;
@@ -88,9 +97,19 @@ public class RegisterActivity extends AppCompatActivity {
  then closing the connection string.
  */
 
+    /**
+     * Extends AsyncTask to perform API calls in background thread
+     * This is necessary to avoid NetworkOnMainThreadException (API calls must be done in background
+     * thread)
+     * This is because API calls are network operations, and network operations must be done in
+     * background thread for Android apps
+     */
     private class AsyncLogin extends AsyncTask<String, String, String> {
         ProgressDialog pdLoading = new ProgressDialog(RegisterActivity.this);
 
+        /**
+         * Displays loading dialog while API call is being made
+         */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -102,12 +121,18 @@ public class RegisterActivity extends AppCompatActivity {
 
         }
 
+        /**
+         * Performs API call in background thread
+         * @param params
+         * @return
+         */
         @Override
         protected String doInBackground(String... params) {
             try {
+                // email, user, password
                 API.addUser(params[0], params[1], params[2]);
 
-                newUser = API.getUserByEmail(params[0]);
+                //newUser = API.getUserByEmail(params[0]);
 
                 return "UserCreated";
             } catch (APIException e) {
@@ -116,6 +141,12 @@ public class RegisterActivity extends AppCompatActivity {
             }
         }
 
+        /**
+         * Called after API call is made. Based on result, either displays error or navigates to
+         * dashboard
+         *
+         * @param result The result of the API call
+         */
         @Override
         protected void onPostExecute(String result) {
             //this method will be running on UI thread
@@ -141,9 +172,14 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Navigates to dashboard
+     */
     void navigateToDashboard(){
-        finish();
+        finish(); // Close this activity
+        // Create intent to open dashboard
         Intent intent = new Intent(RegisterActivity.this, DashboardActivity.class);
+        // Start dashboard activity
         startActivity(intent);
     }
 }
