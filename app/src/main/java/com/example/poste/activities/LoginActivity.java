@@ -1,99 +1,59 @@
 package com.example.poste.activities;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Switch;
-import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.poste.PosteApplication;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.poste.R;
-import com.example.poste.api.poste.API;
-import com.example.poste.api.poste.exceptions.APIException;
-import com.example.poste.api.poste.models.User;
 
-/**
- * The LoginActivity class adds functionality to the activity_login.xml layout
- */
 public class LoginActivity extends AppCompatActivity {
-    public Button buttonLoginSubmit;
-    private Switch rememberMeSwitch;
-    private EditText usernameField,passwordField;
-    private String email;
-    private String password;
-    private User loginUser;
 
-    /**
-     * Called when the activity is created
-     *
-     * @param savedInstanceState A bundle containing the saved instance state
-     */
+    public Button buttonLoginSubmit;
+    private EditText usernameField, passwordField;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Configure window settings for fullscreen mode
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getSupportActionBar().hide();
-
-        // Set the activity layout
         setContentView(R.layout.activity_login);
 
-        // Prep vars
-        usernameField = findViewById(R.id.LoginEmailEntertxt);
-        passwordField = findViewById(R.id.LoginPassword);
-        rememberMeSwitch = findViewById(R.id.login_remember_me_switch);
+        TextView hyperlinkTextView = findViewById(R.id.hyperlinkTextViewToRegister);
+        usernameField = findViewById(R.id.editTextTextEmailAddress);
+        passwordField = findViewById(R.id.editTextTextPassword);
 
-        //Email = findViewById(R.poste_item_id.LoginEmailEntertxt);
+        buttonLoginSubmit = findViewById(R.id.loginLoginbtn);
 
-        //Page Navigation starts
-        buttonLoginSubmit = findViewById(R.id.LoginLoginbtn);
+        buttonLoginSubmit.setOnClickListener(view ->
+                buttonTestFunc());
 
-        //Creating the link to Dashboard page
-        buttonLoginSubmit.setOnClickListener(view -> checkLogin());
-        //Page Navigation ends
+        SpannableString spannable = new SpannableString(hyperlinkTextView.getText());
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                // Start the SecondActivity when the link is clicked
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+            }
+        };
+
+        spannable.setSpan(clickableSpan, 0, hyperlinkTextView.getText().length(), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        hyperlinkTextView.setText(spannable);
+        hyperlinkTextView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
-    void navigateToDashboard(){
-        finish();
-        Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-        startActivity(intent);
-    }
-
-
-    /**
-     * Triggers when LOGIN Button clicked from LOGIN page.
-     * Parses email and password from text fields, and sends an API call to validate user.
-     * If user is validated, sets as current user and return to dashboard.
-     * Otherwise, display error.
-     */
-    public void checkLogin() {
+    public void buttonTestFunc() {
+        String email, password;
         email = usernameField.getText().toString();
         password = passwordField.getText().toString();
-        if(email.isEmpty() || password.isEmpty())
-            Toast.makeText(this, "Please enter your login details", Toast.LENGTH_LONG).show();
-        else {
-            try {
-                User user = API.login(email, password);
-                if (user != null) {
-                    Toast.makeText(LoginActivity.this, getString(R.string.login_successful), Toast.LENGTH_LONG).show();
-                    PosteApplication.setCurrentUser(loginUser);
-                    navigateToDashboard();
-                } else {
-                    Toast.makeText(LoginActivity.this, getString(R.string.login_invalid_credentials), Toast.LENGTH_LONG).show();
-                }
-            } catch (APIException e) {
-                e.printStackTrace();
-                Toast.makeText(LoginActivity.this, getString(R.string.internal_error), Toast.LENGTH_LONG).show();
-            }
-
-        }
+        Toast.makeText(LoginActivity.this, "Email: " + email + "\nPassword: " + password, Toast.LENGTH_LONG).show();
     }
 }

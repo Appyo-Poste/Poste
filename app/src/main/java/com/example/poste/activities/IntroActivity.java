@@ -45,7 +45,7 @@ public class IntroActivity extends AppCompatActivity {
 
         // Click listener for the login button -- takes user to login page (LoginActivity)
         buttonLogin.setOnClickListener(view -> {
-            Intent intent = new Intent(IntroActivity.this, Login2Activity.class);
+            Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
             startActivity(intent);
         });
     }
