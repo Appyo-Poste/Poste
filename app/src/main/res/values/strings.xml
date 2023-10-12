@@ -14,6 +14,10 @@
     <!--=====[ Login | Start ]=====-->
     <string name="login_successful">Login successful</string>
     <string name="login_invalid_credentials">Invalid username or password</string>
+    <string name="enter_email">   Enter your email</string>
+    <string name="enter_password">   Enter your password</string>
+    <string name="login_button">Login</string>
+
     <!--=====[ Login | End ]=====-->
 
     <!--=====[ Shared Folder | Start ]=====-->
