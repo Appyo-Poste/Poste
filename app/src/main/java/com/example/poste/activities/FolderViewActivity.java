@@ -1,3 +1,17 @@
+package com.example.poste.activities
+
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import com.example.poste.R
+
+public class FolderViewActivity extends AppCompatActivity {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_folder_view);
+        }
+}
+
+/*
 package com.example.poste.activities;
 
 import android.app.AlertDialog;
@@ -39,9 +53,9 @@ import java.util.HashMap;
 import java.net.URL;
 import java.util.Objects;
 
-/**
- * The FolderViewActivity class adds functionality to the activity_folder_view.xml layout
- */
+//
+// The FolderViewActivity class adds functionality to the activity_folder_view.xml layout
+//
 public class FolderViewActivity extends AppCompatActivity {
 
     private Folder currentFolder;
@@ -52,11 +66,11 @@ public class FolderViewActivity extends AppCompatActivity {
     private FolderAdapter folderAdapter;
     public ImageView optionsView;
 
-    /**
-     * Called when the activity is created
-     *
-     * @param savedInstanceState A bundle containing the saved instance state
-     */
+  //
+  // Called when the activity is created
+  //
+  // @param savedInstanceState A bundle containing the saved instance state
+  //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,3 +160,4 @@ public class FolderViewActivity extends AppCompatActivity {
     }
 
 }
+*/
