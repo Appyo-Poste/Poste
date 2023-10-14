@@ -64,6 +64,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:backgroundTint="#00FFFFFF"
+            android:contentDescription="@string/create"
             app:srcCompat="@android:drawable/ic_menu_add" />
 
         <ImageButton
@@ -72,6 +73,7 @@
             android:layout_height="64dp"
             android:layout_weight="1"
             android:backgroundTint="?android:attr/windowSplashScreenBackground"
+            android:contentDescription="@string/edit"
             app:srcCompat="@android:drawable/ic_menu_manage" />
 
     </LinearLayout>

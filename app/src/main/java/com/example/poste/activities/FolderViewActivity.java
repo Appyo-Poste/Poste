@@ -1,13 +1,13 @@
-package com.example.poste.activities
+package com.example.poste.activities;
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import com.example.poste.R
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import com.example.poste.R;
 
 public class FolderViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_folder_view);
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_folder_view);
         }
 }
 
