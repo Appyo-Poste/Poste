@@ -11,14 +11,15 @@
         android:id="@+id/folderViewEmptyText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="4dp"
         android:text="@string/this_folder_is_empty"
         android:textAlignment="center"
         android:textColor="#3B3B3B"
         android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.241" />
 
     <LinearLayout
         android:layout_width="411dp"
@@ -75,6 +76,36 @@
             app:srcCompat="@android:drawable/ic_menu_manage" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="225dp"
+        android:layout_height="76dp"
+        android:text="Open Post"
+        tools:layout_editor_absoluteX="93dp"
+        tools:layout_editor_absoluteY="478dp" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="225dp"
+        android:layout_height="76dp"
+        android:text="Edit Post"
+        tools:layout_editor_absoluteX="93dp"
+        tools:layout_editor_absoluteY="566dp" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="225dp"
+        android:layout_height="76dp"
+        android:text="Delete Post"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="93dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="373dp"
+        android:layout_height="379dp"
+        tools:layout_editor_absoluteX="19dp"
+        tools:layout_editor_absoluteY="78dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
