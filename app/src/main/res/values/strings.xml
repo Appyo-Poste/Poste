@@ -47,6 +47,7 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="poste_logo_description">Poste Logo</string>
     <string name="title_activity_twitter_token">TwitterToken</string>
+    <string name="edit_post_icon">edit post icon</string>
     <!--=====[ Misc | End ]=====-->
 
     <string-array name="spinner_values">
