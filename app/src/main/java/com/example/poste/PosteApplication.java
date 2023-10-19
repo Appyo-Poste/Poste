@@ -3,7 +3,16 @@ package com.example.poste;
 import android.app.Application;
 import android.content.Context;
 
+import com.example.poste.api.poste.models.Folder;
+import com.example.poste.api.poste.models.FolderAccess;
+import com.example.poste.api.poste.models.Post;
 import com.example.poste.api.poste.models.User;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A custom application class that extends the Android Application class
@@ -22,10 +31,48 @@ public class PosteApplication extends Application {
      */
     public void onCreate() {
         super.onCreate();
+        dataMockUp();
+        printMockData();
         // Initialize the application context
         PosteApplication.context = getApplicationContext();
     }
 
+    public void dataMockUp() {
+        currentUser = new User(12, "e@mail.com", "ed", "123");
+        Post post1 = new Post(1, "Look at these ones!", "somewhere.com/1", 12);
+        Post post2 = new Post(2, "Look at these twos!", "somewhere.com/2", 12);
+        Post post3 = new Post(3, "Wowza! cool threes!", "somewhere.com/3", 12);
+        ArrayList<Post> mockList1 = new ArrayList<>();
+        ArrayList<Post> mockList2 = new ArrayList<>();
+        mockList1.add(post1);
+        mockList1.add(post2);
+        mockList2.add(post3);
+        HashMap<Integer, FolderAccess> userMockAccess = new HashMap<>();
+        userMockAccess.put(12, FolderAccess.valueOf(3));
+        currentUser.addFolder(new Folder(1, "One n Two Stuff", 12, mockList1, userMockAccess));
+        currentUser.addFolder(new Folder(1, "three Stuff", 12, mockList2, userMockAccess));
+    }
+
+    public void printMockData(){
+        List<Folder> usersMockFolders = currentUser.getFolders();
+        System.out.println("The user # " + currentUser.getId() + " named " + currentUser.getUsername() + " at " + currentUser.getEmail() + " has " + usersMockFolders.size() + " folders shown below:");
+        for (int i = 0; i < usersMockFolders.size(); i++) {
+            Folder f = usersMockFolders.get(i);
+            System.out.println("Folder Id = " + f.getId() + " --- Name = " + f.getName() + " --- Owned By = " + f.getOwnerId() + " And holds these posts:");
+            List<Post> mps = f.getPosts();
+            for (int k = 0; k < mps.size(); k++) {
+                Post p = mps.get(k);
+                System.out.println("     Post Id = " + p.getId() + " --- Name = " + p.getName() + " --- Link = " + p.getLink() +" --- User Id of Post Owner = " + p.getOwnerId());
+            }
+            System.out.println("     Folder visibility is as follows:");
+            HashMap<Integer, FolderAccess> al = f.getUsers();
+            Iterator<Map.Entry<Integer, FolderAccess>> iter = al.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry<Integer, FolderAccess> ent = iter.next();
+                System.out.println("          User # " + ent.getKey() + " has access level: " + ent.getValue());
+            }
+        }
+    }
     /**
      * Get the currently logged-in user
      *

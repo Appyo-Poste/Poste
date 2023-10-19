@@ -119,4 +119,8 @@ public class Folder {
             return API.updateFolder(this.id, this.name, this.ownerId);
         } catch (Exception e) { return false; }
     }
+
+    public void addPost(Post post) {
+        posts.add(post);
+    }
 }
