@@ -47,6 +47,69 @@ public class User {
     private final Collection<Folder> folders;
 
     /**
+     * The email used for the user's account
+     */
+    private String email;
+
+    /**
+     * The user's first name
+     */
+    private String firstName;
+
+    /**
+     * get the user's email
+     * @return String of email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * sets the user's email
+     * @param email
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * gets the user's first name
+     * @return string of the users first name
+     */
+    public String getFirstName() {
+        return firstName;
+    }
+
+    /**
+     * sets the users first name
+     * @param firstName
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+     * gets the users last name
+     * @return String
+     */
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
+     * sets the user's last name
+     * @param lastName
+     */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    /**
+     * The user's last name
+     */
+    private String lastName;
+
+    /**
      * Private constructor for the User class. This should not be called directly -- instead, use
      * the {@link #getUser()} method to retrieve the singleton instance of the User class.
      */
