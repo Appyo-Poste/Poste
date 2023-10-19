@@ -32,38 +32,24 @@ import com.example.poste.api.poste.API;
 import com.example.poste.api.poste.exceptions.APIException;
 import com.example.poste.api.poste.models.Folder;
 import com.example.poste.api.poste.models.FolderAccess;
-import com.example.poste.api.poste.models.Post;
 import com.example.poste.api.poste.models.User;
-import com.example.poste.http.FolderRequest;
-import com.example.poste.http.MyApiService;
-import com.example.poste.http.RetrofitClient;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * The DashboardActivity class adds functionality to the activity_dashboard.xml layout
  */
 public class DashboardActivity extends PActivity {
     private User currentUser;
-    private List<Folder> userFolders;
+    private HashMap<Folder, FolderAccess> userFolders;
     private RecyclerView folderRecyclerView;
     private FolderAdapter folderAdapter;
     public ImageView optionsView;
     public HashMap<String, Integer> folderIdNameMap = new HashMap<>();
-    private MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
 
     /**
      * Called when the activity is created
@@ -73,9 +59,6 @@ public class DashboardActivity extends PActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Update app info
-        // User.getUser().updateFoldersAndPosts();
 
         // Configure window settings for fullscreen mode
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -91,10 +74,13 @@ public class DashboardActivity extends PActivity {
         optionsView = findViewById(R.id.Optionsbtn);
         folderRecyclerView = findViewById(R.id.folder_recycler_view);
         Button addButton = findViewById(R.id.dashboard_add_folder_btn);
-
-        userFolders = currentUser.getFolders();
-        for (Folder folder: userFolders) {
-            folderIdNameMap.put(String.format("(%d) %s", folder.getId(), folder.getName()), folder.getId());
+        try {
+            userFolders = API.getFoldersForUserId(currentUser.getId());
+            for (Folder folder: userFolders.keySet()) {
+                folderIdNameMap.put(String.format("(%d) %s", folder.getId(), folder.getName()), folder.getId());
+            }
+        } catch (APIException e) {
+            throw new RuntimeException(e);
         }
 
         // Click listener for the options button
@@ -129,7 +115,7 @@ public class DashboardActivity extends PActivity {
                         Toast.makeText(DashboardActivity.this, getString(R.string.share_folder), Toast.LENGTH_LONG).show();
                     }
                 },
-                new ArrayList<>(userFolders)
+                new ArrayList<>(userFolders.keySet())
         );
         folderRecyclerView.setAdapter(folderAdapter);
         registerForContextMenu(folderRecyclerView);
@@ -211,11 +197,9 @@ public class DashboardActivity extends PActivity {
                 // Handle post creation logic
                 try {
                     // Create the post in the API
-                    // TODO: change to retrofit
                     int newPostID = API.addPost(itemName, itemLink, currentUser.getId());
 
                     // Update the post's folder in the API
-                    // TODO: change to retrofit
                     API.addPostToFolder(newPostID, selectedFolderId);
                 } catch (APIException e) {
                     throw new RuntimeException(e);
@@ -270,31 +254,15 @@ public class DashboardActivity extends PActivity {
                 String itemName = editTextItemName.getText().toString().trim();
 
                 // Handle folder creation logic
-                    Call<ResponseBody> call = apiService.createFolder(new FolderRequest(itemName, currentUser.getId()));
-                    call.enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            if (response.isSuccessful()) {
-                                try {
-                                    JSONObject folder = new JSONObject(response.body().toString());
-                                    userFolders.add(new Folder(folder.getInt("id"), folder.getString("title"), currentUser.getId(), new ArrayList<>(), new HashMap<>()));
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                Toast.makeText(DashboardActivity.this, "folder creation successful.", Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(DashboardActivity.this, "folder creation failed.", Toast.LENGTH_LONG).show();
-                            }
-                        }
+                try {
+                    int newFolderId = API.addFolder(itemName, currentUser.getId());
+                    API.addUserToFolder(currentUser.getId(), newFolderId, FolderAccess.OWNER);
 
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            Toast.makeText(DashboardActivity.this, "folder creation failed.", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                    userFolders = currentUser.getFolders();
+                    userFolders = API.getFoldersForUserId(currentUser.getId());
                     folderAdapter.notifyItemInserted(userFolders.size() - 1);
-
+                } catch (APIException e) {
+                    throw new RuntimeException(e);
+                }
 
                 // For simplicity, let's just display a toast message with the post details
                 Toast.makeText(DashboardActivity.this, "Folder created", Toast.LENGTH_LONG).show();
@@ -338,47 +306,22 @@ public class DashboardActivity extends PActivity {
                 finish();
                 break;
             case R.id.ctx_menu_delete_folder:
+                try {
                     // Remove all access
-                    HashMap<Integer, FolderAccess> folderUsers = folder.getUsers();
+                    HashMap<Integer, FolderAccess> folderUsers = API.getAccessForFolderId(folder.getId());
                     folderUsers.forEach((userId, folderAccess) -> {
                         try {
-                            // TODO: change to retrofit
                             API.removeUserFromFolder(folder.getId(), userId);
                         } catch (APIException e) { }
                     });
 
                     // Delete the folder
-                    Call<ResponseBody> call = apiService.deleteFolder(folder.getId());
-                    call.enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            if (response.isSuccessful()) {
-                                JSONObject res;
-                                try {
-                                    res = new JSONObject(response.body().toString());
-                                    if (res.getBoolean("success")){
-                                        Toast.makeText(DashboardActivity.this, "folder deleted successful.", Toast.LENGTH_LONG).show();
-                                    } else {
-                                        Toast.makeText(DashboardActivity.this, "folder deletion failed.", Toast.LENGTH_LONG).show();
-                                    }
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            } else {
-                                Toast.makeText(DashboardActivity.this, "folder deletion failed.", Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            Toast.makeText(DashboardActivity.this, "folder deletion failed.", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                    userFolders.remove(folder);
-
-                    // updates view
-                    userFolders = currentUser.getFolders();
+                    API.deleteFolder(folder.getId());
+                    userFolders = API.getFoldersForUserId(currentUser.getId());
                     folderAdapter.notifyItemInserted(userFolders.size() - 1);
+                } catch (APIException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
         }
         return true;
