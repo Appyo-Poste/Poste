@@ -71,6 +71,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.isSuccessful()){
                         Toast.makeText(LoginActivity.this,"Login successful!", Toast.LENGTH_SHORT).show();
+                        Log.d("debug", "onResponse: " + response.toString());
                         // open dashboard activity
                         Intent dashboardIntent = new Intent(LoginActivity.this, IntroActivity.class);
                         startActivity(dashboardIntent);
