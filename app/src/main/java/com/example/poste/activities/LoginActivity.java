@@ -68,12 +68,6 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    void navigateToFolderView(){
-        finish();
-        Intent intent = new Intent(LoginActivity.this, FolderViewActivity.class);
-        startActivity(intent);
-    }
-
 
     /**
      * Triggers when LOGIN Button clicked from LOGIN page.

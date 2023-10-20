@@ -74,45 +74,41 @@ public class FolderViewActivity extends AppCompatActivity {
         TextView emptyText = findViewById(R.id.folderViewEmptyText);
         postRecyclerView = findViewById(R.id.posts_recycler_view);
         currentUser = PosteApplication.getCurrentUser();
+        currentFolder = PosteApplication.getCurrentFolder();
         registerForContextMenu(postRecyclerView);
 
         // Get current folder
-        int currentFolderId = getIntent().getIntExtra("folderId", -1);
-        try {
-            currentFolder = API.getFolderById(currentFolderId);
+        int currentFolderId = currentFolder.getId();
 
-            // Remove empty text if posts exist in folder
-            if (currentFolder.getPosts().size() > 0) {
-                emptyText.setVisibility(View.GONE);
-            }
-
-            // Fill post view (Recycler View)
-            postRecyclerView.setLayoutManager(new LinearLayoutManager(FolderViewActivity.this));
-            postAdapter = new PostAdapter(
-                    new PostAdapter.ClickListener() {
-                        @Override
-                        public void onItemClick(int position, Post post) {
-                            try {
-                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(post.getLink()));
-                                startActivity(browserIntent);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Toast.makeText(FolderViewActivity.this, R.string.internal_error, Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-                        @Override
-                        public void onItemLongClick(int position, Post model) {
-//                            Toast.makeText(FolderViewActivity.this, "Share this folder", Toast.LENGTH_LONG).show();
-                        }
-                    },
-                    currentFolder.getPosts()
-            );
-            postRecyclerView.setAdapter(postAdapter);
-            registerForContextMenu(postRecyclerView);
-        } catch (APIException e) {
-            throw new RuntimeException(e);
+        // Remove empty text if posts exist in folder
+        if (currentFolder.getPosts().size() > 0) {
+            emptyText.setVisibility(View.GONE);
         }
+
+        // Fill post view (Recycler View)
+        postRecyclerView.setLayoutManager(new LinearLayoutManager(FolderViewActivity.this));
+        postAdapter = new PostAdapter(
+                new PostAdapter.ClickListener() {
+                    @Override
+                    public void onItemClick(int position, Post post) {
+                        try {
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(post.getLink()));
+                            startActivity(browserIntent);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(FolderViewActivity.this, R.string.internal_error, Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onItemLongClick(int position, Post model) {
+//                            Toast.makeText(FolderViewActivity.this, "Share this folder", Toast.LENGTH_LONG).show();
+                    }
+                },
+                currentFolder.getPosts()
+        );
+        postRecyclerView.setAdapter(postAdapter);
+        registerForContextMenu(postRecyclerView);
     }
 
     @Override
@@ -127,17 +123,7 @@ public class FolderViewActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.ctx_menu_delete_post:
-                try {
-                    // Remove post from folder
-                    API.removePostFromFolder(post.getId(), currentFolder.getId());
-
-                    // Delete post
-                    API.deletePost(post.getId());
-                } catch (APIException e) {
-                    e.printStackTrace();
-                    Toast.makeText(FolderViewActivity.this, R.string.internal_error, Toast.LENGTH_LONG).show();
-                }
-
+                currentFolder.removePost(post);
                 Intent newIntent = new Intent(FolderViewActivity.this, DashboardActivity.class);
                 startActivity(newIntent);
                 break;

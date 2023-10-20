@@ -33,8 +33,8 @@ public class PosteApplication extends Application {
      */
     public void onCreate() {
         super.onCreate();
-        //dataMockUp();
-        //printMockData();
+        dataMockUp();
+        printMockData();
         // Initialize the application context
         PosteApplication.context = getApplicationContext();
     }
@@ -56,7 +56,7 @@ public class PosteApplication extends Application {
         userMockAccess.put(12, FolderAccess.valueOf(3));
         currentUser.addFolder(new Folder(1, "One n Two Stuff", 12, mockList1, userMockAccess));
         currentUser.addFolder(new Folder(1, "three Stuff", 12, mockList2, userMockAccess));
-        currentFolder = currentUser.getFolders().get(1);
+        currentFolder = currentUser.getFolders().get(0);
     }
 
     /**

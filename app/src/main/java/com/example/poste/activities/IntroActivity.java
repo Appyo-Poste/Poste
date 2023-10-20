@@ -45,8 +45,14 @@ public class IntroActivity extends AppCompatActivity {
 
         // Click listener for the login button -- takes user to login page (LoginActivity)
         buttonLogin.setOnClickListener(view -> {
-            Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
-            startActivity(intent);
+            navigateToFolderView();
+            //Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
+            //startActivity(intent);
         });
+    }
+
+    void navigateToFolderView(){
+        Intent intent = new Intent(IntroActivity.this, FolderViewActivity.class);
+        startActivity(intent);
     }
 }
