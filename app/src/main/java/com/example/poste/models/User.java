@@ -195,6 +195,7 @@ public class User {
                     try {
                         String jsonResponse = response.body().string();
                         Log.d("Response", jsonResponse);
+                        user.folders.clear();
                         JSONArray jsonArray = new JSONArray(jsonResponse);
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject folder = jsonArray.getJSONObject(i);
