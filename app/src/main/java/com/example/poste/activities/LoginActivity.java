@@ -15,6 +15,7 @@ import com.example.poste.PosteApplication;
 import com.example.poste.R;
 import com.example.poste.api.poste.API;
 import com.example.poste.api.poste.exceptions.APIException;
+import com.example.poste.api.poste.models.Folder;
 import com.example.poste.api.poste.models.User;
 
 /**
@@ -64,6 +65,12 @@ public class LoginActivity extends AppCompatActivity {
     void navigateToDashboard(){
         finish();
         Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+        startActivity(intent);
+    }
+
+    void navigateToFolderView(){
+        finish();
+        Intent intent = new Intent(LoginActivity.this, FolderViewActivity.class);
         startActivity(intent);
     }
 

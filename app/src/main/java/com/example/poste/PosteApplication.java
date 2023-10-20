@@ -8,6 +8,7 @@ import com.example.poste.api.poste.models.FolderAccess;
 import com.example.poste.api.poste.models.Post;
 import com.example.poste.api.poste.models.User;
 
+import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,6 +23,7 @@ import java.util.Map;
 public class PosteApplication extends Application {
     private static Context context;
     private static User currentUser;
+    private static Folder currentFolder;
 
     /**
      * Called when the application is starting
@@ -31,12 +33,15 @@ public class PosteApplication extends Application {
      */
     public void onCreate() {
         super.onCreate();
-        dataMockUp();
-        printMockData();
+        //dataMockUp();
+        //printMockData();
         // Initialize the application context
         PosteApplication.context = getApplicationContext();
     }
 
+    /**
+     * Debug code (remove this function in final build
+     */
     public void dataMockUp() {
         currentUser = new User(12, "e@mail.com", "ed", "123");
         Post post1 = new Post(1, "Look at these ones!", "somewhere.com/1", 12);
@@ -51,8 +56,12 @@ public class PosteApplication extends Application {
         userMockAccess.put(12, FolderAccess.valueOf(3));
         currentUser.addFolder(new Folder(1, "One n Two Stuff", 12, mockList1, userMockAccess));
         currentUser.addFolder(new Folder(1, "three Stuff", 12, mockList2, userMockAccess));
+        currentFolder = currentUser.getFolders().get(1);
     }
 
+    /**
+     * Debug code (remove this function in final build
+     */
     public void printMockData(){
         List<Folder> usersMockFolders = currentUser.getFolders();
         System.out.println("The user # " + currentUser.getId() + " named " + currentUser.getUsername() + " at " + currentUser.getEmail() + " has " + usersMockFolders.size() + " folders shown below:");
@@ -89,6 +98,22 @@ public class PosteApplication extends Application {
      */
     public static void setCurrentUser(User currentUser) {
         PosteApplication.currentUser = currentUser;
+    }
+
+    /**
+     * Get currently selected folder
+     *
+     * @return the currently selected folder
+     */
+    public static Folder getCurrentFolder() {return currentFolder; }
+
+    /**
+     * Sets which folder is currently selected
+     *
+     * @param folder the foldr that we want to select
+     */
+    public static void setCurrentFolder(Folder folder) {
+        currentFolder = folder;
     }
 
     /**
