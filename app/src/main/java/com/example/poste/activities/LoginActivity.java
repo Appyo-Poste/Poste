@@ -20,6 +20,12 @@ import com.example.poste.R;
 import com.example.poste.http.LoginRequest;
 import com.example.poste.http.MyApiService;
 import com.example.poste.http.RetrofitClient;
+import com.example.poste.models.User;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -31,6 +37,10 @@ public class LoginActivity extends AppCompatActivity {
     public Button buttonLoginSubmit;
     private EditText usernameField, passwordField;
 
+    /**
+     * function that runs on creation of the activity
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +52,9 @@ public class LoginActivity extends AppCompatActivity {
 
         buttonLoginSubmit = findViewById(R.id.loginLoginbtn);
 
+        /**
+         * adds a hyperlink to redirect user to the login page
+         */
         SpannableString spannable = new SpannableString(hyperlinkTextView.getText());
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
@@ -57,7 +70,10 @@ public class LoginActivity extends AppCompatActivity {
         hyperlinkTextView.setText(spannable);
         hyperlinkTextView.setMovementMethod(LinkMovementMethod.getInstance());
 
-
+        /**
+         * Function that runs when login button is pressed
+         * Makes a request to the API and gets a response in return
+         */
         buttonLoginSubmit.setOnClickListener(view -> {
             String email = usernameField.getText().toString();
             String password = passwordField.getText().toString();
@@ -67,11 +83,27 @@ public class LoginActivity extends AppCompatActivity {
             MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
             Call<ResponseBody> call = apiService.loginUser(new LoginRequest(email, password));
             call.enqueue(new Callback<ResponseBody>() {
+                /**
+                 * Function that runs when response is returned by the API
+                 * @param call
+                 * @param response
+                 */
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.isSuccessful()){
                         Toast.makeText(LoginActivity.this,"Login successful!", Toast.LENGTH_SHORT).show();
-                        Log.d("debug", "onResponse: " + response.toString());
+                        try {
+                            String jsonResponse = response.body().string();
+                            JSONObject jsonObject = new JSONObject(jsonResponse);
+                            String token = jsonObject.getJSONObject("result").getString("token");
+                            Log.d("debug","Token: " + token);
+                            User.getUser().setToken(token);
+                            User.getUser().setEmail(email);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        } catch (JSONException err){
+                            Log.e("Json Error", err.toString());
+                        }
                         // open dashboard activity
                         Intent dashboardIntent = new Intent(LoginActivity.this, IntroActivity.class);
                         startActivity(dashboardIntent);
@@ -80,6 +112,11 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
 
+                /**
+                 * if respose fails
+                 * @param call
+                 * @param t
+                 */
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     Toast.makeText(LoginActivity.this, "Login failed.", Toast.LENGTH_SHORT).show();
