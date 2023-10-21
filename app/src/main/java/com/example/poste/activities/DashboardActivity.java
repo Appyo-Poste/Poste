@@ -36,6 +36,7 @@ import com.example.poste.api.poste.models.Post;
 import com.example.poste.api.poste.models.User;
 import com.example.poste.http.FolderRequest;
 import com.example.poste.http.MyApiService;
+import com.example.poste.http.PostRequest;
 import com.example.poste.http.RetrofitClient;
 
 import org.json.JSONException;
@@ -209,17 +210,45 @@ public class DashboardActivity extends PActivity {
                 }
 
                 // Handle post creation logic
-                try {
-                    // Create the post in the API
-                    // TODO: change to retrofit
-                    int newPostID = API.addPost(itemName, itemLink, currentUser.getId());
+                Call<ResponseBody> call = apiService.createPost(new PostRequest(itemName, "", itemLink, currentUser.getId(), selectedFolderId));
 
-                    // Update the post's folder in the API
-                    // TODO: change to retrofit
-                    API.addPostToFolder(newPostID, selectedFolderId);
-                } catch (APIException e) {
-                    throw new RuntimeException(e);
-                }
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if(response.isSuccessful()) {
+                            try {
+                                JSONObject res = new JSONObject(response.body().toString());
+
+                                if (res.getBoolean("success")) {
+                                    Folder folder = null;
+                                    for (Folder find: currentUser.getFolders()) {
+                                        if (find.getId() == res.getInt("folder")) {
+                                            folder = find;
+                                        }
+                                    }
+
+                                    folder.getPosts().add(new Post(res.getInt("id"),
+                                            res.getString("title"),
+                                            res.getString("url"),
+                                            res.getInt("creator")));
+
+                                    Toast.makeText(DashboardActivity.this, "Post creation successful.", Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(DashboardActivity.this, "Post creation failed.", Toast.LENGTH_LONG).show();
+                                }
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(DashboardActivity.this, "Post creation failed.", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
 
                 // For simplicity, let's just display a toast message with the post details
                 Toast.makeText(DashboardActivity.this, "Post created:\nName: " + itemName + "\nLink: " + itemLink, Toast.LENGTH_LONG).show();
@@ -338,15 +367,6 @@ public class DashboardActivity extends PActivity {
                 finish();
                 break;
             case R.id.ctx_menu_delete_folder:
-                    // Remove all access
-                    HashMap<Integer, FolderAccess> folderUsers = folder.getUsers();
-                    folderUsers.forEach((userId, folderAccess) -> {
-                        try {
-                            // TODO: change to retrofit
-                            API.removeUserFromFolder(folder.getId(), userId);
-                        } catch (APIException e) { }
-                    });
-
                     // Delete the folder
                     Call<ResponseBody> call = apiService.deleteFolder(folder.getId());
                     call.enqueue(new Callback<ResponseBody>() {

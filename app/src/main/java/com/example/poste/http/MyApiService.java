@@ -18,4 +18,6 @@ public interface MyApiService {
     @GET("folders/folders/deleteFolder/{id}/")
     Call<ResponseBody> deleteFolder(@Path("id") int id);
 
+    @POST("posts/")
+    Call<ResponseBody> createPost(@Body PostRequest postRequest);
 }
