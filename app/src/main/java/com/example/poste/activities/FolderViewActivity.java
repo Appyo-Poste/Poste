@@ -37,7 +37,7 @@ public class FolderViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Clear post selection
-        PosteApplication.setCurrentPost(null);
+        PosteApplication.setSelectedPost(null);
 
         // Configure window settings for fullscreen mode
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -61,8 +61,8 @@ public class FolderViewActivity extends AppCompatActivity {
         // Create listeners for the folder buttons
         newBut.setOnClickListener(view -> {
             Post newPost = new Post(PosteApplication.getCurrentUser().getId(), "", "", PosteApplication.getCurrentUser().getId());
-            PosteApplication.getCurrentFolder().addPost(newPost);
-            PosteApplication.setCurrentPost(newPost);
+            PosteApplication.getSelectedFolder().addPost(newPost);
+            PosteApplication.setSelectedPost(newPost);
             Intent intent = new Intent(FolderViewActivity.this, EditPostActivity.class);
             startActivity(intent);
         });
@@ -74,9 +74,9 @@ public class FolderViewActivity extends AppCompatActivity {
 
         // Create listeners for the post buttons
         openBut.setOnClickListener(view -> {
-            if (PosteApplication.getCurrentPost() != null) {
+            if (PosteApplication.getSelectedPost() != null) {
                 try {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PosteApplication.getCurrentPost().getLink()));
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PosteApplication.getSelectedPost().getLink()));
                     startActivity(browserIntent);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -86,25 +86,25 @@ public class FolderViewActivity extends AppCompatActivity {
         });
 
         editBut.setOnClickListener(view -> {
-            if (PosteApplication.getCurrentPost() != null) {
+            if (PosteApplication.getSelectedPost() != null) {
                 Intent intent = new Intent(FolderViewActivity.this, EditPostActivity.class);
                 startActivity(intent);
             }
         });
 
         deleteBut.setOnClickListener(view -> {
-            if (PosteApplication.getCurrentPost() != null) {
-                PosteApplication.getCurrentFolder().removePost(PosteApplication.getCurrentPost());
+            if (PosteApplication.getSelectedPost() != null) {
+                PosteApplication.getSelectedFolder().removePost(PosteApplication.getSelectedPost());
                 Intent intent = new Intent(FolderViewActivity.this, FolderViewActivity.class);
                 startActivity(intent);
             }
         });
 
         // Set folder name in title bar
-        folderName.setText(PosteApplication.getCurrentFolder().getName());
+        folderName.setText(PosteApplication.getSelectedFolder().getName());
 
         // Remove empty text if posts exist in folder or remove buttons if the folder is empty
-        if (PosteApplication.getCurrentFolder().getPosts().size() > 0) {
+        if (PosteApplication.getSelectedFolder().getPosts().size() > 0) {
             emptyText.setVisibility(View.GONE);
         }
         else {
@@ -119,7 +119,7 @@ public class FolderViewActivity extends AppCompatActivity {
                 new PostAdapter.ClickListener() {
                     @Override
                     public void onItemClick(int position, Post post) {
-                        PosteApplication.setCurrentPost(post);
+                        PosteApplication.setSelectedPost(post);
                     }
 
                     @Override
@@ -127,7 +127,7 @@ public class FolderViewActivity extends AppCompatActivity {
                             // No Long click action
                     }
                 },
-                PosteApplication.getCurrentFolder().getPosts()
+                PosteApplication.getSelectedFolder().getPosts()
         );
         postRecyclerView.setAdapter(postAdapter);
     }

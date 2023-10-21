@@ -22,8 +22,8 @@ import java.util.Map;
 public class PosteApplication extends Application {
     private static Context context;
     private static User currentUser;
-    private static Folder currentFolder;
-    private static Post currentPost;
+    private static Folder selectedFolder;
+    private static Post selectedPost;
 
     /**
      * Called when the application is starting
@@ -54,7 +54,7 @@ public class PosteApplication extends Application {
         userMockAccess.put(12, FolderAccess.valueOf(3));
         currentUser.addFolder(new Folder(1, "One n Two Stuff", 12, mockList1, userMockAccess));
         currentUser.addFolder(new Folder(1, "three Stuff", 12, mockList2, userMockAccess));
-        currentFolder = currentUser.getFolders().get(0);
+        selectedFolder = currentUser.getFolders().get(0);
     }
 
     /**
@@ -104,15 +104,15 @@ public class PosteApplication extends Application {
      *
      * @return the currently selected folder
      */
-    public static Folder getCurrentFolder() {return currentFolder; }
+    public static Folder getSelectedFolder() {return selectedFolder; }
 
     /**
      * Sets which folder is currently selected
      *
      * @param folder the folder that we want to select
      */
-    public static void setCurrentFolder(Folder folder) {
-        currentFolder = folder;
+    public static void setSelectedFolder(Folder folder) {
+        selectedFolder = folder;
     }
 
     /**
@@ -120,15 +120,15 @@ public class PosteApplication extends Application {
      *
      * @return the currently selected post
      */
-    public static Post getCurrentPost() {return currentPost; }
+    public static Post getSelectedPost() {return selectedPost; }
 
     /**
      * Sets which post is currently selected
      *
      * @param post the post that we want to select
      */
-    public static void setCurrentPost(Post post) {
-        currentPost = post;
+    public static void setSelectedPost(Post post) {
+        selectedPost = post;
     }
 
     /**
