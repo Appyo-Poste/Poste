@@ -33,8 +33,6 @@ public class PosteApplication extends Application {
      */
     public void onCreate() {
         super.onCreate();
-        dataMockUp();
-        printMockData();
         // Initialize the application context
         PosteApplication.context = getApplicationContext();
     }
