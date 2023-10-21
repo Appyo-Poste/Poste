@@ -15,7 +15,6 @@ import com.example.poste.PosteApplication;
 import com.example.poste.R;
 import com.example.poste.api.poste.API;
 import com.example.poste.api.poste.exceptions.APIException;
-import com.example.poste.api.poste.models.Folder;
 import com.example.poste.api.poste.models.User;
 
 /**

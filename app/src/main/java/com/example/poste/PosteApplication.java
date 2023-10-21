@@ -8,7 +8,6 @@ import com.example.poste.api.poste.models.FolderAccess;
 import com.example.poste.api.poste.models.Post;
 import com.example.poste.api.poste.models.User;
 
-import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,6 +23,7 @@ public class PosteApplication extends Application {
     private static Context context;
     private static User currentUser;
     private static Folder currentFolder;
+    private static Post currentPost;
 
     /**
      * Called when the application is starting
@@ -40,7 +40,7 @@ public class PosteApplication extends Application {
     }
 
     /**
-     * Debug code (remove this function in final build
+     * Debug code (remove this function in final build)
      */
     public void dataMockUp() {
         currentUser = new User(12, "e@mail.com", "ed", "123");
@@ -60,7 +60,7 @@ public class PosteApplication extends Application {
     }
 
     /**
-     * Debug code (remove this function in final build
+     * Debug code (remove this function in final build)
      */
     public void printMockData(){
         List<Folder> usersMockFolders = currentUser.getFolders();
@@ -82,6 +82,7 @@ public class PosteApplication extends Application {
             }
         }
     }
+
     /**
      * Get the currently logged-in user
      *
@@ -110,10 +111,26 @@ public class PosteApplication extends Application {
     /**
      * Sets which folder is currently selected
      *
-     * @param folder the foldr that we want to select
+     * @param folder the folder that we want to select
      */
     public static void setCurrentFolder(Folder folder) {
         currentFolder = folder;
+    }
+
+    /**
+     * Get currently selected post
+     *
+     * @return the currently selected post
+     */
+    public static Post getCurrentPost() {return currentPost; }
+
+    /**
+     * Sets which post is currently selected
+     *
+     * @param post the post that we want to select
+     */
+    public static void setCurrentPost(Post post) {
+        currentPost = post;
     }
 
     /**
