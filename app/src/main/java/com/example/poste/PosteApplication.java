@@ -20,7 +20,6 @@ import java.util.Map;
  * store information about the currently logged-in user
  */
 public class PosteApplication extends Application {
-    private static Context context;
     private static User currentUser;
     private static Folder selectedFolder;
     private static Post selectedPost;
@@ -34,7 +33,6 @@ public class PosteApplication extends Application {
     public void onCreate() {
         super.onCreate();
         // Initialize the application context
-        PosteApplication.context = getApplicationContext();
     }
 
     /**
@@ -129,23 +127,5 @@ public class PosteApplication extends Application {
      */
     public static void setSelectedPost(Post post) {
         selectedPost = post;
-    }
-
-    /**
-     * Get the application's context
-     *
-     * @return The application's context
-     */
-    public static Context getAppContext() {
-        return PosteApplication.context;
-    }
-
-    /**
-     * Get the instance of the application
-     *
-     * @return The application instance as an `Application` object.
-     */
-    public static Application getApp() {
-        return (Application) PosteApplication.context;
     }
 }
