@@ -1,5 +1,14 @@
 package com.example.poste.models;
 
+import com.example.poste.http.DeletePost;
+import com.example.poste.http.MyApiService;
+import com.example.poste.http.RetrofitClient;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  * Represents a Post of the Poste app. Should closely mirror the Backend Post model.
  */
@@ -66,6 +75,24 @@ public class Post {
      * @return the id of the post, as a String.
      */
     public String getId() { return id; }
+
+    /**
+     * Deletes this post from the data model and backend
+     */
+    public void deletePost(Folder parentFolder) {
+        Post delPost = this;
+        MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
+        Call<ResponseBody> call = apiService.deletePost(new DeletePost(delPost.getId()));
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                parentFolder.getPosts().remove(delPost);
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            }
+        });
+    }
 
     /**
      * Static builder class for the Post class. This is used to build a Post object.

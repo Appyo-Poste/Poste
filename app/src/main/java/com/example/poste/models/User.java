@@ -72,7 +72,7 @@ public class User {
      * Adds a folder to the user's folders.
      * @param newFolder the folder to add to the user's folders.
      */
-    private void addFolder(Folder newFolder) {
+    public void addFolder(Folder newFolder) {
         folders.add(newFolder);
     }
 

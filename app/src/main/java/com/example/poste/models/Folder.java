@@ -1,7 +1,16 @@
 package com.example.poste.models;
 
+import com.example.poste.http.CreatePost;
+import com.example.poste.http.MyApiService;
+import com.example.poste.http.RetrofitClient;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Represents a Folder of the Poste app. Should closely mirror the Backend Folder model.
@@ -58,6 +67,34 @@ public class Folder {
      */
     public String getUserPermission() {
         return userPermission;
+    }
+
+    /**
+     * Adds a new post the given folder
+     *
+     * @param folder folder to add the new post to
+     */
+    public Post createNewPost(Folder folder) {
+        Post.Builder pb = new Post.Builder();
+        pb.setTitle("Untitled");
+        Post newPost = pb.build();
+        MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
+        Call<ResponseBody> call = apiService.createPost(new CreatePost(newPost.getTitle(), newPost.getDescription(), newPost.getUrl(), folder.getTitle()));
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                posts.add(newPost);
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            }
+        });
+        if (posts.contains(newPost)) {
+            return newPost;
+        }
+        else {
+            return null;
+        }
     }
 
     /**

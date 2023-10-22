@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.poste.PosteApplication;
 import com.example.poste.adapters.PostAdapter;
 import com.example.poste.R;
-import com.example.poste.api.poste.models.Post;
+import com.example.poste.models.Post;
 
 /**
  * The FolderViewActivity class adds functionality to the activity_folder_view.xml layout.
@@ -62,8 +62,7 @@ public class FolderViewActivity extends AppCompatActivity {
 
         // Create listeners for the folder buttons
         newBut.setOnClickListener(view -> {
-            Post newPost = new Post(PosteApplication.getCurrentUser().getId(), "", "", PosteApplication.getCurrentUser().getId());
-            PosteApplication.getSelectedFolder().addPost(newPost);
+            Post newPost = PosteApplication.getSelectedFolder().createNewPost(PosteApplication.getSelectedFolder());
             PosteApplication.setSelectedPost(newPost);
             Intent intent = new Intent(FolderViewActivity.this, EditPostActivity.class);
             startActivity(intent);
@@ -78,7 +77,7 @@ public class FolderViewActivity extends AppCompatActivity {
         openBut.setOnClickListener(view -> {
             if (PosteApplication.getSelectedPost() != null) {
                 try {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PosteApplication.getSelectedPost().getLink()));
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PosteApplication.getSelectedPost().getUrl()));
                     startActivity(browserIntent);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -96,14 +95,14 @@ public class FolderViewActivity extends AppCompatActivity {
 
         deleteBut.setOnClickListener(view -> {
             if (PosteApplication.getSelectedPost() != null) {
-                PosteApplication.getSelectedFolder().removePost(PosteApplication.getSelectedPost());
+                PosteApplication.getSelectedPost().deletePost(PosteApplication.getSelectedFolder());
                 Intent intent = new Intent(FolderViewActivity.this, FolderViewActivity.class);
                 startActivity(intent);
             }
         });
 
         // Set folder name in title bar
-        folderName.setText(PosteApplication.getSelectedFolder().getName());
+        folderName.setText(PosteApplication.getSelectedFolder().getTitle());
 
         // Remove empty text if posts exist in folder or remove buttons if the folder is empty
         if (PosteApplication.getSelectedFolder().getPosts().size() > 0) {
