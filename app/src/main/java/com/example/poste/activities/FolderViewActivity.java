@@ -21,7 +21,9 @@ import com.example.poste.R;
 import com.example.poste.api.poste.models.Post;
 
 /**
- * The FolderViewActivity class adds functionality to the activity_folder_view.xml layout
+ * The FolderViewActivity class adds functionality to the activity_folder_view.xml layout.
+ * This class governs the page where users can view, use, and edit the posts contained within a
+ * selected folder.
  */
 public class FolderViewActivity extends AppCompatActivity {
     private PostAdapter postAdapter;
