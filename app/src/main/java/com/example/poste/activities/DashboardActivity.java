@@ -43,6 +43,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -59,7 +60,7 @@ import retrofit2.Response;
  */
 public class DashboardActivity extends PActivity {
     private User currentUser;
-    private List<Folder> userFolders;
+    private Collection<Folder> userFolders;
     private RecyclerView folderRecyclerView;
     private FolderAdapter folderAdapter;
     public ImageView optionsView;
@@ -89,6 +90,7 @@ public class DashboardActivity extends PActivity {
 
         // Prep vars
         currentUser = PosteApplication.getCurrentUser();
+        // currentUser.updateFoldersAndPosts();
         optionsView = findViewById(R.id.Optionsbtn);
         folderRecyclerView = findViewById(R.id.folder_recycler_view);
         Button addButton = findViewById(R.id.dashboard_add_folder_btn);
@@ -220,6 +222,7 @@ public class DashboardActivity extends PActivity {
                                 JSONObject res = new JSONObject(response.body().toString());
 
                                 if (res.getBoolean("success")) {
+                                    // finds the local version of the folder.
                                     Folder folder = null;
                                     for (Folder find: currentUser.getFolders()) {
                                         if (find.getId() == res.getInt("folder")) {
@@ -227,6 +230,7 @@ public class DashboardActivity extends PActivity {
                                         }
                                     }
 
+                                    // create a local post matching the one created on the API
                                     folder.getPosts().add(new Post(res.getInt("id"),
                                             res.getString("title"),
                                             res.getString("url"),
@@ -306,6 +310,7 @@ public class DashboardActivity extends PActivity {
                             if (response.isSuccessful()) {
                                 try {
                                     JSONObject folder = new JSONObject(response.body().toString());
+                                    // create a local folder matching the folder created by the api.
                                     userFolders.add(new Folder(folder.getInt("id"), folder.getString("title"), currentUser.getId(), new ArrayList<>(), new HashMap<>()));
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
@@ -378,6 +383,8 @@ public class DashboardActivity extends PActivity {
                                     res = new JSONObject(response.body().toString());
                                     if (res.getBoolean("success")){
                                         Toast.makeText(DashboardActivity.this, "folder deleted successful.", Toast.LENGTH_LONG).show();
+                                        // delete the local folder
+                                        currentUser.getFolders().remove(folder);
                                     } else {
                                         Toast.makeText(DashboardActivity.this, "folder deletion failed.", Toast.LENGTH_LONG).show();
                                     }
