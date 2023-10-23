@@ -7,8 +7,9 @@ import com.example.poste.api.poste.exceptions.IncompleteRequestException;
 import com.example.poste.api.poste.exceptions.MalformedResponseException;
 import com.example.poste.api.poste.exceptions.NoUserFoundException;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+
 
 public class User {
 
@@ -16,8 +17,7 @@ public class User {
     private String email;
     private String username;
     private String password;
-
-    private Collection<Folder> folders;
+    private Collection<Folder> folders = new ArrayList<>();
 
     public User(int id, String email, String username, String password) {
         this.id = id;
