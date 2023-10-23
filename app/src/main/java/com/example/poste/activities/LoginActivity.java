@@ -1,6 +1,7 @@
 package com.example.poste.activities;
 
 import static com.example.poste.utils.ValidationUtils.validateEmail;
+import static com.example.poste.utils.ValidationUtils.validatePassword;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -39,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * function that runs on creation of the activity
-     * @param savedInstanceState
+     * @param savedInstanceState A bundle containing the saved instance state
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,15 +53,15 @@ public class LoginActivity extends AppCompatActivity {
 
         buttonLoginSubmit = findViewById(R.id.loginLoginbtn);
 
-        /**
-         * adds a hyperlink to redirect user to the login page
-         */
+
+        // adds a hyperlink to redirect user to the login page
         SpannableString spannable = new SpannableString(hyperlinkTextView.getText());
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
                 // Start the SecondActivity when the link is clicked
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                finish();
                 startActivity(intent);
             }
         };
@@ -80,13 +81,16 @@ public class LoginActivity extends AppCompatActivity {
             if (!validateEmail(LoginActivity.this, email)){
                 return;
             }
+            if (!validatePassword(LoginActivity.this, password)){
+                return;
+            }
             MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
             Call<ResponseBody> call = apiService.loginUser(new LoginRequest(email, password));
             call.enqueue(new Callback<ResponseBody>() {
                 /**
                  * Function that runs when response is returned by the API
                  * @param call
-                 * @param response
+                 * @param response Response returned by the API
                  */
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -106,20 +110,21 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         // open dashboard activity
                         Intent dashboardIntent = new Intent(LoginActivity.this, IntroActivity.class);
+                        finish();
                         startActivity(dashboardIntent);
                     }else {
-                        Toast.makeText(LoginActivity.this, "Login failed.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Incorrect credentials.", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 /**
                  * if respose fails
                  * @param call
-                 * @param t
+                 * @param t The error that is sent from the API
                  */
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Toast.makeText(LoginActivity.this, "Login failed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Login failed due to error", Toast.LENGTH_SHORT).show();
                 }
             });
         });

@@ -66,7 +66,7 @@ public class User {
 
     /**
      * sets the user's email
-     * @param email
+     * @param email String containing user email
      */
     public void setEmail(String email) {
         this.email = email;
@@ -82,7 +82,7 @@ public class User {
 
     /**
      * sets the users first name
-     * @param firstName
+     * @param firstName String containing users firstName
      */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -98,7 +98,7 @@ public class User {
 
     /**
      * sets the user's last name
-     * @param lastName
+     * @param lastName String containing user last name
      */
     public void setLastName(String lastName) {
         this.lastName = lastName;
@@ -191,6 +191,7 @@ public class User {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if(response.isSuccessful()) {
+                    Collection<Folder> backup = user.folders;
                     // convert response to json obj
                     try {
                         String jsonResponse = response.body().string();
@@ -227,6 +228,8 @@ public class User {
                             user.addFolder(newFolder);
                         }
                     } catch (JSONException | IOException e) {
+                        user.folders.clear();
+                        user.folders.addAll(backup);
                         throw new RuntimeException(e);
                     }
                     Log.d("UserDebug", "Retrieved user data from API from User.updateFoldersAndPosts()");

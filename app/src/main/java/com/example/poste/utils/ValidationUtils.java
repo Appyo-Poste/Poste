@@ -53,5 +53,28 @@ public class ValidationUtils {
         return true;
     }
 
+    /**
+     * Validation method for password
+     * @param context the activity within which this is called
+     * @param password String variable containing the password
+     * @return boolean. True if password is valid, false otherwise
+     */
+    public static boolean validatePassword(Context context, String password) {
+        if (password.length() < 8) {
+            Toast.makeText(context, "Password must be at least 8 characters!", Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (password.length() > 32) {
+            Toast.makeText(context, "Password must be at most 32 characters!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        for (int i = 1; i < password.length(); i++) {
+            if (password.charAt(i) == password.charAt(i - 1)) {
+                Toast.makeText(context, "Password cannot have consecutive characters!", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
 
