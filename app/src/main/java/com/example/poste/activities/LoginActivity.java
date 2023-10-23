@@ -1,99 +1,132 @@
 package com.example.poste.activities;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Switch;
-import android.widget.Toast;
+import static com.example.poste.utils.ValidationUtils.validateEmail;
+import static com.example.poste.utils.ValidationUtils.validatePassword;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.poste.PosteApplication;
-import com.example.poste.R;
-import com.example.poste.api.poste.API;
-import com.example.poste.api.poste.exceptions.APIException;
-import com.example.poste.api.poste.models.User;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
-/**
- * The LoginActivity class adds functionality to the activity_login.xml layout
- */
+import com.example.poste.R;
+import com.example.poste.http.LoginRequest;
+import com.example.poste.http.MyApiService;
+import com.example.poste.http.RetrofitClient;
+import com.example.poste.models.User;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class LoginActivity extends AppCompatActivity {
+
     public Button buttonLoginSubmit;
-    private Switch rememberMeSwitch;
-    private EditText usernameField,passwordField;
-    private String email;
-    private String password;
-    private User loginUser;
+    private EditText usernameField, passwordField;
 
     /**
-     * Called when the activity is created
-     *
+     * function that runs on creation of the activity
      * @param savedInstanceState A bundle containing the saved instance state
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Configure window settings for fullscreen mode
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getSupportActionBar().hide();
-
-        // Set the activity layout
         setContentView(R.layout.activity_login);
 
-        // Prep vars
-        usernameField = findViewById(R.id.LoginEmailEntertxt);
-        passwordField = findViewById(R.id.LoginPassword);
-        rememberMeSwitch = findViewById(R.id.login_remember_me_switch);
+        TextView hyperlinkTextView = findViewById(R.id.hyperlinkTextViewToRegister);
+        usernameField = findViewById(R.id.editTextTextEmailAddress);
+        passwordField = findViewById(R.id.editTextTextPassword);
 
-        //Email = findViewById(R.poste_item_id.LoginEmailEntertxt);
-
-        //Page Navigation starts
-        buttonLoginSubmit = findViewById(R.id.LoginLoginbtn);
-
-        //Creating the link to Dashboard page
-        buttonLoginSubmit.setOnClickListener(view -> checkLogin());
-        //Page Navigation ends
-    }
-
-    void navigateToDashboard(){
-        finish();
-        Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-        startActivity(intent);
-    }
+        buttonLoginSubmit = findViewById(R.id.loginLoginbtn);
 
 
-    /**
-     * Triggers when LOGIN Button clicked from LOGIN page.
-     * Parses email and password from text fields, and sends an API call to validate user.
-     * If user is validated, sets as current user and return to dashboard.
-     * Otherwise, display error.
-     */
-    public void checkLogin() {
-        email = usernameField.getText().toString();
-        password = passwordField.getText().toString();
-        if(email.isEmpty() || password.isEmpty())
-            Toast.makeText(this, "Please enter your login details", Toast.LENGTH_LONG).show();
-        else {
-            try {
-                User user = API.login(email, password);
-                if (user != null) {
-                    Toast.makeText(LoginActivity.this, getString(R.string.login_successful), Toast.LENGTH_LONG).show();
-                    PosteApplication.setCurrentUser(loginUser);
-                    navigateToDashboard();
-                } else {
-                    Toast.makeText(LoginActivity.this, getString(R.string.login_invalid_credentials), Toast.LENGTH_LONG).show();
-                }
-            } catch (APIException e) {
-                e.printStackTrace();
-                Toast.makeText(LoginActivity.this, getString(R.string.internal_error), Toast.LENGTH_LONG).show();
+        // adds a hyperlink to redirect user to the login page
+        SpannableString spannable = new SpannableString(hyperlinkTextView.getText());
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                // Start the SecondActivity when the link is clicked
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                finish();
+                startActivity(intent);
             }
+        };
 
-        }
+        spannable.setSpan(clickableSpan, 0, hyperlinkTextView.getText().length(), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        hyperlinkTextView.setText(spannable);
+        hyperlinkTextView.setMovementMethod(LinkMovementMethod.getInstance());
+
+        /**
+         * Function that runs when login button is pressed
+         * Makes a request to the API and gets a response in return
+         */
+        buttonLoginSubmit.setOnClickListener(view -> {
+            String email = usernameField.getText().toString();
+            String password = passwordField.getText().toString();
+            if (!validateEmail(LoginActivity.this, email)){
+                return;
+            }
+            if (!validatePassword(LoginActivity.this, password)){
+                return;
+            }
+            MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
+            Call<ResponseBody> call = apiService.loginUser(new LoginRequest(email, password));
+            call.enqueue(new Callback<ResponseBody>() {
+                /**
+                 * Function that runs when response is returned by the API
+                 * @param call
+                 * @param response Response returned by the API
+                 */
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful()){
+                        Toast.makeText(LoginActivity.this,"Login successful!", Toast.LENGTH_SHORT).show();
+                        try {
+                            String jsonResponse = response.body().string();
+                            JSONObject jsonObject = new JSONObject(jsonResponse);
+                            String token = jsonObject.getJSONObject("result").getString("token");
+                            Log.d("debug","Token: " + token);
+                            User.getUser().setToken(token);
+                            User.getUser().setEmail(email);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        } catch (JSONException err){
+                            Log.e("Json Error", err.toString());
+                        }
+                        // open dashboard activity
+                        Intent dashboardIntent = new Intent(LoginActivity.this, IntroActivity.class);
+                        finish();
+                        startActivity(dashboardIntent);
+                    }else {
+                        Toast.makeText(LoginActivity.this, "Incorrect credentials.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                /**
+                 * if respose fails
+                 * @param call
+                 * @param t The error that is sent from the API
+                 */
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(LoginActivity.this, "Login failed due to error", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
     }
 }

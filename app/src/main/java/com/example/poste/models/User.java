@@ -47,6 +47,69 @@ public class User {
     private final Collection<Folder> folders;
 
     /**
+     * The email used for the user's account
+     */
+    private String email;
+
+    /**
+     * The user's first name
+     */
+    private String firstName;
+
+    /**
+     * get the user's email
+     * @return String of email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * sets the user's email
+     * @param email String containing user email
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * gets the user's first name
+     * @return string of the users first name
+     */
+    public String getFirstName() {
+        return firstName;
+    }
+
+    /**
+     * sets the users first name
+     * @param firstName String containing users firstName
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+     * gets the users last name
+     * @return String
+     */
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
+     * sets the user's last name
+     * @param lastName String containing user last name
+     */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    /**
+     * The user's last name
+     */
+    private String lastName;
+
+    /**
      * Private constructor for the User class. This should not be called directly -- instead, use
      * the {@link #getUser()} method to retrieve the singleton instance of the User class.
      */
@@ -128,10 +191,12 @@ public class User {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if(response.isSuccessful()) {
+                    Collection<Folder> backup = user.folders;
                     // convert response to json obj
                     try {
                         String jsonResponse = response.body().string();
                         Log.d("Response", jsonResponse);
+                        user.folders.clear();
                         JSONArray jsonArray = new JSONArray(jsonResponse);
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject folder = jsonArray.getJSONObject(i);
@@ -163,6 +228,8 @@ public class User {
                             user.addFolder(newFolder);
                         }
                     } catch (JSONException | IOException e) {
+                        user.folders.clear();
+                        user.folders.addAll(backup);
                         throw new RuntimeException(e);
                     }
                     Log.d("UserDebug", "Retrieved user data from API from User.updateFoldersAndPosts()");

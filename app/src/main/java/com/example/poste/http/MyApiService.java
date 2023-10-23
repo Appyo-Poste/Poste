@@ -12,6 +12,10 @@ public interface MyApiService {
     @POST("users/")
     Call<ResponseBody> registerUser(@Body RegisterRequest registerRequest);
 
+    @POST("login/")
+    Call<ResponseBody> loginUser(@Body LoginRequest loginRequest);
+
+
     /**
      * Get data from API. Used for retrieving folders and posts. Note that this API call expects
      * the User's token to be sent in the request header. The header should be formatted as follows:
