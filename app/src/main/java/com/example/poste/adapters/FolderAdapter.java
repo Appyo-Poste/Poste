@@ -24,7 +24,7 @@ import java.util.List;
 public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder> {
 
     private final ClickListener clickListener;
-    private List<Folder> localDataSet;
+    private List<com.example.poste.models.Folder> localDataSet;
     public int position;
 
     /**
@@ -78,11 +78,11 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
      * Interface to define click listeners for folder items.
      */
     public interface ClickListener {
-        void onItemClick(int position, Folder model);
+        void onItemClick(int position, com.example.poste.models.Folder model);
         void onItemLongClick(int position, Folder model);
     }
 
-    public FolderAdapter(ClickListener clickListener, List<Folder> folderList) {
+    public FolderAdapter(ClickListener clickListener, List<com.example.poste.models.Folder> folderList) {
         this.clickListener = clickListener;
         localDataSet = folderList;
     }
@@ -102,17 +102,17 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         try {
             // Set the folder name
-            viewHolder.getTextView().setText(localDataSet.get(position).getName());
+            viewHolder.getTextView().setText(localDataSet.get(position).getTitle());
         } catch (Exception e) {
             Log.e("FolderAdapter", e.getLocalizedMessage());
         }
     }
 
-    public List<Folder> getLocalDataSet(){
+    public List<com.example.poste.models.Folder> getLocalDataSet(){
         return localDataSet;
     }
 
-    public Folder getLocalDataSetItem(){
+    public com.example.poste.models.Folder getLocalDataSetItem(){
         return localDataSet.get(position);
     }
 

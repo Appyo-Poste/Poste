@@ -32,12 +32,12 @@ import com.example.poste.api.poste.API;
 import com.example.poste.api.poste.exceptions.APIException;
 import com.example.poste.api.poste.models.Folder;
 import com.example.poste.api.poste.models.FolderAccess;
-import com.example.poste.api.poste.models.Post;
-import com.example.poste.api.poste.models.User;
 import com.example.poste.http.FolderRequest;
 import com.example.poste.http.MyApiService;
 import com.example.poste.http.PostRequest;
 import com.example.poste.http.RetrofitClient;
+import com.example.poste.models.Post;
+import com.example.poste.models.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,7 +60,7 @@ import retrofit2.Response;
  */
 public class DashboardActivity extends PActivity {
     private User currentUser;
-    private Collection<Folder> userFolders;
+    private Collection<com.example.poste.models.Folder> userFolders;
     private RecyclerView folderRecyclerView;
     private FolderAdapter folderAdapter;
     public ImageView optionsView;
@@ -77,7 +77,6 @@ public class DashboardActivity extends PActivity {
         super.onCreate(savedInstanceState);
 
         // Update app info
-        // User.getUser().updateFoldersAndPosts();
 
         // Configure window settings for fullscreen mode
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -89,15 +88,15 @@ public class DashboardActivity extends PActivity {
         setContentView(R.layout.activity_dashboard);
 
         // Prep vars
-        currentUser = PosteApplication.getCurrentUser();
-        // currentUser.updateFoldersAndPosts();
+        currentUser = User.getUser();
+        currentUser.updateFoldersAndPosts(this);
         optionsView = findViewById(R.id.Optionsbtn);
         folderRecyclerView = findViewById(R.id.folder_recycler_view);
         Button addButton = findViewById(R.id.dashboard_add_folder_btn);
 
         userFolders = currentUser.getFolders();
-        for (Folder folder: userFolders) {
-            folderIdNameMap.put(String.format("(%d) %s", folder.getId(), folder.getName()), folder.getId());
+        for (com.example.poste.models.Folder folder: userFolders) {
+            folderIdNameMap.put(String.format("(%d) %s", folder.getId(), folder.getTitle()), Integer.parseInt(folder.getId()));
         }
 
         // Click listener for the options button
@@ -119,7 +118,7 @@ public class DashboardActivity extends PActivity {
         folderAdapter = new FolderAdapter(
                 new FolderAdapter.ClickListener() {
                     @Override
-                    public void onItemClick(int position, Folder model) {
+                    public void onItemClick(int position, com.example.poste.models.Folder model) {
                         // Send to that folder's view
                         Intent intent = new Intent(DashboardActivity.this, FolderViewActivity.class );
                         intent.putExtra("folderId", model.getId());
@@ -212,7 +211,7 @@ public class DashboardActivity extends PActivity {
                 }
 
                 // Handle post creation logic
-                Call<ResponseBody> call = apiService.createPost(new PostRequest(itemName, "", itemLink, currentUser.getId(), selectedFolderId));
+                Call<ResponseBody> call = apiService.createPost(new PostRequest(itemName, "", itemLink, currentUser.getToken(), selectedFolderId));
 
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -223,19 +222,15 @@ public class DashboardActivity extends PActivity {
 
                                 if (res.getBoolean("success")) {
                                     // finds the local version of the folder.
-                                    Folder folder = null;
-                                    for (Folder find: currentUser.getFolders()) {
-                                        if (find.getId() == res.getInt("folder")) {
+                                    com.example.poste.models.Folder folder = null;
+                                    for (com.example.poste.models.Folder find: currentUser.getFolders()) {
+                                        if (Integer.parseInt(find.getId()) == res.getInt("folder")) {
                                             folder = find;
                                         }
                                     }
 
                                     // create a local post matching the one created on the API
-                                    folder.getPosts().add(new Post(res.getInt("id"),
-                                            res.getString("title"),
-                                            res.getString("url"),
-                                            res.getInt("creator")));
-
+                                    currentUser.updateFoldersAndPosts(DashboardActivity.this);
                                     Toast.makeText(DashboardActivity.this, "Post creation successful.", Toast.LENGTH_LONG).show();
                                 } else {
                                     Toast.makeText(DashboardActivity.this, "Post creation failed.", Toast.LENGTH_LONG).show();
@@ -303,7 +298,7 @@ public class DashboardActivity extends PActivity {
                 String itemName = editTextItemName.getText().toString().trim();
 
                 // Handle folder creation logic
-                    Call<ResponseBody> call = apiService.createFolder(new FolderRequest(itemName, currentUser.getId()));
+                    Call<ResponseBody> call = apiService.createFolder(new FolderRequest(itemName, currentUser.getToken()));
                     call.enqueue(new Callback<ResponseBody>() {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -311,7 +306,7 @@ public class DashboardActivity extends PActivity {
                                 try {
                                     JSONObject folder = new JSONObject(response.body().toString());
                                     // create a local folder matching the folder created by the api.
-                                    userFolders.add(new Folder(folder.getInt("id"), folder.getString("title"), currentUser.getId(), new ArrayList<>(), new HashMap<>()));
+                                    currentUser.updateFoldersAndPosts(DashboardActivity.this);
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -353,13 +348,13 @@ public class DashboardActivity extends PActivity {
     // menu item select listener
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        Folder folder = folderAdapter.getLocalDataSetItem();
+        com.example.poste.models.Folder folder = folderAdapter.getLocalDataSetItem();
         Intent intent = null;
         switch (item.getItemId()) {
             case R.id.ctx_menu_edit_folder:
                 intent = new Intent(DashboardActivity.this, EditFolderActivity.class );
                 intent.putExtra("folderId", folder.getId());
-                intent.putExtra("folderName", folder.getName());
+                intent.putExtra("folderName", folder.getTitle());
                 intent.putExtra("folderShared", true);
                 startActivity(intent);
                 finish();
@@ -367,13 +362,13 @@ public class DashboardActivity extends PActivity {
             case R.id.ctx_menu_share_folder:
                 intent = new Intent(DashboardActivity.this, Shared_Folder.class);
                 intent.putExtra("folderId", folder.getId());
-                intent.putExtra("folderName", folder.getName());
+                intent.putExtra("folderName", folder.getTitle());
                 startActivity(intent);
                 finish();
                 break;
             case R.id.ctx_menu_delete_folder:
                     // Delete the folder
-                    Call<ResponseBody> call = apiService.deleteFolder(folder.getId());
+                    Call<ResponseBody> call = apiService.deleteFolder(Integer.parseInt(folder.getId()));
                     call.enqueue(new Callback<ResponseBody>() {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
