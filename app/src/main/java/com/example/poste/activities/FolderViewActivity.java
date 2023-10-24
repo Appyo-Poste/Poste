@@ -62,8 +62,7 @@ public class FolderViewActivity extends AppCompatActivity {
 
         // Create listeners for the folder buttons
         newBut.setOnClickListener(view -> {
-            Post newPost = PosteApplication.getSelectedFolder().createNewPost(PosteApplication.getSelectedFolder());
-            PosteApplication.setSelectedPost(newPost);
+            PosteApplication.setSelectedPost(null);
             Intent intent = new Intent(FolderViewActivity.this, EditPostActivity.class);
             startActivity(intent);
         });
@@ -95,7 +94,7 @@ public class FolderViewActivity extends AppCompatActivity {
 
         deleteBut.setOnClickListener(view -> {
             if (PosteApplication.getSelectedPost() != null) {
-                PosteApplication.getSelectedPost().deletePost(PosteApplication.getSelectedFolder());
+                PosteApplication.getSelectedFolder().deletePost(PosteApplication.getSelectedPost());
                 Intent intent = new Intent(FolderViewActivity.this, FolderViewActivity.class);
                 startActivity(intent);
             }

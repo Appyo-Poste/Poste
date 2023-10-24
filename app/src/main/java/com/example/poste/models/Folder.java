@@ -1,6 +1,7 @@
 package com.example.poste.models;
 
 import com.example.poste.http.CreatePost;
+import com.example.poste.http.DeletePost;
 import com.example.poste.http.MyApiService;
 import com.example.poste.http.RetrofitClient;
 
@@ -95,6 +96,25 @@ public class Folder {
         else {
             return null;
         }
+    }
+
+    /**
+     * Deletes a given post from this folder in the data model and backend
+     *
+     * @param post the post you want to delete
+     */
+    public void deletePost(Post post) {
+        MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
+        Call<ResponseBody> call = apiService.deletePost(new DeletePost(post.getId()));
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                posts.remove(post);
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            }
+        });
     }
 
     /**
