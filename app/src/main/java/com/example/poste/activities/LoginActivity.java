@@ -109,8 +109,12 @@ public class LoginActivity extends AppCompatActivity {
                             Log.e("Json Error", err.toString());
                         }
                         // open dashboard activity
-                        Intent dashboardIntent = new Intent(LoginActivity.this, IntroActivity.class);
+                        Intent dashboardIntent = new Intent(LoginActivity.this, EditPostActivity.class);
                         finish();
+                        // TODO : REMOVE the putExtras
+                        User.getUser().updateFoldersAndPosts(LoginActivity.this);
+                        dashboardIntent.putExtra("postID","2");
+                        dashboardIntent.putExtra("folderID","2");
                         startActivity(dashboardIntent);
                     }else {
                         Toast.makeText(LoginActivity.this, "Incorrect credentials.", Toast.LENGTH_SHORT).show();

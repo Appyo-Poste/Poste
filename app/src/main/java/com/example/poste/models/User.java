@@ -140,6 +140,22 @@ public class User {
     }
 
     /**
+     * Adds a folder to the user's folders.
+     *
+     * @param folderId string containing the id of the folder
+     * @return List of posts in the folder
+     */
+    public Folder getFolder(String folderId) {
+        for (Folder folder :
+                user.folders) {
+            if (folder.getId().equals(folderId)) {
+                return folder;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns a copy of the list of the user's folders. This is a copy, so modifying the returned
      * list will not modify the user's folders.
      * @return a copy of the list of the user's folders.
