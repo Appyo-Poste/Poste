@@ -30,6 +30,7 @@ import com.example.poste.PosteApplication;
 import com.example.poste.R;
 import com.example.poste.api.poste.API;
 import com.example.poste.api.poste.exceptions.APIException;
+
 import com.example.poste.models.Folder;
 import com.example.poste.api.poste.models.FolderAccess;
 import com.example.poste.http.FolderRequest;
@@ -76,8 +77,6 @@ public class DashboardActivity extends PActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Update app info
-
         // Configure window settings for fullscreen mode
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -89,14 +88,14 @@ public class DashboardActivity extends PActivity {
 
         // Prep vars
         currentUser = User.getUser();
-        currentUser.updateFoldersAndPosts(this);
+        //currentUser.updateFoldersAndPosts(this);
         optionsView = findViewById(R.id.Optionsbtn);
         folderRecyclerView = findViewById(R.id.folder_recycler_view);
         Button addButton = findViewById(R.id.dashboard_add_folder_btn);
 
         userFolders = currentUser.getFolders();
         for (com.example.poste.models.Folder folder: userFolders) {
-            folderIdNameMap.put(String.format("(%d) %s", folder.getId(), folder.getTitle()), Integer.parseInt(folder.getId()));
+            folderIdNameMap.put(String.format("(%d) %s", Integer.parseInt(folder.getId()), folder.getTitle()), Integer.parseInt(folder.getId()));
         }
 
         // Click listener for the options button
@@ -118,7 +117,7 @@ public class DashboardActivity extends PActivity {
         folderAdapter = new FolderAdapter(
                 new FolderAdapter.ClickListener() {
                     @Override
-                    public void onItemClick(int position, com.example.poste.models.Folder model) {
+                    public void onItemClick(int position, Folder model) {
                         // Send to that folder's view
                         Intent intent = new Intent(DashboardActivity.this, FolderViewActivity.class );
                         intent.putExtra("folderId", model.getId());
@@ -217,27 +216,11 @@ public class DashboardActivity extends PActivity {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if(response.isSuccessful()) {
-                            try {
-                                JSONObject res = new JSONObject(response.body().toString());
-
-                                if (res.getBoolean("success")) {
-                                    // finds the local version of the folder.
-                                    com.example.poste.models.Folder folder = null;
-                                    for (com.example.poste.models.Folder find: currentUser.getFolders()) {
-                                        if (Integer.parseInt(find.getId()) == res.getInt("folder")) {
-                                            folder = find;
-                                        }
-                                    }
-
                                     // create a local post matching the one created on the API
                                     currentUser.updateFoldersAndPosts(DashboardActivity.this);
                                     Toast.makeText(DashboardActivity.this, "Post creation successful.", Toast.LENGTH_LONG).show();
-                                } else {
-                                    Toast.makeText(DashboardActivity.this, "Post creation failed.", Toast.LENGTH_LONG).show();
-                                }
-                            } catch (JSONException e) {
-                                throw new RuntimeException(e);
-                            }
+                        } else {
+                            Toast.makeText(DashboardActivity.this, "Post creation failed.", Toast.LENGTH_LONG).show();
                         }
                     }
 
@@ -253,10 +236,10 @@ public class DashboardActivity extends PActivity {
                 Toast.makeText(DashboardActivity.this, "Post created:\nName: " + itemName + "\nLink: " + itemLink, Toast.LENGTH_LONG).show();
                 dialog.dismiss();
 
-                finish();
-                overridePendingTransition(0, 0);
-                startActivity(getIntent());
-                overridePendingTransition(0, 0);
+                // finish();
+                // overridePendingTransition(0, 0);
+                // startActivity(getIntent());
+                // overridePendingTransition(0, 0);
             }
         });
 
@@ -298,18 +281,13 @@ public class DashboardActivity extends PActivity {
                 String itemName = editTextItemName.getText().toString().trim();
 
                 // Handle folder creation logic
-                    Call<ResponseBody> call = apiService.createFolder("Token: " + currentUser.getToken(), new FolderRequest(itemName));
+                    Call<ResponseBody> call = apiService.createFolder("Token " + currentUser.getToken(), new FolderRequest(itemName));
                     call.enqueue(new Callback<ResponseBody>() {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                             if (response.isSuccessful()) {
-                                try {
-                                    JSONObject folder = new JSONObject(response.body().toString());
-                                    // create a local folder matching the folder created by the api.
-                                    currentUser.updateFoldersAndPosts(DashboardActivity.this);
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
+                                // create a local folder matching the folder created by the api.
+                                currentUser.updateFoldersAndPosts(DashboardActivity.this);
                                 Toast.makeText(DashboardActivity.this, "folder creation successful.", Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(DashboardActivity.this, "folder creation failed.", Toast.LENGTH_LONG).show();
@@ -321,12 +299,12 @@ public class DashboardActivity extends PActivity {
                             Toast.makeText(DashboardActivity.this, "folder creation failed.", Toast.LENGTH_LONG).show();
                         }
                     });
+                    currentUser.updateFoldersAndPosts(DashboardActivity.this);
                     userFolders = currentUser.getFolders();
                     folderAdapter.notifyItemInserted(userFolders.size() - 1);
 
-
                 // For simplicity, let's just display a toast message with the post details
-                Toast.makeText(DashboardActivity.this, "Folder created", Toast.LENGTH_LONG).show();
+                //Toast.makeText(DashboardActivity.this, "Folder created", Toast.LENGTH_LONG).show();
                 dialog.dismiss();
             }
         });
@@ -348,7 +326,7 @@ public class DashboardActivity extends PActivity {
     // menu item select listener
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        com.example.poste.models.Folder folder = folderAdapter.getLocalDataSetItem();
+        Folder folder = folderAdapter.getLocalDataSetItem();
         Intent intent = null;
         switch (item.getItemId()) {
             case R.id.ctx_menu_edit_folder:
@@ -357,14 +335,14 @@ public class DashboardActivity extends PActivity {
                 intent.putExtra("folderName", folder.getTitle());
                 intent.putExtra("folderShared", true);
                 startActivity(intent);
-                finish();
+                //finish();
                 break;
             case R.id.ctx_menu_share_folder:
                 intent = new Intent(DashboardActivity.this, Shared_Folder.class);
                 intent.putExtra("folderId", folder.getId());
                 intent.putExtra("folderName", folder.getTitle());
                 startActivity(intent);
-                finish();
+                //finish();
                 break;
             case R.id.ctx_menu_delete_folder:
                     // Delete the folder
@@ -381,10 +359,10 @@ public class DashboardActivity extends PActivity {
                                         // delete the local folder
                                         currentUser.getFolders().remove(folder);
                                     } else {
-                                        Toast.makeText(DashboardActivity.this, "folder deletion failed.", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(DashboardActivity.this, "folder deletion failed. Error: " + res.getString("Error"), Toast.LENGTH_LONG).show();
                                     }
                                 } catch (JSONException e) {
-                                    throw new RuntimeException(e);
+                                    Toast.makeText(DashboardActivity.this, "folder deletion failed. Invalid JSON response", Toast.LENGTH_LONG).show();
                                 }
                             } else {
                                 Toast.makeText(DashboardActivity.this, "folder deletion failed.", Toast.LENGTH_LONG).show();
