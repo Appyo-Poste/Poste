@@ -2,6 +2,7 @@ package com.example.poste.http;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
@@ -28,4 +29,32 @@ public interface MyApiService {
      */
     @GET("data/")
     Call<ResponseBody> getData(@Header("Authorization") String authToken);
+
+    /**
+     * Delete a post from the backend API. Note that this API call expects the User's token to be
+     * sent in the request header. The header should be formatted as follows:<br>
+     * <pre>
+     * "Authorization": "Token abcd1234"
+     * </pre>
+     * <br>
+     * It also expects the ID of the post to be deleted to be sent in the header.
+     * The header should be formatted as follows:
+     * <pre>
+     * "id": "value"
+     * </pre>
+     * <br>
+     * To do this, we use the {@code @Header} annotation. For more information, see:
+     * <ul>
+     *     <li><a href="https://square.github.io/retrofit/2.x/retrofit/index.html?retrofit2/http/Header.html">Retrofit Headers</a></li>
+     * </ul>
+     *
+     * @param authToken Authorization token in the format "Token &lt;token&gt;"
+     * @param id ID of the post to be deleted in the format "id: &lt;id&gt;"
+     */
+    @DELETE("posts/")
+    Call<ResponseBody> deletePost(
+            @Header("Authorization") String authToken,
+            @Header("id") String id
+    );
+
 }

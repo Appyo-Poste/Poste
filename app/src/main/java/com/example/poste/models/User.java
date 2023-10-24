@@ -3,6 +3,7 @@ package com.example.poste.models;
 import com.example.poste.http.MyApiService;
 import com.example.poste.http.RetrofitClient;
 import com.example.poste.utils.DebugUtils;
+import com.example.poste.callbacks.PostDeletionCallback;
 
 import android.content.Context;
 import android.util.Log;
@@ -165,7 +166,7 @@ public class User {
      * "Authorization": "Token A12345"
      * @return the user's token, prepended with "Token "
      */
-    private String getTokenHeader() {
+    public String getTokenHeader() {
         return "Token " + getToken();
     }
     /**
@@ -246,7 +247,100 @@ public class User {
     }
 
     /**
-     * Parses the error response from the backend. This function expects the error response in the
+     * Deletes a post from the backend API.
+     *
+     * This method uses the {@link PostDeletionCallback} interface to handle the results of the
+     * asynchronous API call. This interface defines two methods:
+     * {@link PostDeletionCallback#onSuccess()} and {@link PostDeletionCallback#onError(String)}.
+     *
+     * By implementing this interface, you can define the desired actions based on the deletion
+     * outcome by overriding these methods. For example, if this is called in an Activity, you can
+     * display a Toast message in the {@link PostDeletionCallback#onSuccess()} method to notify the
+     * user that the post was successfully deleted, or display a Toast message in the
+     * {@link PostDeletionCallback#onError(String)} method to notify the user that the post could
+     * not be deleted.
+     *
+     * Example of creating and passing a callback, for instance in an Activity:
+     *
+     * <pre>
+     * {@code
+     * PostDeletionCallback callback = new PostDeletionCallback() {
+     *     @Override
+     *     public void onSuccess() {
+     *         // e.g. Display a Toast message for successful deletion. What you want to happen
+     *         // after a successful deletion should be defined here. Note that this method
+     *         // already removes the post from the user's folders, so you don't need to do that
+     *         // here.
+     *     }
+     *
+     *     @Override
+     *     public void onError(String errorMessage) {
+     *         // e.g. Display a Toast message for errors. What you want to happen after an error
+     *         // should be defined here.
+     *     }
+     * };
+     *
+     * User user = User.getUser();
+     * user.deletePost(postToBeDeleted, callback);
+     * }
+     * </pre>
+     *
+     * @param post The Post model to delete.
+     * @param callback The callback to be invoked after attempting to delete the post.
+     */
+    public void deletePostFromServer(Post post, PostDeletionCallback callback) {
+        String id = post.getId();
+        Log.d("UserDebug", "Attempting to delete post ID " + id);
+        if (id == null) {
+            callback.onError("Post ID is null");
+            Log.d("UserDebug", "Error deleting post: post ID is null");
+            return;
+        }
+        
+        MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
+        Log.d("UserDebug", "Sending delete request to API for Post ID " + id);
+        Call<ResponseBody> call = apiService.deletePost(getTokenHeader(), id);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    removePostFromLocalFolders(post);
+                    callback.onSuccess(); // Notify callback of success.
+                } else {
+                    String error = parseError(response);
+                    // The request successfully reached the backend API, but the API returned an
+                    // error.
+                    // This passes back the error message from the backend API, if it exists, or a
+                    // generic error message if it doesn't.
+                    callback.onError(error != null ? error : "Error deleting post.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                // The request failed to reach the backend API altogether.
+                callback.onError("Unable to contact server to delete post.");
+            }
+        });
+    }
+
+    private void removePostFromLocalFolders(Post post) {
+        for (Folder folder : folders) {
+            List<Post> posts = folder.getPosts();
+            if (posts != null) {
+                for (Post p : posts) {
+                    if (p.getId().equals(post.getId())) {
+                        posts.remove(p);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Parses an error response from the backend. This function expects the error response in the
      * following JSON format:
      * {
      *    "result": {
@@ -291,7 +385,10 @@ public class User {
                         String rawErrorMessage = errorArray.getString(0);
 
                         // Remove unwanted characters
-                        String cleanedErrorMessage = rawErrorMessage.replace("[", "").replace("]", "").replace("'", "");
+                        String cleanedErrorMessage = rawErrorMessage
+                                .replace("[", "")
+                                .replace("]", "")
+                                .replace("'", "");
 
                         return firstErrorKey + ": " + cleanedErrorMessage;
                     }
