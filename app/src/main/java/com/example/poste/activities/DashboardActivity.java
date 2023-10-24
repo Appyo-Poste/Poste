@@ -288,6 +288,8 @@ public class DashboardActivity extends PActivity {
                             if (response.isSuccessful()) {
                                 // create a local folder matching the folder created by the api.
                                 currentUser.updateFoldersAndPosts(DashboardActivity.this);
+                                userFolders = currentUser.getFolders();
+                                folderAdapter.notifyItemInserted(userFolders.size() - 1);
                                 Toast.makeText(DashboardActivity.this, "folder creation successful.", Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(DashboardActivity.this, "folder creation failed.", Toast.LENGTH_LONG).show();
@@ -299,9 +301,9 @@ public class DashboardActivity extends PActivity {
                             Toast.makeText(DashboardActivity.this, "folder creation failed.", Toast.LENGTH_LONG).show();
                         }
                     });
-                    currentUser.updateFoldersAndPosts(DashboardActivity.this);
-                    userFolders = currentUser.getFolders();
-                    folderAdapter.notifyItemInserted(userFolders.size() - 1);
+                    //currentUser.updateFoldersAndPosts(DashboardActivity.this);
+                    //userFolders = currentUser.getFolders();
+                    //folderAdapter.notifyItemInserted(userFolders.size() - 1);
 
                 // For simplicity, let's just display a toast message with the post details
                 //Toast.makeText(DashboardActivity.this, "Folder created", Toast.LENGTH_LONG).show();
