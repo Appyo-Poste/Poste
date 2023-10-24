@@ -30,7 +30,7 @@ import com.example.poste.PosteApplication;
 import com.example.poste.R;
 import com.example.poste.api.poste.API;
 import com.example.poste.api.poste.exceptions.APIException;
-import com.example.poste.api.poste.models.Folder;
+import com.example.poste.models.Folder;
 import com.example.poste.api.poste.models.FolderAccess;
 import com.example.poste.http.FolderRequest;
 import com.example.poste.http.MyApiService;
@@ -211,7 +211,7 @@ public class DashboardActivity extends PActivity {
                 }
 
                 // Handle post creation logic
-                Call<ResponseBody> call = apiService.createPost(new PostRequest(itemName, "", itemLink, currentUser.getToken(), selectedFolderId));
+                Call<ResponseBody> call = apiService.createPost("Token " + currentUser.getToken(), new PostRequest(itemName, "", itemLink, selectedFolderId));
 
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -298,7 +298,7 @@ public class DashboardActivity extends PActivity {
                 String itemName = editTextItemName.getText().toString().trim();
 
                 // Handle folder creation logic
-                    Call<ResponseBody> call = apiService.createFolder(new FolderRequest(itemName, currentUser.getToken()));
+                    Call<ResponseBody> call = apiService.createFolder("Token: " + currentUser.getToken(), new FolderRequest(itemName));
                     call.enqueue(new Callback<ResponseBody>() {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -368,7 +368,7 @@ public class DashboardActivity extends PActivity {
                 break;
             case R.id.ctx_menu_delete_folder:
                     // Delete the folder
-                    Call<ResponseBody> call = apiService.deleteFolder(Integer.parseInt(folder.getId()));
+                    Call<ResponseBody> call = apiService.deleteFolder("Token " + currentUser.getToken(), Integer.parseInt(folder.getId()));
                     call.enqueue(new Callback<ResponseBody>() {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -396,7 +396,7 @@ public class DashboardActivity extends PActivity {
                             Toast.makeText(DashboardActivity.this, "folder deletion failed.", Toast.LENGTH_LONG).show();
                         }
                     });
-                    userFolders.remove(folder);
+                    currentUser.updateFoldersAndPosts(DashboardActivity.this);
 
                     // updates view
                     userFolders = currentUser.getFolders();

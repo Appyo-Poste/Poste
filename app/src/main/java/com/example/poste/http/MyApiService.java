@@ -31,11 +31,11 @@ public interface MyApiService {
     Call<ResponseBody> getData(@Header("Authorization") String authToken);
 
     @POST("folders/")
-    Call<ResponseBody> createFolder(@Body FolderRequest folderRequest);
+    Call<ResponseBody> createFolder(@Header("Authorization") String authToken, @Body FolderRequest folderRequest);
 
     @GET("folders/folders/deleteFolder/{id}/")
-    Call<ResponseBody> deleteFolder(@Path("id") int id);
+    Call<ResponseBody> deleteFolder(@Header("Authorization") String authToken, @Path("id") int id);
 
     @POST("posts/")
-    Call<ResponseBody> createPost(@Body PostRequest postRequest);
+    Call<ResponseBody> createPost(@Header("Authorization") String authToken, @Body PostRequest postRequest);
 }
