@@ -26,6 +26,8 @@ import retrofit2.Response;
 
 /**
  * The EditPostActivity class adds functionality to the activity_edit_post.xml layout
+ *
+ * The activity that calls this activity, do a .putExtra to pass the postId
  */
 public class EditPostActivity extends AppCompatActivity {
 
@@ -105,6 +107,5 @@ public class EditPostActivity extends AppCompatActivity {
                 });
             }
         });
-
     }
 }
