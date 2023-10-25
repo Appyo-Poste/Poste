@@ -14,10 +14,10 @@ public interface MyApiService {
     Call<ResponseBody> registerUser(@Body RegisterRequest registerRequest);
 
     @POST("posts/")
-    Call<ResponseBody> createPost(@Body CreatePost createPost);
+    Call<ResponseBody> createPost(@Header("Authorization") String authToken, @Body CreatePost createPost);
 
     @DELETE("posts/")
-    Call<ResponseBody> deletePost(@Body DeletePost deletePost);
+    Call<ResponseBody> deletePost(@Header("Authorization") String authToken, @Body DeletePost deletePost);
 
     /**
      * Get data from API. Used for retrieving folders and posts. Note that this API call expects

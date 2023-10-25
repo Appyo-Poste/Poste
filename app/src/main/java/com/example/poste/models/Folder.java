@@ -71,53 +71,6 @@ public class Folder {
     }
 
     /**
-     * Adds a new post the given folder
-     *
-     * @param folder folder to add the new post to
-     */
-    public Post createNewPost(Folder folder) {
-        Post.Builder pb = new Post.Builder();
-        pb.setTitle("Untitled");
-        Post newPost = pb.build();
-        MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
-        Call<ResponseBody> call = apiService.createPost(new CreatePost(newPost.getTitle(), newPost.getDescription(), newPost.getUrl(), folder.getTitle()));
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                posts.add(newPost);
-            }
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-            }
-        });
-        if (posts.contains(newPost)) {
-            return newPost;
-        }
-        else {
-            return null;
-        }
-    }
-
-    /**
-     * Deletes a given post from this folder in the data model and backend
-     *
-     * @param post the post you want to delete
-     */
-    public void deletePost(Post post) {
-        MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
-        Call<ResponseBody> call = apiService.deletePost(new DeletePost(post.getId()));
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                posts.remove(post);
-            }
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-            }
-        });
-    }
-
-    /**
      * Returns a copy of the list of posts in the folder. This is a copy, so modifying the returned
      * list will not modify the folder's posts.
      * @return a copy of the list of posts in the folder.

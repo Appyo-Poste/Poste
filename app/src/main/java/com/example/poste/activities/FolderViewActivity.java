@@ -19,6 +19,7 @@ import com.example.poste.PosteApplication;
 import com.example.poste.adapters.PostAdapter;
 import com.example.poste.R;
 import com.example.poste.models.Post;
+import com.example.poste.models.User;
 
 /**
  * The FolderViewActivity class adds functionality to the activity_folder_view.xml layout.
@@ -94,7 +95,7 @@ public class FolderViewActivity extends AppCompatActivity {
 
         deleteBut.setOnClickListener(view -> {
             if (PosteApplication.getSelectedPost() != null) {
-                PosteApplication.getSelectedFolder().deletePost(PosteApplication.getSelectedPost());
+                User.getUser().deletePost (FolderViewActivity.this, PosteApplication.getSelectedPost(), PosteApplication.getSelectedFolder());
                 Intent intent = new Intent(FolderViewActivity.this, FolderViewActivity.class);
                 startActivity(intent);
             }
