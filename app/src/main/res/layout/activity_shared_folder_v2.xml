@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.EditFolderActivity_v2">
+
+    <ImageView
+        android:id="@+id/imageViewLogoP"
+        android:contentDescription="@string/poste_logo_description"
+        android:layout_width="100dp"
+        android:layout_height="135dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/newlogo_p" />
+
+    <ImageView
+        android:id="@+id/imageViewShareFolderIcon"
+        android:contentDescription="@string/edit_folder_icon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="135dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/edit_post_icon" />
+
+    <TextView
+        android:id="@+id/textViewShareFolderEmailLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share Folder"
+        android:textSize="35sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/imageViewShareFolderIcon"
+        app:layout_constraintTop_toTopOf="@+id/imageViewShareFolderIcon" />
+
+    <TextView
+        android:id="@+id/textViewShareFolderEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="19dp"
+        android:text="Email:"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/imageViewShareFolderIcon"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewShareFolderIcon" />
+
+    <EditText
+        android:id="@+id/editTextEmailToShareWith"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="19dp"
+        android:inputType="text"
+        android:paddingStart="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewShareFolderIcon" />
+
+
+    <TextView
+        android:id="@+id/textViewShareFolderName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="19dp"
+        android:text="Folder Name"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/imageViewShareFolderIcon"
+        app:layout_constraintTop_toBottomOf="@+id/editTextEmailToShareWith" />
+
+    <Spinner
+        android:id="@+id/share_folder_spinner"
+        android:layout_width="210dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="4dp"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@+id/textViewShareFolderName"
+        app:layout_constraintTop_toBottomOf="@+id/textViewShareFolderName" />
+
+    <TextView
+        android:id="@+id/textViewShareFolderPermissions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="19dp"
+        android:text="Share Permissions"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/imageViewShareFolderIcon"
+        app:layout_constraintTop_toBottomOf="@+id/share_folder_spinner" />
+
+    <Spinner
+        android:id="@+id/share_folder_permissions_spinner"
+        android:layout_width="210dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="4dp"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@+id/textViewShareFolderPermissions"
+        app:layout_constraintTop_toBottomOf="@+id/textViewShareFolderPermissions" />
+
+    <Button
+        android:id="@+id/buttonSaveChanges"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="23dp"
+        android:text="Save Changes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/share_folder_permissions_spinner" />
+
+    <Button
+        android:id="@+id/buttonCancelChanges"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Cancel Changes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSaveChanges" />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
