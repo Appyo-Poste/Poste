@@ -181,9 +181,10 @@ public class User {
      * "Authorization": "Token A12345"
      * @return the user's token, prepended with "Token "
      */
-    private String getTokenHeader() {
+    public String getTokenHeader() {
         return "Token " + getToken();
     }
+
     /**
      * Sets the user's token. This should be retrieved from a login response, and sent with
      * subsequent requests to validate the user to the backend. This way, we don't need to send

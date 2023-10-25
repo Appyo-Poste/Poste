@@ -4,6 +4,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import okhttp3.ResponseBody;
 
@@ -14,6 +15,11 @@ public interface MyApiService {
 
     @POST("login/")
     Call<ResponseBody> loginUser(@Body LoginRequest loginRequest);
+
+    @PATCH("posts/")
+    Call<ResponseBody> editPost(@Header("Authorization") String authToken,
+                                @Header("id") String id,
+                                @Body EditPostRequest editPostRequest);
 
 
     /**

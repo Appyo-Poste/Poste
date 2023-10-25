@@ -7,12 +7,22 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.poste.R;
+import com.example.poste.http.EditPostRequest;
+import com.example.poste.http.LoginRequest;
+import com.example.poste.http.MyApiService;
+import com.example.poste.http.RetrofitClient;
 import com.example.poste.models.Folder;
 import com.example.poste.models.Post;
 import com.example.poste.models.User;
 import com.example.poste.utils.DebugUtils;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * The EditPostActivity class adds functionality to the activity_edit_post.xml layout
@@ -66,9 +76,33 @@ public class EditPostActivity extends AppCompatActivity {
         });
         buttonSaveChanges.setOnClickListener(view -> {
             if (currentPost!= null){
-                currentPost.setTitle(postTitle.getText().toString());
-                currentPost.setDescription(postDescription.getText().toString());
-                currentPost.setUrl(linkToPost.getText().toString());
+                String title = postTitle.getText().toString();
+                String description = postDescription.getText().toString();
+                String url = linkToPost.getText().toString();
+
+                MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
+                Call<ResponseBody> call = apiService.editPost(User.getUser().getTokenHeader(),
+                        postId,
+                        new EditPostRequest(title,description,url));
+
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()){
+                            currentPost.setTitle(title);
+                            currentPost.setDescription(description);
+                            currentPost.setUrl(url);
+                            Toast.makeText(EditPostActivity.this,"Edit post successful!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(EditPostActivity.this,"Post to edit not found!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(EditPostActivity.this, "Edit failed due to server error", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
