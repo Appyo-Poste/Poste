@@ -320,16 +320,13 @@ public class User {
                     updateFoldersAndPosts(context);
                 }
                 else {
-                    try {
-                        Toast.makeText(context, response.errorBody().string(), Toast.LENGTH_LONG);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    Toast.makeText(context,"Post Creation Failed", Toast.LENGTH_LONG).show();
+                    Log.d("Delete Post Failed","Create New Post call returned a response that was not successful");
                 }
             }
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(context, "Server Not Responding", Toast.LENGTH_LONG);
+                Toast.makeText(context, "Server Not Responding", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -349,11 +346,8 @@ public class User {
                     updateFoldersAndPosts(context);
                 }
                 else {
-                    try {
-                        Toast.makeText(context, response.errorBody().string(), Toast.LENGTH_LONG);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    Toast.makeText(context,"Failed to delete post.", Toast.LENGTH_LONG).show();
+                    Log.d("Delete Post Failed","Delete Post call returned a response that was not successful");
                 }
             }
             @Override
