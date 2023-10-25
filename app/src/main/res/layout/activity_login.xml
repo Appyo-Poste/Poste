@@ -6,125 +6,75 @@
     android:layout_height="match_parent"
     tools:context=".activities.LoginActivity">
 
-
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:contentDescription="@string/poste_logo_description"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5"
+        app:srcCompat="@drawable/new_logo" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+    <EditText
+        android:id="@+id/editTextTextEmailAddress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:hint="@string/enter_email"
+        android:inputType="textEmailAddress"
+        android:paddingStart="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
-            <ImageView
-                android:id="@+id/LoginLogo"
-                android:layout_width="136dp"
-                android:layout_height="48dp"
-                android:layout_alignParentStart="false"
-                android:layout_alignParentTop="false"
-                android:layout_alignParentEnd="false"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="270dp"
-                app:srcCompat="@drawable/poste_logo_inpixio" />
+    <EditText
+        android:id="@+id/editTextTextPassword"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="@string/enter_password"
+        android:inputType="textPassword"
+        android:paddingStart="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress" />
 
-            <TextView
-                android:id="@+id/LoginTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="false"
-                android:layout_alignParentEnd="false"
-                android:layout_marginStart="150dp"
-                android:layout_marginTop="80dp"
-                android:text="Login"
-                android:textSize="38sp"
-                android:textStyle="bold" />
+    <Button
+        android:id="@+id/loginLoginbtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#CB0000"
+        android:text="@string/login_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
 
-            <TextView
-                android:id="@+id/LoginEmailtxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="false"
-                android:layout_alignParentEnd="false"
-                android:layout_marginStart="165dp"
-                android:layout_marginTop="20dp"
-                android:text="Email:"
-                android:textSize="24sp" />
+    <TextView
+        android:id="@+id/TextViewAlreadyAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Don't have an account?"
+        app:layout_constraintEnd_toStartOf="@+id/hyperlinkTextViewToRegister"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginLoginbtn" />
 
-            <EditText
-                android:id="@+id/LoginEmailEntertxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="false"
-                android:layout_alignParentEnd="false"
-                android:layout_marginStart="90dp"
-                android:layout_marginTop="2dp"
-                android:ems="10"
-                android:hint="Email"
-                android:inputType="textPersonName"
-                android:textAlignment="center" />
-
-            <TextView
-                android:id="@+id/LoginPasswordLbl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="false"
-                android:layout_alignParentEnd="false"
-                android:layout_marginStart="140dp"
-                android:layout_marginTop="20dp"
-                android:text="Password:"
-                android:textSize="24sp" />
-
-            <EditText
-                android:id="@+id/LoginPassword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="false"
-                android:layout_alignParentEnd="false"
-                android:layout_marginStart="90dp"
-                android:layout_marginTop="2dp"
-                android:ems="10"
-                android:hint="Password"
-                android:inputType="textPassword"
-                android:textAlignment="center" />
-
-            <Switch
-                android:id="@+id/login_remember_me_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="130dp"
-                android:layout_marginTop="16dp"
-                android:gravity="center"
-                android:text="Stay logged in" />
-
-            <LinearLayout
-                android:layout_width="250dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="75dp"
-                android:layout_marginTop="20dp"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/LoginLoginbtn"
-                    android:layout_width="100dp"
-                    android:layout_height="59dp"
-                    android:layout_alignParentStart="false"
-                    android:layout_alignParentBottom="false"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="#B0BC2C2C"
-                    android:text="Login" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-    </ScrollView>
-
+    <TextView
+        android:id="@+id/hyperlinkTextViewToRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Click here!"
+        android:textColorLink="#0000FF"
+        app:layout_constraintStart_toEndOf="@+id/TextViewAlreadyAccount"
+        app:layout_constraintTop_toBottomOf="@+id/loginLoginbtn" />
 </androidx.constraintlayout.widget.ConstraintLayout>

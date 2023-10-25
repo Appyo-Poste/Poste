@@ -19,6 +19,9 @@ public interface MyApiService {
     @DELETE("posts/")
     Call<ResponseBody> deletePost(@Header("Authorization") String authToken, @Body DeletePost deletePost);
 
+    @POST("login/")
+    Call<ResponseBody> loginUser(@Body LoginRequest loginRequest);
+
     /**
      * Get data from API. Used for retrieving folders and posts. Note that this API call expects
      * the User's token to be sent in the request header. The header should be formatted as follows:
