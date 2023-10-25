@@ -291,7 +291,7 @@ public class DashboardActivity extends PActivity {
         Intent intent = null;
         switch (item.getItemId()) {
             case R.id.ctx_menu_edit_folder:
-                intent = new Intent(DashboardActivity.this, EditFolderActivity.class );
+                intent = new Intent(DashboardActivity.this, EditFolderActivity_v2.class );
                 intent.putExtra("folderId", folder.getId());
                 intent.putExtra("folderName", folder.getName());
                 intent.putExtra("folderShared", true);

@@ -16,7 +16,7 @@ import com.example.poste.api.poste.exceptions.APIException;
 import com.example.poste.api.poste.models.Folder;
 
 /**
- * The EditFolderActivity class adds functionality to the activity_edit_folder.xml layout
+ * The EditFolderActivity class adds functionality to the activity_edit_folder_v2.xml layout
  */
 @SuppressLint("UseSwitchCompatOrMaterialCode")
 public class EditFolderActivity_v2 extends AppCompatActivity {
