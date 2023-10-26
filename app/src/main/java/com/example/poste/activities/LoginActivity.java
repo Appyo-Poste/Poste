@@ -109,10 +109,10 @@ public class LoginActivity extends AppCompatActivity {
                             Log.e("Json Error", err.toString());
                         }
                         // open dashboard activity (CURRENTLY TAKES BACK TO INTRO, TAKING TO DASHBOARD CRASHES)
-                        Intent dashboardIntent = new Intent(LoginActivity.this, IntroActivity.class);
+                        Intent dashboardIntent = new Intent(LoginActivity.this, DashboardActivity.class);
                         finish();
                         // The updateFoldersandPost should be called in Dashboard
-                        // User.getUser().updateFoldersAndPosts(LoginActivity.this);
+                        User.getUser().updateFoldersAndPosts(LoginActivity.this);
                         // dashboardIntent.putExtra("postID","2");
                         // dashboardIntent.putExtra("folderID","2");
                         startActivity(dashboardIntent);

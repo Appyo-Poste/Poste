@@ -140,7 +140,7 @@ public class User {
     }
 
     /**
-     * Adds a folder to the user's folders.
+     * Get a folder based on the string folder ID
      *
      * @param folderId string containing the id of the folder
      * @return List of posts in the folder
@@ -150,6 +150,25 @@ public class User {
                 user.folders) {
             if (folder.getId().equals(folderId)) {
                 return folder;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get a post based on the string post ID
+     *
+     * @param postId string containing the id of the post
+     * @return post searched for if found, else null
+     */
+    public Post getPost(String postId) {
+        for (Folder folder :
+                user.folders) {
+            for (Post post:
+                folder.getPosts()){
+                if (post.getId().equals(postId)){
+                    return post;
+                }
             }
         }
         return null;
