@@ -7,6 +7,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import okhttp3.ResponseBody;
+import retrofit2.http.Path;
 
 public interface MyApiService {
 
@@ -51,10 +52,10 @@ public interface MyApiService {
      * @param authToken Authorization token in the format "Token &lt;token&gt;"
      * @param id ID of the post to be deleted in the format "id: &lt;id&gt;"
      */
-    @DELETE("posts/")
+    @DELETE("posts/{id}/")
     Call<ResponseBody> deletePost(
             @Header("Authorization") String authToken,
-            @Header("id") String id
+            @Path("id") String id
     );
 
 }

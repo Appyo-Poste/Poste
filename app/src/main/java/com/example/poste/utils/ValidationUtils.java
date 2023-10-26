@@ -37,20 +37,8 @@ public class ValidationUtils {
         if (!password.equals(confirmPassword)) {
             Toast.makeText(context, "Passwords do not match!", Toast.LENGTH_SHORT).show();
             return false;
-        } else if (password.length() < 8) {
-            Toast.makeText(context, "Password must be at least 8 characters!", Toast.LENGTH_SHORT).show();
-            return false;
-        } else if (password.length() > 32) {
-            Toast.makeText(context, "Password must be at most 32 characters!", Toast.LENGTH_SHORT).show();
-            return false;
         }
-        for (int i = 1; i < password.length(); i++) {
-            if (password.charAt(i) == password.charAt(i - 1)) {
-                Toast.makeText(context, "Password cannot have consecutive characters!", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        }
-        return true;
+        return validatePassword(context, password);
     }
 
     /**
@@ -67,14 +55,7 @@ public class ValidationUtils {
             Toast.makeText(context, "Password must be at most 32 characters!", Toast.LENGTH_SHORT).show();
             return false;
         }
-        for (int i = 1; i < password.length(); i++) {
-            if (password.charAt(i) == password.charAt(i - 1)) {
-                Toast.makeText(context, "Password cannot have consecutive characters!", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        }
         return true;
     }
-
 }
 
