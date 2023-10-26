@@ -288,8 +288,6 @@ public class DashboardActivity extends PActivity {
                             if (response.isSuccessful()) {
                                 // create a local folder matching the folder created by the api.
                                 User.getUser().updateFoldersAndPosts(DashboardActivity.this);
-                                // userFolders = currentUser.getFolders();
-                                // folderAdapter.notifyItemInserted(userFolders.size() - 1);
                                 Toast.makeText(DashboardActivity.this, "folder creation successful.", Toast.LENGTH_LONG).show();
                                 // reloads the screen with the current behavior of user.updateFoldersAndPosts(). This seems to be the only way to get the folder to show up.
                                 // user.updateFoldersAndPosts(), seems to always be the last code ran in the activity so can't use it do update the users info in the middle
