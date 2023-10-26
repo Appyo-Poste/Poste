@@ -7,12 +7,17 @@ import com.example.poste.api.poste.exceptions.IncompleteRequestException;
 import com.example.poste.api.poste.exceptions.MalformedResponseException;
 import com.example.poste.api.poste.exceptions.NoUserFoundException;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+
 public class User {
 
     private int id;
     private String email;
     private String username;
     private String password;
+    private Collection<Folder> folders = new ArrayList<>();
 
     public User(int id, String email, String username, String password) {
         this.id = id;
@@ -79,5 +84,9 @@ public class User {
         try {
             return API.updateUser(this.email, this.username, this.password);
         } catch (Exception e) { return false; }
+    }
+
+    public Collection<Folder> getFolders() {
+        return folders;
     }
 }

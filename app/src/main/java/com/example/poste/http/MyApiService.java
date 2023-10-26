@@ -11,13 +11,6 @@ import retrofit2.http.Path;
 
 public interface MyApiService {
 
-    @POST("users/")
-    Call<ResponseBody> registerUser(@Body RegisterRequest registerRequest);
-
-    @POST("login/")
-    Call<ResponseBody> loginUser(@Body LoginRequest loginRequest);
-
-
     /**
      * Get data from API. Used for retrieving folders and posts. Note that this API call expects
      * the User's token to be sent in the request header. The header should be formatted as follows:
@@ -30,6 +23,18 @@ public interface MyApiService {
      */
     @GET("data/")
     Call<ResponseBody> getData(@Header("Authorization") String authToken);
+
+    @POST("folders/")
+    Call<ResponseBody> createFolder(@Header("Authorization") String authToken, @Body FolderRequest folderRequest);
+
+    @GET("folders/folders/deleteFolder/{id}/")
+    Call<ResponseBody> deleteFolder(@Header("Authorization") String authToken, @Path("id") int id);
+
+    @POST("login/")
+    Call<ResponseBody> loginUser(@Body LoginRequest loginRequest);
+
+    @POST("posts/")
+    Call<ResponseBody> createPost(@Header("Authorization") String authToken, @Body PostRequest postRequest);
 
     /**
      * Delete a post from the backend API. Note that this API call expects the User's token to be
@@ -58,4 +63,6 @@ public interface MyApiService {
             @Path("id") String id
     );
 
+    @POST("users/")
+    Call<ResponseBody> registerUser(@Body RegisterRequest registerRequest);
 }

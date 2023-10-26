@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.poste.PosteApplication;
 import com.example.poste.R;
-import com.example.poste.api.poste.models.Folder;
+import com.example.poste.models.Folder;
 
 import java.util.List;
 
@@ -102,7 +102,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         try {
             // Set the folder name
-            viewHolder.getTextView().setText(localDataSet.get(position).getName());
+            viewHolder.getTextView().setText(localDataSet.get(position).getTitle());
         } catch (Exception e) {
             Log.e("FolderAdapter", e.getLocalizedMessage());
         }
