@@ -8,7 +8,8 @@ import com.example.poste.api.poste.exceptions.MalformedResponseException;
 import com.example.poste.api.poste.exceptions.NoUserFoundException;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+
 
 public class User {
 
@@ -16,15 +17,13 @@ public class User {
     private String email;
     private String username;
     private String password;
-    private List<Folder> folders;
+    private Collection<Folder> folders = new ArrayList<>();
 
     public User(int id, String email, String username, String password) {
         this.id = id;
         this.email = email;
         this.username = username;
         this.password = password;
-
-        folders = new ArrayList<>();
     }
 
     /**
@@ -73,18 +72,6 @@ public class User {
         if (!update()) { this.password = oldPassword; }
     }
 
-    /**
-     * Adds a folder to the list of folders this user can access
-     * @param folder the folder to be added to the users list of folders
-     */
-    public void addFolder (Folder folder) {
-        folders.add(folder);
-    }
-
-    public List<Folder> getFolders() {
-        return folders;
-    }
-
     public boolean validateLogin() {
         try {
             return API.validateUserLogin(this.email, this.password);
@@ -97,5 +84,9 @@ public class User {
         try {
             return API.updateUser(this.email, this.username, this.password);
         } catch (Exception e) { return false; }
+    }
+
+    public Collection<Folder> getFolders() {
+        return folders;
     }
 }
