@@ -17,8 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.poste.PosteApplication;
 import com.example.poste.R;
-import com.example.poste.api.poste.models.Folder;
-import com.example.poste.api.poste.models.Post;
+import com.example.poste.models.Folder;
+import com.example.poste.models.Post;
 
 import java.io.InputStream;
 import java.util.List;
@@ -107,7 +107,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         try {
             // Set the post name
-            viewHolder.getTextView().setText(localDataSet.get(position).getName());
+            viewHolder.getTextView().setText(localDataSet.get(position).getTitle());
         } catch (Exception e) {
             Log.e("FolderAdapter", e.getLocalizedMessage());
         }
