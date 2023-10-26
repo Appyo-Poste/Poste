@@ -108,13 +108,10 @@ public class LoginActivity extends AppCompatActivity {
                         } catch (JSONException err){
                             Log.e("Json Error", err.toString());
                         }
-                        // open dashboard activity (CURRENTLY TAKES BACK TO INTRO, TAKING TO DASHBOARD CRASHES)
+                        // open dashboard activity
+                        User.getUser().updateFoldersAndPosts(LoginActivity.this);
                         Intent dashboardIntent = new Intent(LoginActivity.this, DashboardActivity.class);
                         finish();
-                        // The updateFoldersandPost should be called in Dashboard
-                        User.getUser().updateFoldersAndPosts(LoginActivity.this);
-                        // dashboardIntent.putExtra("postID","2");
-                        // dashboardIntent.putExtra("folderID","2");
                         startActivity(dashboardIntent);
                     }else {
                         Toast.makeText(LoginActivity.this, "Incorrect credentials.", Toast.LENGTH_SHORT).show();

@@ -1,22 +1,13 @@
 package com.example.poste.activities;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,32 +16,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.poste.PosteApplication;
-import com.example.poste.adapters.FolderAdapter;
 import com.example.poste.adapters.PostAdapter;
 import com.example.poste.R;
-import com.example.poste.api.poste.API;
-import com.example.poste.api.poste.exceptions.APIException;
-import com.example.poste.api.poste.models.Folder;
-import com.example.poste.api.poste.models.FolderAccess;
-import com.example.poste.api.poste.models.Post;
-import com.example.poste.api.poste.models.User;
-
-import java.util.HashMap;
-import java.net.URL;
-import java.util.Objects;
+import com.example.poste.models.Post;
+import com.example.poste.models.User;
 
 /**
- * The FolderViewActivity class adds functionality to the activity_folder_view.xml layout
+ * The FolderViewActivity class adds functionality to the activity_folder_view.xml layout.
+ * This class governs the page where users can view, use, and edit the posts contained within a
+ * selected folder.
  */
 public class FolderViewActivity extends AppCompatActivity {
-
-    private Folder currentFolder;
     private PostAdapter postAdapter;
     private RecyclerView postRecyclerView;
-    private User currentUser;
-    private HashMap<Folder, FolderAccess> userFolders;
-    private FolderAdapter folderAdapter;
-    public ImageView optionsView;
 
     /**
      * Called when the activity is created
@@ -60,6 +38,9 @@ public class FolderViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Clear post selection
+        PosteApplication.setSelectedPost(null);
 
         // Configure window settings for fullscreen mode
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -72,77 +53,83 @@ public class FolderViewActivity extends AppCompatActivity {
 
         // Prep vars
         TextView emptyText = findViewById(R.id.folderViewEmptyText);
+        TextView folderName = findViewById(R.id.folderNameText);
+        ImageButton newBut = findViewById(R.id.newPost);
+        ImageButton settingsBut = findViewById(R.id.folderSettings);
+        Button openBut = findViewById(R.id.buttonOpen);
+        Button editBut = findViewById(R.id.buttonEdit);
+        Button deleteBut = findViewById(R.id.buttonDelete);
         postRecyclerView = findViewById(R.id.posts_recycler_view);
-        currentUser = PosteApplication.getCurrentUser();
-        registerForContextMenu(postRecyclerView);
 
-        // Get current folder
-        int currentFolderId = getIntent().getIntExtra("folderId", -1);
-        try {
-            currentFolder = API.getFolderById(currentFolderId);
+        // Create listeners for the folder buttons
+        newBut.setOnClickListener(view -> {
+            PosteApplication.setSelectedPost(null);
+            Intent intent = new Intent(FolderViewActivity.this, EditPostActivity.class);
+            startActivity(intent);
+        });
 
-            // Remove empty text if posts exist in folder
-            if (currentFolder.getPosts().size() > 0) {
-                emptyText.setVisibility(View.GONE);
-            }
+        settingsBut.setOnClickListener(view -> {
+            Intent intent = new Intent(FolderViewActivity.this, EditFolderActivity.class);
+            startActivity(intent);
+        });
 
-            // Fill post view (Recycler View)
-            postRecyclerView.setLayoutManager(new LinearLayoutManager(FolderViewActivity.this));
-            postAdapter = new PostAdapter(
-                    new PostAdapter.ClickListener() {
-                        @Override
-                        public void onItemClick(int position, Post post) {
-                            try {
-                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(post.getLink()));
-                                startActivity(browserIntent);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Toast.makeText(FolderViewActivity.this, R.string.internal_error, Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-                        @Override
-                        public void onItemLongClick(int position, Post model) {
-//                            Toast.makeText(FolderViewActivity.this, "Share this folder", Toast.LENGTH_LONG).show();
-                        }
-                    },
-                    currentFolder.getPosts()
-            );
-            postRecyclerView.setAdapter(postAdapter);
-            registerForContextMenu(postRecyclerView);
-        } catch (APIException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        Post post = postAdapter.getLocalDataSetItem();
-        Intent intent = null;
-        switch (item.getItemId()) {
-            case R.id.ctx_menu_edit_post:
-                intent = new Intent(FolderViewActivity.this, EditPostActivity.class);
-                intent.putExtra("folderId", currentFolder.getId());
-                intent.putExtra("postId", post.getId());
-                startActivity(intent);
-                break;
-            case R.id.ctx_menu_delete_post:
+        // Create listeners for the post buttons
+        openBut.setOnClickListener(view -> {
+            if (PosteApplication.getSelectedPost() != null) {
                 try {
-                    // Remove post from folder
-                    API.removePostFromFolder(post.getId(), currentFolder.getId());
-
-                    // Delete post
-                    API.deletePost(post.getId());
-                } catch (APIException e) {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PosteApplication.getSelectedPost().getUrl()));
+                    startActivity(browserIntent);
+                } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(FolderViewActivity.this, R.string.internal_error, Toast.LENGTH_LONG).show();
                 }
+            }
+        });
 
-                Intent newIntent = new Intent(FolderViewActivity.this, DashboardActivity.class);
-                startActivity(newIntent);
-                break;
+        editBut.setOnClickListener(view -> {
+            if (PosteApplication.getSelectedPost() != null) {
+                Intent intent = new Intent(FolderViewActivity.this, EditPostActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        deleteBut.setOnClickListener(view -> {
+            if (PosteApplication.getSelectedPost() != null) {
+                User.getUser().deletePost (FolderViewActivity.this, PosteApplication.getSelectedPost(), PosteApplication.getSelectedFolder());
+                Intent intent = new Intent(FolderViewActivity.this, FolderViewActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Set folder name in title bar
+        folderName.setText(PosteApplication.getSelectedFolder().getTitle());
+
+        // Remove empty text if posts exist in folder or remove buttons if the folder is empty
+        if (PosteApplication.getSelectedFolder().getPosts().size() > 0) {
+            emptyText.setVisibility(View.GONE);
         }
-        return true;
-    }
+        else {
+            openBut.setVisibility(View.GONE);
+            editBut.setVisibility(View.GONE);
+            deleteBut.setVisibility(View.GONE);
+        }
 
+        // Fill post view (Recycler View)
+        postRecyclerView.setLayoutManager(new LinearLayoutManager(FolderViewActivity.this));
+        postAdapter = new PostAdapter(
+                new PostAdapter.ClickListener() {
+                    @Override
+                    public void onItemClick(int position, Post post) {
+                        PosteApplication.setSelectedPost(post);
+                    }
+
+                    @Override
+                    public void onItemLongClick(int position, Post model) {
+                            // No Long click action
+                    }
+                },
+                PosteApplication.getSelectedFolder().getPosts()
+        );
+        postRecyclerView.setAdapter(postAdapter);
+    }
 }

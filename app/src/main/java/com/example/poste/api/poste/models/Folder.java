@@ -93,6 +93,15 @@ public class Folder {
     }
 
     /**
+     * Removes a post from the list of posts in this folder
+     *
+     * @param post the post to remove
+     */
+    public void removePost(Post post) {
+        posts.remove(post);
+    }
+
+    /**
      * @return The reference to the HashMap of user with their access levels
      */
     public HashMap<Integer, FolderAccess> getUsers() {
@@ -118,5 +127,9 @@ public class Folder {
         try {
             return API.updateFolder(this.id, this.name, this.ownerId);
         } catch (Exception e) { return false; }
+    }
+
+    public void addPost(Post post) {
+        posts.add(post);
     }
 }
