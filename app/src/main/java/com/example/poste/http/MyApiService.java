@@ -5,6 +5,7 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import okhttp3.ResponseBody;
 import retrofit2.http.Path;
@@ -22,6 +23,12 @@ public interface MyApiService {
 
     @POST("login/")
     Call<ResponseBody> loginUser(@Body LoginRequest loginRequest);
+
+    @PATCH("posts/")
+    Call<ResponseBody> editPost(@Header("Authorization") String authToken,
+                                @Header("id") String id,
+                                @Body EditPostRequest editPostRequest);
+
 
     /**
      * Get data from API. Used for retrieving folders and posts. Note that this API call expects

@@ -142,6 +142,41 @@ public class User {
     }
 
     /**
+     * Get a folder based on the string folder ID
+     *
+     * @param folderId string containing the id of the folder
+     * @return List of posts in the folder
+     */
+    public Folder getFolder(String folderId) {
+        for (Folder folder :
+                user.folders) {
+            if (folder.getId().equals(folderId)) {
+                return folder;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get a post based on the string post ID
+     *
+     * @param postId string containing the id of the post
+     * @return post searched for if found, else null
+     */
+    public Post getPost(String postId) {
+        for (Folder folder :
+                user.folders) {
+            for (Post post:
+                folder.getPosts()){
+                if (post.getId().equals(postId)){
+                    return post;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns a copy of the list of the user's folders. This is a copy, so modifying the returned
      * list will not modify the user's folders.
      * @return a copy of the list of the user's folders.
@@ -167,9 +202,10 @@ public class User {
      * "Authorization": "Token A12345"
      * @return the user's token, prepended with "Token "
      */
-    private String getTokenHeader() {
+    public String getTokenHeader() {
         return "Token " + getToken();
     }
+
     /**
      * Sets the user's token. This should be retrieved from a login response, and sent with
      * subsequent requests to validate the user to the backend. This way, we don't need to send

@@ -54,12 +54,23 @@ public class Folder {
         this.id = builder.id;
     }
 
+
     /**
      * Returns the title of the folder.
      * @return the title of the folder.
      */
     public String getTitle() {
         return title;
+    }
+
+    public Post getPostFromFolder(String postId){
+        for (Post post:
+                posts) {
+            if (post.getId().equals(postId)){
+                return post;
+            }
+        }
+        return null;
     }
 
     /**
