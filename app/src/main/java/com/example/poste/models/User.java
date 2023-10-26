@@ -1,5 +1,7 @@
 package com.example.poste.models;
 
+import com.example.poste.http.CreatePost;
+import com.example.poste.http.DeletePost;
 import com.example.poste.http.MyApiService;
 import com.example.poste.http.RetrofitClient;
 import com.example.poste.utils.DebugUtils;
@@ -135,8 +137,43 @@ public class User {
      * Adds a folder to the user's folders.
      * @param newFolder the folder to add to the user's folders.
      */
-    private void addFolder(Folder newFolder) {
+    public void addFolder(Folder newFolder) {
         folders.add(newFolder);
+    }
+
+    /**
+     * Get a folder based on the string folder ID
+     *
+     * @param folderId string containing the id of the folder
+     * @return List of posts in the folder
+     */
+    public Folder getFolder(String folderId) {
+        for (Folder folder :
+                user.folders) {
+            if (folder.getId().equals(folderId)) {
+                return folder;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get a post based on the string post ID
+     *
+     * @param postId string containing the id of the post
+     * @return post searched for if found, else null
+     */
+    public Post getPost(String postId) {
+        for (Folder folder :
+                user.folders) {
+            for (Post post:
+                folder.getPosts()){
+                if (post.getId().equals(postId)){
+                    return post;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -165,9 +202,10 @@ public class User {
      * "Authorization": "Token A12345"
      * @return the user's token, prepended with "Token "
      */
-    private String getTokenHeader() {
+    public String getTokenHeader() {
         return "Token " + getToken();
     }
+
     /**
      * Sets the user's token. This should be retrieved from a login response, and sent with
      * subsequent requests to validate the user to the backend. This way, we don't need to send
@@ -301,5 +339,57 @@ public class User {
             return null;
         }
         return null;
+    }
+
+    /**
+     * Adds a new post the given folder
+     *
+     * @param folder folder to add the new post to
+     */
+    public void createNewPost(Folder folder, Context context, String title, String description, String url) {
+        MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
+        Call<ResponseBody> call = apiService.createPost(getTokenHeader() ,new CreatePost(title, description, url, folder.getTitle()));
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    updateFoldersAndPosts(context);
+                }
+                else {
+                    Toast.makeText(context,"Post Creation Failed", Toast.LENGTH_LONG).show();
+                    Log.d("Delete Post Failed","Create New Post call returned a response that was not successful");
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(context, "Server Not Responding", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    /**
+     * Deletes a given post from a given folder in the data model and backend
+     *
+     * @param post the post you want to delete
+     */
+    public void deletePost(Context context, Post post, Folder folder) {
+        MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
+        Call<ResponseBody> call = apiService.deletePost(getTokenHeader() ,new DeletePost(post.getId()));
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    updateFoldersAndPosts(context);
+                }
+                else {
+                    Toast.makeText(context,"Failed to delete post.", Toast.LENGTH_LONG).show();
+                    Log.d("Delete Post Failed","Delete Post call returned a response that was not successful");
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(context, "Server Not Responding", Toast.LENGTH_LONG);
+            }
+        });
     }
 }
