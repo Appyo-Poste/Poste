@@ -109,6 +109,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.e("Json Error", err.toString());
                         }
                         // open dashboard activity
+                        User.getUser().updateFoldersAndPosts(LoginActivity.this);
                         Intent dashboardIntent = new Intent(LoginActivity.this, DashboardActivity.class);
                         finish();
                         startActivity(dashboardIntent);

@@ -1,5 +1,13 @@
 package com.example.poste.models;
 
+import com.example.poste.http.MyApiService;
+import com.example.poste.http.RetrofitClient;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  * Represents a Post of the Poste app. Should closely mirror the Backend Post model.
  */
@@ -8,17 +16,29 @@ public class Post {
     /**
      * The title of the post.
      */
-    private final String title;
+    private String title;
 
     /**
      * The description of the post.
      */
-    private final String description;
+    private String description;
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     /**
      * The url of the post.
      */
-    private final String url;
+    private String url;
 
     /**
      * The id of the post, as identified by the backend.

@@ -5,11 +5,25 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import okhttp3.ResponseBody;
 import retrofit2.http.Path;
 
 public interface MyApiService {
+
+    @POST("posts/")
+    Call<ResponseBody> createPost(
+            @Header("Authorization") String authToken,
+            @Body CreatePost createPost
+    );
+
+    @PATCH("posts/{id}/")
+    Call<ResponseBody> editPost(
+            @Header("Authorization") String authToken,
+            @Path("id") String id,
+            @Body EditPostRequest editPostRequest
+    );
 
     /**
      * Get data from API. Used for retrieving folders and posts. Note that this API call expects
@@ -22,19 +36,32 @@ public interface MyApiService {
      * @return ResponseBody object containing the response from the API
      */
     @GET("data/")
-    Call<ResponseBody> getData(@Header("Authorization") String authToken);
+    Call<ResponseBody> getData(
+            @Header("Authorization") String authToken
+    );
 
     @POST("folders/")
-    Call<ResponseBody> createFolder(@Header("Authorization") String authToken, @Body FolderRequest folderRequest);
+    Call<ResponseBody> createFolder(
+            @Header("Authorization") String authToken,
+            @Body FolderRequest folderRequest
+    );
 
     @GET("folders/folders/deleteFolder/{id}/")
-    Call<ResponseBody> deleteFolder(@Header("Authorization") String authToken, @Path("id") int id);
+    Call<ResponseBody> deleteFolder(
+            @Header("Authorization") String authToken,
+            @Path("id") int id
+    );
 
     @POST("login/")
-    Call<ResponseBody> loginUser(@Body LoginRequest loginRequest);
+    Call<ResponseBody> loginUser(
+            @Body LoginRequest loginRequest
+    );
 
     @POST("posts/")
-    Call<ResponseBody> createPost(@Header("Authorization") String authToken, @Body PostRequest postRequest);
+    Call<ResponseBody> createPost(
+            @Header("Authorization") String authToken,
+            @Body PostRequest postRequest
+    );
 
     /**
      * Delete a post from the backend API. Note that this API call expects the User's token to be
@@ -64,5 +91,7 @@ public interface MyApiService {
     );
 
     @POST("users/")
-    Call<ResponseBody> registerUser(@Body RegisterRequest registerRequest);
+    Call<ResponseBody> registerUser(
+            @Body RegisterRequest registerRequest
+    );
 }

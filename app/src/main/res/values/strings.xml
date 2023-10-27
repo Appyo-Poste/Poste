@@ -48,6 +48,7 @@
     <string name="poste_logo_description">Poste Logo</string>
     <string name="title_activity_twitter_token">TwitterToken</string>
     <string name="edit_post_icon">edit post icon</string>
+    <string name="post_deleted">Post deleted</string>
     <!--=====[ Misc | End ]=====-->
 
     <string-array name="spinner_values">

@@ -43,7 +43,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -60,7 +59,7 @@ import retrofit2.Response;
  */
 public class DashboardActivity extends PActivity {
     private User currentUser;
-    private Collection<com.example.poste.models.Folder> userFolders;
+    private List<com.example.poste.models.Folder> userFolders;
     private RecyclerView folderRecyclerView;
     private FolderAdapter folderAdapter;
     public ImageView optionsView;
@@ -286,10 +285,15 @@ public class DashboardActivity extends PActivity {
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                             if (response.isSuccessful()) {
                                 // create a local folder matching the folder created by the api.
-                                currentUser.updateFoldersAndPosts(DashboardActivity.this);
-                                userFolders = currentUser.getFolders();
-                                folderAdapter.notifyItemInserted(userFolders.size() - 1);
+                                User.getUser().updateFoldersAndPosts(DashboardActivity.this);
                                 Toast.makeText(DashboardActivity.this, "folder creation successful.", Toast.LENGTH_LONG).show();
+                                // reloads the screen with the current behavior of user.updateFoldersAndPosts(). This seems to be the only way to get the folder to show up.
+                                // user.updateFoldersAndPosts(), seems to always be the last code ran in the activity so can't use it do update the users info in the middle
+                                // of an activity.
+                                Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                startActivity(intent);
+                                finish();
                             } else {
                                 Toast.makeText(DashboardActivity.this, "folder creation failed.", Toast.LENGTH_LONG).show();
                             }

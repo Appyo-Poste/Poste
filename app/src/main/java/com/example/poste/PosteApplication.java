@@ -3,7 +3,15 @@ package com.example.poste;
 import android.app.Application;
 import android.content.Context;
 
+import com.example.poste.models.Folder;
+import com.example.poste.models.Post;
 import com.example.poste.api.poste.models.User;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A custom application class that extends the Android Application class
@@ -11,8 +19,10 @@ import com.example.poste.api.poste.models.User;
  * store information about the currently logged-in user
  */
 public class PosteApplication extends Application {
-    private static Context context;
+    // This needs to get refactored out of the code
     private static User currentUser;
+    private static Folder selectedFolder;
+    private static Post selectedPost;
 
     /**
      * Called when the application is starting
@@ -23,7 +33,6 @@ public class PosteApplication extends Application {
     public void onCreate() {
         super.onCreate();
         // Initialize the application context
-        PosteApplication.context = getApplicationContext();
     }
 
     /**
@@ -31,7 +40,7 @@ public class PosteApplication extends Application {
      *
      * @return The User object representing the currently logged-in user
      */
-    public static User getCurrentUser() {
+    public static com.example.poste.api.poste.models.User getCurrentUser() {
         return currentUser;
     }
 
@@ -40,25 +49,39 @@ public class PosteApplication extends Application {
      *
      * @param currentUser The User object representing the currently logged-in user
      */
-    public static void setCurrentUser(User currentUser) {
+    public static void setCurrentUser(com.example.poste.api.poste.models.User currentUser) {
         PosteApplication.currentUser = currentUser;
     }
 
     /**
-     * Get the application's context
+     * Get currently selected folder
      *
-     * @return The application's context
+     * @return the currently selected folder
      */
-    public static Context getAppContext() {
-        return PosteApplication.context;
+    public static Folder getSelectedFolder() {return selectedFolder; }
+
+    /**
+     * Sets which folder is currently selected
+     *
+     * @param folder the folder that we want to select
+     */
+    public static void setSelectedFolder(Folder folder) {
+        selectedFolder = folder;
     }
 
     /**
-     * Get the instance of the application
+     * Get currently selected post
      *
-     * @return The application instance as an `Application` object.
+     * @return the currently selected post
      */
-    public static Application getApp() {
-        return (Application) PosteApplication.context;
+    public static Post getSelectedPost() {return selectedPost; }
+
+    /**
+     * Sets which post is currently selected
+     *
+     * @param post the post that we want to select
+     */
+    public static void setSelectedPost(Post post) {
+        selectedPost = post;
     }
 }
