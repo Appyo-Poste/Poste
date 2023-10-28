@@ -1,5 +1,6 @@
 package com.example.poste.models;
 
+import com.example.poste.callbacks.UpdateCallback;
 import com.example.poste.http.CreatePost;
 import com.example.poste.http.MyApiService;
 import com.example.poste.http.RetrofitClient;
@@ -221,7 +222,7 @@ public class User {
      * and posts to the user's folders and posts. This serves as a full refresh of the user's data,
      * and could be improved to only add/remove folders and posts that have changed at some point.
      */
-    public void updateFoldersAndPosts(Context context) {
+    public void updateFoldersAndPosts(UpdateCallback callback) {
         MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
         Call<ResponseBody> call = apiService.getData(getTokenHeaderString());
         call.enqueue(new Callback<ResponseBody>() {
@@ -264,6 +265,12 @@ public class User {
                                     .build();
                             user.addFolder(newFolder);
                         }
+                        Log.d(
+                                "UserDebug",
+                                "Retrieved user data from API from User.updateFoldersAndPosts()"
+                        );
+                        DebugUtils.logUserFoldersAndPosts(user);
+                        callback.onSuccess();
                     } catch (JSONException | IOException e) {
                         user.folders.clear();
                         user.folders.addAll(backup);
@@ -272,12 +279,8 @@ public class User {
                                 "Error parsing JSON response from API in " +
                                         "User.updateFoldersAndPosts(): ", e
                         );
+                        callback.onError("Error parsing JSON response from API");
                     }
-                    Log.d(
-                            "UserDebug",
-                            "Retrieved user data from API from User.updateFoldersAndPosts()"
-                    );
-                    DebugUtils.logUserFoldersAndPosts(user);
                 }
             }
 
@@ -287,8 +290,8 @@ public class User {
                         "UserDebug",
                         "Error retrieving user data from API in User.updateFoldersAndPosts(), " +
                                 "no response received: ", t);
-                Toast.makeText(context, "Unable to retrieve folders and posts, please try " +
-                        "again.", Toast.LENGTH_SHORT).show();
+                callback.onError("Unable to retrieve folders and posts, please try " +
+                        "again");
             }
         });
     }
@@ -398,7 +401,7 @@ public class User {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    updateFoldersAndPosts(context);
+                    Toast.makeText(context,"Post Created", Toast.LENGTH_LONG).show();
                 }
                 else {
                     Toast.makeText(context,"Post Creation Failed", Toast.LENGTH_LONG).show();
@@ -424,7 +427,7 @@ public class User {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    updateFoldersAndPosts(context);
+                    Toast.makeText(context,"Post Deleted", Toast.LENGTH_LONG).show();
                 }
                 else {
                     Toast.makeText(context,"Failed to delete post.", Toast.LENGTH_LONG).show();
@@ -433,7 +436,7 @@ public class User {
             }
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(context, "Server Not Responding", Toast.LENGTH_LONG);
+                Toast.makeText(context, "Server Not Responding", Toast.LENGTH_LONG).show();
             }
         });
     }

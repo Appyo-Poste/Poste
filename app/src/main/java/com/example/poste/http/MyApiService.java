@@ -49,7 +49,7 @@ public interface MyApiService {
     @GET("folders/folders/deleteFolder/{id}/")
     Call<ResponseBody> deleteFolder(
             @Header("Authorization") String authToken,
-            @Path("id") int id
+            @Path("id") String id
     );
 
     @POST("login/")
