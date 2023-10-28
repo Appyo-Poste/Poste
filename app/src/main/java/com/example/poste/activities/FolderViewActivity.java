@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.poste.PosteApplication;
 import com.example.poste.adapters.PostAdapter;
 import com.example.poste.R;
+import com.example.poste.callbacks.PostDeletionCallback;
 import com.example.poste.models.Post;
 import com.example.poste.models.User;
 
@@ -95,9 +96,21 @@ public class FolderViewActivity extends AppCompatActivity {
 
         deleteBut.setOnClickListener(view -> {
             if (PosteApplication.getSelectedPost() != null) {
-                User.getUser().deletePost (FolderViewActivity.this, PosteApplication.getSelectedPost(), PosteApplication.getSelectedFolder());
-                Intent intent = new Intent(FolderViewActivity.this, FolderViewActivity.class);
-                startActivity(intent);
+                PostDeletionCallback postDeletionCallback = new PostDeletionCallback() {
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(FolderViewActivity.this, R.string.post_deleted, Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(FolderViewActivity.this, FolderViewActivity.class);
+                        finish();
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        Toast.makeText(FolderViewActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                    }
+                };
+                User.getUser().deletePostFromServer(PosteApplication.getSelectedPost(), postDeletionCallback);
             }
         });
 

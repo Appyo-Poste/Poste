@@ -119,7 +119,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 /**
-                 * if respose fails
+                 * if response fails
                  * @param call
                  * @param t The error that is sent from the API
                  */

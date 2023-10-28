@@ -23,6 +23,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import com.example.poste.http.utils;
+
 /**
  * The EditPostActivity class adds functionality to the activity_edit_post.xml layout
  *
@@ -49,47 +51,57 @@ public class EditPostActivity extends AppCompatActivity {
 
         DebugUtils.logUserFoldersAndPosts(User.getUser());
 
-        EditText linkToPost = findViewById(R.id.editTextLinkToPost);
+        EditText postLink = findViewById(R.id.editTextPostLink);
         EditText postTitle = findViewById(R.id.editTextPostTitle);
         EditText postDescription = findViewById(R.id.editTextPostDescription);
 
         Button buttonSaveChanges = findViewById(R.id.buttonSaveChanges);
         Button buttonCancelChanges = findViewById(R.id.buttonCancelChanges);
 
-        String postId = getIntent().getStringExtra("postID");
-        String folderId = getIntent().getStringExtra("folderID");
-
+        Folder currentFolder = null;
         Post currentPost;
-        Folder currentFolder = User.getUser().getFolder(folderId);
-        if (currentFolder == null){
+
+        String folderId = getIntent().getStringExtra("folderID");
+        String postId = getIntent().getStringExtra("postID");
+
+        if (folderId == null) {
+            Log.e("Error", "EditPostActivity onCreate: Folder ID not found");
+        } else {
+            currentFolder = User.getUser().getFolder(folderId);
+        }
+
+        if (postId == null){
             currentPost = null;
-            Log.e("Error", "onCreate: Folder not found");
+            Log.e("Error", "EditPostActivity onCreate: Post ID not found");
         } else {
             currentPost = User.getUser().getPost(postId);
-            if (currentPost == null){
-                Log.e("Error", "onCreate: Post not found");
-            } else {
-                postTitle.setText(currentPost.getTitle());
-                postDescription.setText(currentPost.getDescription());
-                linkToPost.setText(currentPost.getUrl());
-            }
+        }
+
+        if (currentPost == null){
+            Log.e("Error", "EditPostActivity onCreate: Post not found");
+        } else {
+            postTitle.setText(currentPost.getTitle());
+            postDescription.setText(currentPost.getDescription());
+            postLink.setText(currentPost.getUrl());
         }
 
         buttonCancelChanges.setOnClickListener(view -> {
             Intent returnToFolderIntent = new Intent(EditPostActivity.this, FolderViewActivity.class);
             finish();
-            returnToFolderIntent.putExtra("postID",postId);
-            returnToFolderIntent.putExtra("folderID",folderId);
+            returnToFolderIntent.putExtra("postID", postId);
+            returnToFolderIntent.putExtra("folderID", folderId);
             startActivity(returnToFolderIntent);
         });
+
         buttonSaveChanges.setOnClickListener(view -> {
-            if (currentPost!= null){
+            if (currentPost != null){
                 String title = postTitle.getText().toString();
                 String description = postDescription.getText().toString();
-                String url = linkToPost.getText().toString();
+                String url = postLink.getText().toString();
 
                 MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
-                Call<ResponseBody> call = apiService.editPost(User.getUser().getTokenHeader(),
+                Call<ResponseBody> call = apiService.editPost(
+                        User.getUser().getTokenHeaderString(),
                         postId,
                         new EditPostRequest(title,description,url));
 
@@ -102,7 +114,12 @@ public class EditPostActivity extends AppCompatActivity {
                             currentPost.setUrl(url);
                             Toast.makeText(EditPostActivity.this,"Edit post successful!", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(EditPostActivity.this,"Error: " + response.message(), Toast.LENGTH_SHORT).show();
+                            String errorMessage = utils.parseError(response);
+                            if (errorMessage != null) {
+                                Toast.makeText(EditPostActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(EditPostActivity.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
 

@@ -47,7 +47,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageViewEditPostIcon" />
 
     <EditText
-        android:id="@+id/editTextLinkToPost"
+        android:id="@+id/editTextPostLink"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
@@ -67,7 +67,7 @@
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/imageViewEditPostIcon"
-        app:layout_constraintTop_toBottomOf="@+id/editTextLinkToPost" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextPostLink" />
 
     <EditText
         android:id="@+id/editTextPostTitle"

@@ -9,6 +9,7 @@ import com.example.poste.api.poste.exceptions.NoUserFoundException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 
 public class User {
@@ -17,13 +18,14 @@ public class User {
     private String email;
     private String username;
     private String password;
-    private Collection<Folder> folders = new ArrayList<>();
+    private List<Folder> folders;
 
     public User(int id, String email, String username, String password) {
         this.id = id;
         this.email = email;
         this.username = username;
         this.password = password;
+        this.folders = new ArrayList<>();
     }
 
     /**
@@ -86,7 +88,7 @@ public class User {
         } catch (Exception e) { return false; }
     }
 
-    public Collection<Folder> getFolders() {
+    public List<Folder> getFolders() {
         return folders;
     }
 }

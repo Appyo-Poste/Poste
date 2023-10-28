@@ -30,7 +30,6 @@ import com.example.poste.PosteApplication;
 import com.example.poste.R;
 import com.example.poste.api.poste.API;
 import com.example.poste.api.poste.exceptions.APIException;
-
 import com.example.poste.models.Folder;
 import com.example.poste.api.poste.models.FolderAccess;
 import com.example.poste.http.FolderRequest;
@@ -44,7 +43,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -61,7 +59,7 @@ import retrofit2.Response;
  */
 public class DashboardActivity extends PActivity {
     private User currentUser;
-    private Collection<com.example.poste.models.Folder> userFolders;
+    private List<com.example.poste.models.Folder> userFolders;
     private RecyclerView folderRecyclerView;
     private FolderAdapter folderAdapter;
     public ImageView optionsView;

@@ -1,6 +1,5 @@
 package com.example.poste.models;
 
-import com.example.poste.http.DeletePost;
 import com.example.poste.http.MyApiService;
 import com.example.poste.http.RetrofitClient;
 

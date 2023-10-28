@@ -1,7 +1,6 @@
 package com.example.poste.models;
 
 import com.example.poste.http.CreatePost;
-import com.example.poste.http.DeletePost;
 import com.example.poste.http.MyApiService;
 import com.example.poste.http.RetrofitClient;
 
@@ -82,12 +81,11 @@ public class Folder {
     }
 
     /**
-     * Returns a copy of the list of posts in the folder. This is a copy, so modifying the returned
-     * list will not modify the folder's posts.
-     * @return a copy of the list of posts in the folder.
+     * Returns a List of the posts in the folder.
+     * @return a List of the posts in the folder.
      */
     public List<Post> getPosts() {
-        return new ArrayList<>(posts);
+        return posts;
     }
 
     /**
