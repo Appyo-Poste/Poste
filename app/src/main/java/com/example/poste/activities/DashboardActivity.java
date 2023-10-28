@@ -30,6 +30,7 @@ import com.example.poste.http.MyApiService;
 import com.example.poste.http.PostRequest;
 import com.example.poste.http.RetrofitClient;
 import com.example.poste.models.User;
+import com.example.poste.utils.utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -219,7 +220,11 @@ public class DashboardActivity extends PActivity {
         Spinner spinnerNewPostFolder = dialogView.findViewById(R.id.spinnerNewPostFolder);
 
         // Setup for the dropdown menu
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new ArrayList<>(folderNameToIdMap.keySet()));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                new ArrayList<>(folderNameToIdMap.keySet())
+        );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerNewPostFolder.setAdapter(adapter);
 
@@ -238,31 +243,52 @@ public class DashboardActivity extends PActivity {
                 String selectedFolderName = spinnerNewPostFolder.getSelectedItem().toString();
                 String selectedFolderId = folderNameToIdMap.get(selectedFolderName);
 
-                if (itemName == null || itemName == "" || itemLink == null || itemLink == "") {
-                    Toast.makeText(DashboardActivity.this, "Cannot create post, please enter name and link", Toast.LENGTH_LONG).show();
+                if (itemName == "" || itemLink == null || itemLink == "") {
+                    Toast.makeText(
+                            DashboardActivity.this,
+                            "Cannot create post, please enter name and link",
+                            Toast.LENGTH_LONG
+                    ).show();
                     return;
                 }
 
                 if (!itemLink.matches("^((http|https):\\/\\/)(www.)?[a-zA-Z0-9@:%._\\\\+~#?&/=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\\\+~#?&/=]*)$")) {
-                    Toast.makeText(DashboardActivity.this, "Invalid Link", Toast.LENGTH_LONG).show();
+                    Toast.makeText(
+                            DashboardActivity.this,
+                            "Invalid Link",
+                            Toast.LENGTH_LONG
+                    ).show();
                     return;
                 }
 
                 // Handle post creation logic
-                Call<ResponseBody> call = apiService.createPost("Token " + currentUser.getToken(), new PostRequest(itemName, "", itemLink, selectedFolderId));
+                Call<ResponseBody> call = apiService.createPost(
+                        currentUser.getTokenHeaderString(),
+                        new PostRequest(itemName, "", itemLink, selectedFolderId)
+                );
 
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
-                            // Display success message, then restart the activity
-                            Toast.makeText(DashboardActivity.this, "Post creation successful.", Toast.LENGTH_LONG).show();
+                            // Display success message, then reload Dashboard
+                            // For simplicity, let's just display a toast message with the post details
+                            Toast.makeText(
+                                    DashboardActivity.this,
+                                    "Post created:\nName: " + itemName + "\nLink: " + itemLink,
+                                    Toast.LENGTH_LONG
+                            ).show();
+                            dialog.dismiss();
                             Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(intent);
                             finish();
                         } else {
-                            Toast.makeText(DashboardActivity.this, "Post creation failed.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(
+                                    DashboardActivity.this,
+                                    "Post creation failed.",
+                                    Toast.LENGTH_LONG
+                            ).show();
                         }
                     }
 
@@ -271,11 +297,6 @@ public class DashboardActivity extends PActivity {
                         Toast.makeText(DashboardActivity.this, "Post creation failed.", Toast.LENGTH_LONG).show();
                     }
                 });
-
-
-                // For simplicity, let's just display a toast message with the post details
-                Toast.makeText(DashboardActivity.this, "Post created:\nName: " + itemName + "\nLink: " + itemLink, Toast.LENGTH_LONG).show();
-                dialog.dismiss();
             }
         });
 
@@ -317,33 +338,43 @@ public class DashboardActivity extends PActivity {
                 String itemName = editTextItemName.getText().toString().trim();
 
                 // Handle folder creation logic
-                Call<ResponseBody> call = apiService.createFolder("Token " + currentUser.getToken(), new FolderRequest(itemName));
+                Call<ResponseBody> call = apiService.createFolder(
+                        currentUser.getTokenHeaderString(),
+                        new FolderRequest(itemName)
+                );
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
                             // Display success message, then restart the activity
-                            Toast.makeText(DashboardActivity.this, "folder creation successful.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(
+                                    DashboardActivity.this,
+                                    "Folder created!",
+                                    Toast.LENGTH_LONG
+                            ).show();
+                            // Reload Dashboard
                             Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(intent);
                             finish();
                         } else {
-                            Toast.makeText(DashboardActivity.this, "folder creation failed.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(
+                                    DashboardActivity.this,
+                                    "Folder creation failed.",
+                                    Toast.LENGTH_LONG
+                            ).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(DashboardActivity.this, "folder creation failed.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(
+                                DashboardActivity.this,
+                                "Folder creation failed.",
+                                Toast.LENGTH_LONG
+                        ).show();
                     }
                 });
-                //currentUser.updateFoldersAndPosts(DashboardActivity.this);
-                //userFolders = currentUser.getFolders();
-                //folderAdapter.notifyItemInserted(userFolders.size() - 1);
-
-                // For simplicity, let's just display a toast message with the post details
-                //Toast.makeText(DashboardActivity.this, "Folder created", Toast.LENGTH_LONG).show();
                 dialog.dismiss();
             }
         });
@@ -385,32 +416,45 @@ public class DashboardActivity extends PActivity {
                 break;
             case R.id.ctx_menu_delete_folder:
                 // Delete the folder
-                Call<ResponseBody> call = apiService.deleteFolder("Token " + currentUser.getToken(), folder.getId());
+                Call<ResponseBody> call = apiService.deleteFolder(
+                        currentUser.getTokenHeaderString(),
+                        folder.getId()
+                );
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
-                            JSONObject res;
-                            try {
-                                res = new JSONObject(response.body().toString());
-                                if (res.getBoolean("success")) {
-                                    Toast.makeText(DashboardActivity.this, "folder deleted successful.", Toast.LENGTH_LONG).show();
-                                    // delete the local folder
-                                    currentUser.getFolders().remove(folder);
-                                } else {
-                                    Toast.makeText(DashboardActivity.this, "folder deletion failed. Error: " + res.getString("Error"), Toast.LENGTH_LONG).show();
-                                }
-                            } catch (JSONException e) {
-                                Toast.makeText(DashboardActivity.this, "folder deletion failed. Invalid JSON response", Toast.LENGTH_LONG).show();
-                            }
+                            Toast.makeText(DashboardActivity.this, "folder deleted successful.", Toast.LENGTH_LONG).show();
+                            // Reload Dashboard
+                            Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            startActivity(intent);
+                            finish();
                         } else {
-                            Toast.makeText(DashboardActivity.this, "folder deletion failed.", Toast.LENGTH_LONG).show();
+                            String error = utils.parseError(response);
+                            if (error != null) {
+                                Toast.makeText(
+                                        DashboardActivity.this,
+                                        "Folder deletion failed: " + error,
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            } else {
+                                Toast.makeText(
+                                        DashboardActivity.this,
+                                        "Folder deletion failed.",
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
                         }
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(DashboardActivity.this, "folder deletion failed.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(
+                                DashboardActivity.this,
+                                "Folder deletion failed.",
+                                Toast.LENGTH_LONG
+                        ).show();
                     }
                 });
                 break;

@@ -46,7 +46,7 @@ public interface MyApiService {
             @Body FolderRequest folderRequest
     );
 
-    @GET("folders/folders/deleteFolder/{id}/")
+    @DELETE("folders/{id}/")
     Call<ResponseBody> deleteFolder(
             @Header("Authorization") String authToken,
             @Path("id") String id

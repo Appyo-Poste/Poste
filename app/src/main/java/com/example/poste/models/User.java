@@ -6,7 +6,7 @@ import com.example.poste.http.MyApiService;
 import com.example.poste.http.RetrofitClient;
 import com.example.poste.utils.DebugUtils;
 import com.example.poste.callbacks.PostDeletionCallback;
-import com.example.poste.http.utils;
+import com.example.poste.utils.utils;
 
 import android.content.Context;
 import android.util.Log;
