@@ -117,8 +117,8 @@ public class DashboardActivity extends PActivity {
                     @Override
                     public void onItemClick(int position, Folder model) {
                         // Send to that folder's view
+                        PosteApplication.setSelectedFolder(model);
                         Intent intent = new Intent(DashboardActivity.this, FolderViewActivity.class );
-                        intent.putExtra("folderId", model.getId());
                         startActivity(intent);
                     }
 
