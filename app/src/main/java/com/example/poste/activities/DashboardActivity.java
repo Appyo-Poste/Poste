@@ -17,7 +17,6 @@ import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.recyclerview.widget.AdapterListUpdateCallback;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -75,6 +74,8 @@ public class DashboardActivity extends PActivity {
         setContentView(R.layout.activity_dashboard);
 
         // Prep vars
+        currentUser = User.getUser();
+        //currentUser.updateFoldersAndPosts(this);
         optionsView = findViewById(R.id.Optionsbtn);
         folderRecyclerView = findViewById(R.id.folder_recycler_view);
         Button addButton = findViewById(R.id.dashboard_add_folder_btn);
@@ -94,17 +95,42 @@ public class DashboardActivity extends PActivity {
 
         folderRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
 
+        // This callback defines what will happen after the user's folders and posts are updated
+        // It is a way to handle asynchronous code.
+        // Since the updateFoldersAndPosts call happens off the main thread, we cannot expect
+        // that it will finish in time for us to use the updated data in the onCreate method.
+        // Instead, we define a callback that will be called when the update is finished.
+        // This callback is passed to the updateFoldersAndPosts method, which will call it
+        // when the update is finished saying it succeeded or failed.
+        // We simply define what we will do if it succeeds or fails.
         UpdateCallback updateCallback = new UpdateCallback() {
+            /**
+             * This defines what will happen if the update succeeds; what we want the application
+             * to do in a success case.
+             * Again, this is assuming that a User.getUser().updateFoldersAndPosts() call was made
+             * and that the callback was passed to it; so, what do we want to do if the update
+             * was successful?
+             */
             @Override
             public void onSuccess() {
-                userFolders = User.getUser().getFolders();
-                for (Folder folder : userFolders) {
+                userFolders = currentUser.getFolders(); // update our local copy of the folders
+                folderNameToIdMap.clear(); // clear our map of folder names to folder IDs
+                for (Folder folder : userFolders) {  // repopulate the map
                     folderNameToIdMap.put(
                             folder.getTitle(),
                             folder.getId()
                     );
                 }
                 // Fill folder view (Recycler View)
+                // Note: This is not the best way to do this, because it means every time
+                // DashboardActivity restarts, a new Adapter is created, but it works for now. The
+                // better way would be to use DiffUtil to calculate the difference between the old
+                // and new lists, and then update the RecyclerView accordingly using
+                // AdapterListUpdateCallback. This method is an attempt to keep the code simple
+                // For more information, see:
+                // https://developer.android.com/reference/androidx/recyclerview/widget/DiffUtil
+                // and
+                // https://developer.android.com/reference/androidx/recyclerview/widget/ListUpdateCallback
                 folderAdapter = new FolderAdapter(
                         new FolderAdapter.ClickListener() {
                             @Override
@@ -113,6 +139,8 @@ public class DashboardActivity extends PActivity {
                                 PosteApplication.setSelectedFolder(model);
                                 Intent intent = new Intent(DashboardActivity.this, FolderViewActivity.class);
                                 startActivity(intent);
+                                // Don't finish this activity, so that we can come back to the
+                                // dashboard
                             }
 
                             @Override
@@ -127,6 +155,12 @@ public class DashboardActivity extends PActivity {
                 registerForContextMenu(folderRecyclerView);
             }
 
+            /**
+             * This defines what will happen if the update fails; what we want the application
+             * to do in a failure case (e.g. if the API call fails).
+             * @param errorMessage The error message returned by the API call (or whatever we send
+             *                     the callback to)
+             */
             @Override
             public void onError(String errorMessage) {
                 Toast.makeText(
@@ -138,7 +172,7 @@ public class DashboardActivity extends PActivity {
         };
 
         // Update current user's information, which calls the updateCallback when finished
-        User.getUser().updateFoldersAndPosts(updateCallback);
+        currentUser.updateFoldersAndPosts(updateCallback);
     }
 
 
