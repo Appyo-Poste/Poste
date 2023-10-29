@@ -6,12 +6,12 @@ public class CreatePost {
     private String description;
 
     private String url;
-    private String folder;
+    private String folder_id;
 
-    public CreatePost(String title, String description, String url, String folder) {
+    public CreatePost(String title, String description, String url, String folder_id) {
         this.title = title;
         this.description = description;
         this.url = url;
-        this.folder = folder;
+        this.folder_id = folder_id;
     }
 }

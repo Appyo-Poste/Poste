@@ -32,9 +32,6 @@ import com.example.poste.http.RetrofitClient;
 import com.example.poste.models.User;
 import com.example.poste.utils.utils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -196,7 +193,8 @@ public class DashboardActivity extends PActivity {
                         return true;
                     case R.id.menu_post:
                         // Handle post creation
-                        showCreatePostDialog();
+                        Intent intent = new Intent(DashboardActivity.this, NewPostActivity.class);
+                        startActivity(intent);
                         return true;
                     default:
                         return false;
