@@ -1,17 +1,11 @@
 package com.example.poste;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.example.poste.models.Folder;
 import com.example.poste.models.Post;
-import com.example.poste.api.poste.models.User;
+import com.example.poste.models.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A custom application class that extends the Android Application class
@@ -40,7 +34,7 @@ public class PosteApplication extends Application {
      *
      * @return The User object representing the currently logged-in user
      */
-    public static com.example.poste.api.poste.models.User getCurrentUser() {
+    public static User getCurrentUser() {
         return currentUser;
     }
 
@@ -49,7 +43,7 @@ public class PosteApplication extends Application {
      *
      * @param currentUser The User object representing the currently logged-in user
      */
-    public static void setCurrentUser(com.example.poste.api.poste.models.User currentUser) {
+    public static void setCurrentUser(User currentUser) {
         PosteApplication.currentUser = currentUser;
     }
 

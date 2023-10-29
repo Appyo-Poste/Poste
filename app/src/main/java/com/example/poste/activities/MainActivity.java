@@ -1,22 +1,15 @@
 package com.example.poste.activities;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import com.example.poste.PosteApplication;
 import com.example.poste.R;
 import com.example.poste.adapters.FolderAdapter;
-import com.example.poste.api.poste.API;
-import com.example.poste.api.poste.exceptions.APIException;
-import com.example.poste.api.poste.models.Folder;
 import com.example.poste.api.poste.models.FolderAccess;
-import com.example.poste.api.poste.models.User;
+import com.example.poste.models.User;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.navigation.NavController;
@@ -30,10 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.util.HashMap;
 
@@ -44,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
     private User currentUser;
-    private HashMap<Folder, FolderAccess> userFolders;
     private FolderAdapter folderAdapter;
     public ImageView optionsView;
 

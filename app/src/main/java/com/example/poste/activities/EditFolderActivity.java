@@ -25,9 +25,9 @@ import com.example.poste.R;
 import com.example.poste.adapters.FolderAdapter;
 import com.example.poste.api.poste.API;
 import com.example.poste.api.poste.exceptions.APIException;
-import com.example.poste.api.poste.models.Folder;
+import com.example.poste.models.Folder;
 import com.example.poste.api.poste.models.FolderAccess;
-import com.example.poste.api.poste.models.User;
+import com.example.poste.models.User;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -67,19 +67,14 @@ public class EditFolderActivity extends AppCompatActivity {
 
         // Save button push
         saveBtn.setOnClickListener(view -> {
-            try {
-                // Find folder
-                int targetFolderId = intent.getIntExtra("folderId",-1);
-                Folder targetFolder = API.getFolderById(targetFolderId);
+            // Find folder
+            Folder targetFolder = PosteApplication.getSelectedFolder();
 
-                // Apply changes
-                targetFolder.setName(folderNameView.getText().toString());
+            // Apply changes
+            // TODO: add code here to change the folder properties;
 
-                // Commit changes
-                targetFolder.update();
-            } catch (APIException e) {
-                throw new RuntimeException(e);
-            }
+            // Commit changes
+            PosteApplication.getCurrentUser().updateFoldersAndPosts(EditFolderActivity.this);
 
             sendToDashboard();
         });

@@ -7,10 +7,9 @@ import com.example.poste.api.poste.exceptions.IncompleteRequestException;
 import com.example.poste.api.poste.exceptions.MalformedResponseException;
 import com.example.poste.api.poste.exceptions.NoUserFoundException;
 import com.example.poste.api.poste.exceptions.UserCreationException;
-import com.example.poste.api.poste.models.Folder;
 import com.example.poste.api.poste.models.FolderAccess;
-import com.example.poste.api.poste.models.Post;
-import com.example.poste.api.poste.models.User;
+import com.example.poste.models.Post;
+import com.example.poste.models.User;
 import com.example.poste.utils.HTTPRequest;
 
 import org.json.JSONArray;
@@ -90,82 +89,6 @@ public class API {
         return result;
     }
 
-    public static ArrayList<User> getAllUsers() throws MalformedResponseException, IncompleteRequestException {
-        ArrayList<User> users = new ArrayList<>();
-
-        try (Response response = endpointUsers()) {
-            if (response.body() == null) { throw new MalformedResponseException(); }
-            JSONArray responseJson = new JSONObject(response.body().string()).getJSONArray("result");
-
-            for (int i = 0; i < responseJson.length(); i++)
-            {
-                try {
-                    JSONObject obj = responseJson.getJSONObject(i);
-
-                    int id = obj.getInt("id");
-                    String email = obj.getString("email");
-                    String username = obj.getString("username");
-                    String password = obj.getString("password");
-
-                    users.add(new User(id, email, username, password));
-                } catch (JSONException e) { throw new MalformedResponseException(); }
-            }
-        } catch (JSONException e) { throw new MalformedResponseException(); }
-        catch (IOException e) { throw new IncompleteRequestException(); }
-
-        return users;
-    }
-
-    public static User getUserById(String _id) throws MalformedResponseException, IncompleteRequestException, NoUserFoundException {
-        try (Response response = endpointUsersId(_id)) {
-            if (response.body() == null) { throw new MalformedResponseException(); }
-            JSONObject resultJson = new JSONObject(response.body().string());
-
-            if (resultJson.get("result") instanceof String) { throw new NoUserFoundException("Could not find user with the provided id"); }
-
-            JSONObject responseJson = resultJson.getJSONObject("result");
-
-            int id = responseJson.getInt("id");
-            String email = responseJson.getString("email");
-            String username = responseJson.getString("username");
-            String password = responseJson.getString("password");
-
-            return new User(id, email, username, password);
-        } catch (JSONException e) { throw new MalformedResponseException(); }
-        catch (IOException e) { throw new IncompleteRequestException(); }
-    }
-
-
-    public static User getUserByEmail(String _email) throws MalformedResponseException, IncompleteRequestException, NoUserFoundException {
-
-        try (Response response = endpointUsersEmail(_email)) {
-            if (response.body() == null) { throw new MalformedResponseException(); }
-            JSONObject resultJson = new JSONObject(response.body().string());
-
-            if (resultJson.get("result") instanceof String) { throw new NoUserFoundException("Could not find user with the provided email"); }
-
-            JSONObject responseJson = resultJson.getJSONObject("result");
-
-            int id = responseJson.getInt("id");
-            String email = responseJson.getString("email");
-            String username = responseJson.getString("username");
-            String password = responseJson.getString("password");
-
-            return new User(id, email, username, password);
-        } catch (JSONException e) { throw new MalformedResponseException(); }
-        catch (IOException e) { throw new IncompleteRequestException(); }
-    }
-
-    public static boolean validateUserLogin(String email, String password) throws MalformedResponseException, IncompleteRequestException {
-        try (Response response = endpointUsersLogin(email, password)) {
-            if (response.body() == null) { throw new MalformedResponseException(); }
-            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
-
-            return responseJson.getBoolean("success");
-        } catch (JSONException e) { throw new MalformedResponseException(); }
-        catch (IOException e) { throw new IncompleteRequestException(); }
-    }
-
     /**
      * Attempts to login. Returns User object if successful, else null.
      * @param email email address to login
@@ -185,7 +108,7 @@ public class API {
                 JSONObject userJson = responseJson.getJSONObject("user");
                 int id = userJson.getInt("id");
                 String username = userJson.getString("username");
-                return new User(id, email, username, password);
+                return User.getUser();
             } else {
                 return null;
             }
@@ -254,73 +177,6 @@ public class API {
         catch (IOException e) { throw new IncompleteRequestException(); }
     }
 
-    public static ArrayList<Post> getAllPosts() throws MalformedResponseException, IncompleteRequestException {
-        ArrayList<Post> posts = new ArrayList<>();
-
-        try (Response response = endpointPosts()) {
-            if (response.body() == null) { throw new MalformedResponseException(); }
-            JSONArray responseJson = new JSONObject(response.body().string()).getJSONArray("result");
-
-            for (int i = 0; i < responseJson.length(); i++)
-            {
-                try {
-                    JSONObject obj = responseJson.getJSONObject(i);
-
-                    int id = obj.getInt("id");
-                    String name = obj.getString("name");
-                    String link = obj.getString("link");
-                    int ownerId = obj.getInt("ownerId");
-
-                    posts.add(new Post(id, name, link, ownerId));
-                } catch (JSONException e) { throw new MalformedResponseException(); }
-            }
-        } catch (JSONException e) { throw new MalformedResponseException(); }
-        catch (IOException e) { throw new IncompleteRequestException(); }
-
-        return posts;
-    }
-
-    public static Post getPostById(int _id) throws MalformedResponseException, IncompleteRequestException {
-        try (Response response = endpointPostsId(_id)) {
-            if (response.body() == null) { throw new MalformedResponseException(); }
-            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
-
-            int id = responseJson.getInt("id");
-            String name = responseJson.getString("name");
-            String link = responseJson.getString("link");
-            int ownerId = responseJson.getInt("ownerId");
-
-            return new Post(id, name, link, ownerId);
-        } catch (JSONException e) { throw new MalformedResponseException(); }
-        catch (IOException e) { throw new IncompleteRequestException(); }
-    }
-
-    public static ArrayList<Post> getPostsForUserId(int _id) throws MalformedResponseException, IncompleteRequestException {
-        ArrayList<Post> posts = new ArrayList<>();
-
-        try (Response response = endpointPostsUser(_id)) {
-            if (response.body() == null) { throw new MalformedResponseException(); }
-            JSONArray responseJson = new JSONObject(response.body().string()).getJSONArray("result");
-
-            for (int i = 0; i < responseJson.length(); i++)
-            {
-                try {
-                    JSONObject obj = responseJson.getJSONObject(i);
-
-                    int id = obj.getInt("id");
-                    String name = obj.getString("name");
-                    String link = obj.getString("link");
-                    int ownerId = obj.getInt("ownerId");
-
-                    posts.add(new Post(id, name, link, ownerId));
-                } catch (JSONException e) { throw new MalformedResponseException(); }
-            }
-        } catch (JSONException e) { throw new MalformedResponseException(); }
-        catch (IOException e) { throw new IncompleteRequestException(); }
-
-        return posts;
-    }
-
     public static int addPost(String name, String link, int ownerId) throws MalformedResponseException, IncompleteRequestException {
         try (Response response = endpointPostsAdd(name, link, ownerId)) {
             if (response.body() == null) { throw new MalformedResponseException(); }
@@ -349,100 +205,6 @@ public class API {
             return responseJson.getBoolean("success");
         } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
         catch (IOException e) { throw new IncompleteRequestException(); }
-    }
-
-    public static ArrayList<Folder> getAllFolders() throws MalformedResponseException, IncompleteRequestException{
-        ArrayList<Folder> folders = new ArrayList<>();
-
-        try (Response response = endpointFolders()) {
-            if (response.body() == null) { throw new MalformedResponseException(); }
-            JSONArray responseJson = new JSONObject(response.body().string()).getJSONArray("result");
-
-            for (int i = 0; i < responseJson.length(); i++)
-            {
-                try {
-                    JSONObject obj = responseJson.getJSONObject(i);
-
-                    int id = obj.getInt("id");
-                    String name = obj.getString("name");
-                    int ownerId = obj.getInt("ownerId");
-
-
-                    folders.add(new Folder(id, name, ownerId, getPostsForFolderId(id), getAccessForFolderId(id)));
-
-                } catch (JSONException e) { throw new MalformedResponseException(); }
-            }
-        } catch (JSONException e) { throw new MalformedResponseException(); }
-        catch (IOException e) { throw new IncompleteRequestException(); }
-
-        return folders;
-    }
-
-    public static Folder getFolderById(int _id) throws MalformedResponseException, IncompleteRequestException{
-        try (Response response = endpointFoldersId(_id)) {
-            if (response.body() == null) { throw new MalformedResponseException(); }
-            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
-
-            int id = responseJson.getInt("id");
-            String name = responseJson.getString("name");
-            int ownerId = responseJson.getInt("ownerId");
-
-
-            return new Folder(id, name, ownerId, getPostsForFolderId(_id), getAccessForFolderId(_id));
-        } catch (JSONException e) { throw new MalformedResponseException(); }
-        catch (IOException e) { throw new IncompleteRequestException(); }
-    }
-
-    public static HashMap<Folder, FolderAccess> getFoldersForUserId(int id) throws MalformedResponseException, IncompleteRequestException {
-        HashMap<Folder, FolderAccess> folders = new HashMap<>();
-
-        try (Response response = endpointFoldersUser(id)) {
-            if (response.body() == null) { throw new MalformedResponseException(); }
-            JSONArray responseJson = new JSONObject(response.body().string()).getJSONArray("result");
-
-            for (int i = 0; i < responseJson.length(); i++)
-            {
-                try {
-                    JSONObject obj = responseJson.getJSONObject(i);
-
-                    int folderId = obj.getInt("id");
-                    String name = obj.getString("name");
-                    int ownerId = obj.getInt("ownerId");
-                    int access = obj.getInt("access");
-
-                    folders.put(new Folder(folderId, name, ownerId, getPostsForFolderId(folderId), getAccessForFolderId(folderId)), FolderAccess.valueOf(access));
-                } catch (JSONException e) { throw new MalformedResponseException(); }
-            }
-        } catch (JSONException e) { throw new MalformedResponseException(); }
-        catch (IOException e) { throw new IncompleteRequestException(); }
-
-        return folders;
-    }
-
-    public static ArrayList<Post> getPostsForFolderId(int id) throws MalformedResponseException, IncompleteRequestException {
-        ArrayList<Post> posts = new ArrayList<>();
-
-        try (Response response = endpointFoldersPosts(id)) {
-            if (response.body() == null) { throw new MalformedResponseException(); }
-            JSONArray responseJson = new JSONObject(response.body().string()).getJSONArray("result");
-
-            for (int i = 0; i < responseJson.length(); i++)
-            {
-                try {
-                    JSONObject obj = responseJson.getJSONObject(i);
-
-                    int postId = obj.getInt("id");
-                    String name = obj.getString("name");
-                    String link = obj.getString("link");
-                    int ownerId = obj.getInt("ownerId");
-
-                    posts.add(new Post(postId, name, link, ownerId));
-                } catch (JSONException e) { throw new MalformedResponseException(); }
-            }
-        } catch (JSONException e) { throw new MalformedResponseException(); }
-        catch (IOException e) { throw new IncompleteRequestException(); }
-
-        return posts;
     }
 
     public static HashMap<Integer, FolderAccess> getAccessForFolderId(int id) throws MalformedResponseException, IncompleteRequestException {
@@ -481,33 +243,6 @@ public class API {
 
     public static boolean updateFolder(int folderId, String name, int ownerId) throws MalformedResponseException, IncompleteRequestException {
         try (Response response = endpointFoldersUpdate(folderId, name, ownerId)) {
-            if (response.body() == null) { throw new MalformedResponseException(); }
-            JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
-
-            return responseJson.getBoolean("success");
-        } catch (JSONException e) { e.printStackTrace(); throw new MalformedResponseException(); }
-        catch (IOException e) { throw new IncompleteRequestException(); }
-    }
-
-    public static boolean deleteFolder(int folderId) throws MalformedResponseException, IncompleteRequestException {
-        ArrayList<Post> posts = getPostsForFolderId(folderId);
-        HashMap<Integer, FolderAccess> users = getAccessForFolderId(folderId);
-
-        for (int i = 0; i < posts.size(); i++) {
-            Post _post = posts.get(i);
-
-            try (Response response = endpointFoldersPostsDelete(folderId, _post.getId())) {
-                if (response.body() == null) { throw new MalformedResponseException(); }
-            } catch (IOException e) { throw new IncompleteRequestException(); }
-        }
-
-        for (Map.Entry<Integer, FolderAccess> set : users.entrySet()) {
-            try (Response response = endpointFoldersUsersDelete(folderId, set.getKey())) {
-                if (response.body() == null) { throw new MalformedResponseException(); }
-            } catch (IOException e) { throw new IncompleteRequestException(); }
-        }
-
-        try (Response response = endpointFoldersDelete(folderId)) {
             if (response.body() == null) { throw new MalformedResponseException(); }
             JSONObject responseJson = new JSONObject(response.body().string()).getJSONObject("result");
 
