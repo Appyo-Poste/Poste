@@ -21,7 +21,7 @@
     <!--=====[ Login | End ]=====-->
 
     <!--=====[ Shared Folder | Start ]=====-->
-    <string name="shared_folder_share_success">Share successful</string>
+    <string name="shared_folder_share_success">Folder access update successful</string>
     <!--=====[ Shared Folder | End ]=====-->
 
     <!--=====[ Words | Start ]=====-->

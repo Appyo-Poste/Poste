@@ -2,9 +2,9 @@ package com.example.poste.api.poste.models;
 
 public enum FolderAccess {
     NONE(0),
-    VIEW(1),
-    MANAGE(2),
-    OWNER(3);
+    VIEWER(1),
+    EDITOR(2),
+    FULL_ACCESS(3);
 
     private final int value;
 
@@ -16,9 +16,9 @@ public enum FolderAccess {
 
     public static FolderAccess valueOf(int value) {
         switch (value) {
-            case 1: return VIEW;
-            case 2: return MANAGE;
-            case 3: return OWNER;
+            case 1: return VIEWER;
+            case 2: return EDITOR;
+            case 3: return FULL_ACCESS;
             default: return NONE;
         }
     }

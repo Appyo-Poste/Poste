@@ -256,6 +256,7 @@ public class DashboardActivity extends PActivity {
                 // Handle folder creation logic
                 try {
                     int newFolderId = API.addFolder(itemName, currentUser.getId());
+                    // @TODO update this enum now that FolderAccess.OWNER has been deprecated
                     API.addUserToFolder(currentUser.getId(), newFolderId, FolderAccess.OWNER);
 
                     userFolders = API.getFoldersForUserId(currentUser.getId());
@@ -299,7 +300,7 @@ public class DashboardActivity extends PActivity {
                 finish();
                 break;
             case R.id.ctx_menu_share_folder:
-                intent = new Intent(DashboardActivity.this, Shared_Folder.class);
+                intent = new Intent(DashboardActivity.this, Shared_Folder_v2.class);
                 intent.putExtra("folderId", folder.getId());
                 intent.putExtra("folderName", folder.getName());
                 startActivity(intent);

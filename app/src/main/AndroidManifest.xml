@@ -69,7 +69,7 @@
             android:name=".activities.OptionsActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.Shared_Folder"
+            android:name=".activities.Shared_Folder_v2"
             android:exported="false" />
         <activity
             android:name=".activities.IntroActivity"
