@@ -1,4 +1,4 @@
-package com.example.poste.http;
+package com.example.poste.utils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

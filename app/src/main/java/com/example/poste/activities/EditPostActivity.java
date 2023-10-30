@@ -23,7 +23,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import com.example.poste.http.utils;
+import com.example.poste.utils.utils;
 
 /**
  * The EditPostActivity class adds functionality to the activity_edit_post.xml layout
