@@ -70,7 +70,7 @@ public class FolderViewActivity extends AppCompatActivity {
         });
 
         settingsBut.setOnClickListener(view -> {
-            Intent intent = new Intent(FolderViewActivity.this, EditFolderActivity.class);
+            Intent intent = new Intent(FolderViewActivity.this, EditFolderActivity_v2.class);
             startActivity(intent);
         });
 

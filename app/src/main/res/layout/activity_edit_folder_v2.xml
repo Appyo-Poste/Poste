@@ -17,7 +17,7 @@
 
     <ImageView
         android:id="@+id/imageViewEditFolderIcon"
-        android:contentDescription="@string/edit_folder_icon"
+        android:contentDescription="@string/edit_post_icon"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginStart="42dp"
