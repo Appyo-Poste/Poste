@@ -23,7 +23,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Poste"
         tools:targetApi="31">
-
         <activity
             android:name=".activities.EditFolderActivity_v2"
             android:exported="false" />

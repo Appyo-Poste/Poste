@@ -8,46 +8,53 @@
 
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout"
+        android:layout_width="412dp"
+        android:layout_height="62dp"
+        android:background="#98A9FF"
         android:orientation="horizontal"
         tools:ignore="MissingConstraints">
 
         <ImageView
-            android:id="@+id/accountLogo2"
-            android:layout_width="135dp"
-            android:layout_height="49dp"
+            android:id="@+id/imageView4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginTop="2dp"
-            android:layout_marginEnd="90dp"
-            android:contentDescription="@string/poste_logo_description"
-            app:srcCompat="@drawable/poste_logo_inpixio" />
+            app:srcCompat="@drawable/poste_logo_p" />
 
-<!--        <Button-->
-<!--            android:id="@+id/dashboard_add_folder_btn"-->
-<!--            android:layout_width="36dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="5dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_weight="1"-->
-<!--            android:backgroundTint="#B0BC2C2C"-->
-<!--            android:insetTop="0dp"-->
-<!--            android:insetBottom="0dp"-->
-<!--            android:textAlignment="center"-->
-<!--            app:icon="@android:drawable/ic_input_add"-->
-<!--            app:iconPadding="0dp" />-->
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="4dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/foldericon3" />
 
-<!--        <ImageView-->
-<!--            android:id="@+id/Optionsbtn"-->
-<!--            android:layout_width="36dp"-->
-<!--            android:layout_height="46dp"-->
-<!--            android:layout_marginStart="20dp"-->
-<!--            android:layout_marginTop="5dp"-->
-<!--            android:layout_marginEnd="20dp"-->
-<!--            android:layout_weight="1"-->
-<!--            android:minWidth="50dp"-->
-<!--            app:srcCompat="@drawable/options" />-->
+        <TextView
+            android:id="@+id/folderNameText"
+            android:layout_width="186dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:contentDescription="folderNameText"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="24sp" />
 
+        <ImageButton
+            android:id="@+id/newPost"
+            android:layout_width="13dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="newPost"
+            app:srcCompat="@android:drawable/ic_input_add" />
+
+        <ImageButton
+            android:id="@+id/folderSettings"
+            android:layout_width="33dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="folderSettings"
+            app:srcCompat="@android:drawable/ic_menu_manage" />
     </LinearLayout>
 
     <TextView
@@ -66,17 +73,52 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/posts_recycler_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="335dp"
+        android:layout_height="395dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.0"
         tools:listitem="@layout/recycler_view_item" />
+
+    <Button
+        android:id="@+id/buttonOpen"
+        android:layout_width="196dp"
+        android:layout_height="71dp"
+        android:layout_marginTop="12dp"
+        android:contentDescription="openPost"
+        android:text="Open Post"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/posts_recycler_view" />
+
+    <Button
+        android:id="@+id/buttonEdit"
+        android:layout_width="196dp"
+        android:layout_height="71dp"
+        android:layout_marginTop="12dp"
+        android:contentDescription="editPost"
+        android:text="Edit Post"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonOpen" />
+
+    <Button
+        android:id="@+id/buttonDelete"
+        android:layout_width="196dp"
+        android:layout_height="71dp"
+        android:layout_marginTop="12dp"
+        android:contentDescription="deletePost"
+        android:text="Delete Post"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonEdit"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,16 @@
 package com.example.poste.models;
 
+import com.example.poste.http.CreatePost;
+import com.example.poste.http.MyApiService;
+import com.example.poste.http.RetrofitClient;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Represents a Folder of the Poste app. Should closely mirror the Backend Folder model.
@@ -44,12 +53,23 @@ public class Folder {
         this.id = builder.id;
     }
 
+
     /**
      * Returns the title of the folder.
      * @return the title of the folder.
      */
     public String getTitle() {
         return title;
+    }
+
+    public Post getPostFromFolder(String postId){
+        for (Post post:
+                posts) {
+            if (post.getId().equals(postId)){
+                return post;
+            }
+        }
+        return null;
     }
 
     /**
@@ -61,12 +81,11 @@ public class Folder {
     }
 
     /**
-     * Returns a copy of the list of posts in the folder. This is a copy, so modifying the returned
-     * list will not modify the folder's posts.
-     * @return a copy of the list of posts in the folder.
+     * Returns a List of the posts in the folder.
+     * @return a List of the posts in the folder.
      */
     public List<Post> getPosts() {
-        return new ArrayList<>(posts);
+        return posts;
     }
 
     /**

@@ -8,6 +8,9 @@ import com.example.poste.models.User;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
+import retrofit2.Response;
+
 
 /**
  * A utility class for debugging and logging.
@@ -61,5 +64,11 @@ public class DebugUtils {
         } else {
             Log.d("UserDebug", "User object is null.");
         }
+    }
+
+    public static void logResponse(Response<ResponseBody> response) {
+        Log.d("ResponseDebug", "Response code: " + response.code());
+        Log.d("ResponseDebug", "Response message: " + response.message());
+        Log.d("ResponseDebug", "Response body: " + response.body());
     }
 }

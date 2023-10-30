@@ -4,9 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,39 +14,47 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.poste.adapters.FolderAdapter;
 import com.example.poste.PosteApplication;
+import com.example.poste.adapters.FolderAdapter;
 import com.example.poste.R;
-import com.example.poste.api.poste.API;
-import com.example.poste.api.poste.exceptions.APIException;
-import com.example.poste.api.poste.models.Folder;
-import com.example.poste.api.poste.models.FolderAccess;
-import com.example.poste.api.poste.models.User;
+import com.example.poste.callbacks.UpdateCallback;
+import com.example.poste.models.Folder;
+import com.example.poste.http.FolderRequest;
+import com.example.poste.http.MyApiService;
+import com.example.poste.http.PostRequest;
+import com.example.poste.http.RetrofitClient;
+import com.example.poste.models.User;
+import com.example.poste.utils.utils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * The DashboardActivity class adds functionality to the activity_dashboard.xml layout
  */
 public class DashboardActivity extends PActivity {
     private User currentUser;
-    private HashMap<Folder, FolderAccess> userFolders;
+    private List<com.example.poste.models.Folder> userFolders;
     private RecyclerView folderRecyclerView;
     private FolderAdapter folderAdapter;
     public ImageView optionsView;
-    public HashMap<String, Integer> folderIdNameMap = new HashMap<>();
+    public HashMap<String, String> folderNameToIdMap = new HashMap<>();
+    private MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
 
     /**
      * Called when the activity is created
@@ -70,18 +75,11 @@ public class DashboardActivity extends PActivity {
         setContentView(R.layout.activity_dashboard);
 
         // Prep vars
-        currentUser = PosteApplication.getCurrentUser();
+        currentUser = User.getUser();
+        //currentUser.updateFoldersAndPosts(this);
         optionsView = findViewById(R.id.Optionsbtn);
         folderRecyclerView = findViewById(R.id.folder_recycler_view);
         Button addButton = findViewById(R.id.dashboard_add_folder_btn);
-        try {
-            userFolders = API.getFoldersForUserId(currentUser.getId());
-            for (Folder folder: userFolders.keySet()) {
-                folderIdNameMap.put(String.format("(%d) %s", folder.getId(), folder.getName()), folder.getId());
-            }
-        } catch (APIException e) {
-            throw new RuntimeException(e);
-        }
 
         // Click listener for the options button
         optionsView.setOnClickListener(view -> {
@@ -90,35 +88,92 @@ public class DashboardActivity extends PActivity {
             startActivity(intent);
         });
 
-
         // Click listener for the add folder button
         addButton.setOnClickListener(v -> {
             // Show the create item dialog
             showCreateItemDialog();
         });
 
-        // Fill folder view (Recycler View)
         folderRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-        folderAdapter = new FolderAdapter(
-                new FolderAdapter.ClickListener() {
-                    @Override
-                    public void onItemClick(int position, Folder model) {
-                        // Send to that folder's view
-                        Intent intent = new Intent(DashboardActivity.this, FolderViewActivity.class );
-                        intent.putExtra("folderId", model.getId());
-                        startActivity(intent);
-                    }
 
-                    @Override
-                    public void onItemLongClick(int position, Folder model) {
-                        // Prompt to share folder
-                        Toast.makeText(DashboardActivity.this, getString(R.string.share_folder), Toast.LENGTH_LONG).show();
-                    }
-                },
-                new ArrayList<>(userFolders.keySet())
-        );
-        folderRecyclerView.setAdapter(folderAdapter);
-        registerForContextMenu(folderRecyclerView);
+        // This callback defines what will happen after the user's folders and posts are updated
+        // It is a way to handle asynchronous code.
+        // Since the updateFoldersAndPosts call happens off the main thread, we cannot expect
+        // that it will finish in time for us to use the updated data in the onCreate method.
+        // Instead, we define a callback that will be called when the update is finished.
+        // This callback is passed to the updateFoldersAndPosts method, which will call it
+        // when the update is finished saying it succeeded or failed.
+        // We simply define what we will do if it succeeds or fails.
+        UpdateCallback updateCallback = new UpdateCallback() {
+            /**
+             * This defines what will happen if the update succeeds; what we want the application
+             * to do in a success case.
+             * Again, this is assuming that a User.getUser().updateFoldersAndPosts() call was made
+             * and that the callback was passed to it; so, what do we want to do if the update
+             * was successful?
+             */
+            @Override
+            public void onSuccess() {
+                userFolders = currentUser.getFolders(); // update our local copy of the folders
+                folderNameToIdMap.clear(); // clear our map of folder names to folder IDs
+                for (Folder folder : userFolders) {  // repopulate the map
+                    folderNameToIdMap.put(
+                            folder.getTitle(),
+                            folder.getId()
+                    );
+                }
+                // Fill folder view (Recycler View)
+                // Note: This is not the best way to do this, because it means every time
+                // DashboardActivity restarts, a new Adapter is created, but it works for now. The
+                // better way would be to use DiffUtil to calculate the difference between the old
+                // and new lists, and then update the RecyclerView accordingly using
+                // AdapterListUpdateCallback. This method is an attempt to keep the code simple
+                // For more information, see:
+                // https://developer.android.com/reference/androidx/recyclerview/widget/DiffUtil
+                // and
+                // https://developer.android.com/reference/androidx/recyclerview/widget/ListUpdateCallback
+                folderAdapter = new FolderAdapter(
+                        new FolderAdapter.ClickListener() {
+                            @Override
+                            public void onItemClick(int position, Folder model) {
+                                // Send to that folder's view
+                                PosteApplication.setSelectedFolder(model);
+                                Intent intent = new Intent(DashboardActivity.this, FolderViewActivity.class);
+                                startActivity(intent);
+                                // Don't finish this activity, so that we can come back to the
+                                // dashboard
+                            }
+
+                            @Override
+                            public void onItemLongClick(int position, Folder model) {
+                                // Prompt to share folder
+                                Toast.makeText(DashboardActivity.this, getString(R.string.share_folder), Toast.LENGTH_LONG).show();
+                            }
+                        },
+                        new ArrayList<>(userFolders)
+                );
+                folderRecyclerView.setAdapter(folderAdapter);
+                registerForContextMenu(folderRecyclerView);
+            }
+
+            /**
+             * This defines what will happen if the update fails; what we want the application
+             * to do in a failure case (e.g. if the API call fails).
+             * @param errorMessage The error message returned by the API call (or whatever we send
+             *                     the callback to)
+             */
+            @Override
+            public void onError(String errorMessage) {
+                Toast.makeText(
+                        DashboardActivity.this,
+                        "Unable to retrieve folders and posts, please try again.",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        };
+
+        // Update current user's information, which calls the updateCallback when finished
+        currentUser.updateFoldersAndPosts(updateCallback);
     }
 
 
@@ -165,7 +220,11 @@ public class DashboardActivity extends PActivity {
         Spinner spinnerNewPostFolder = dialogView.findViewById(R.id.spinnerNewPostFolder);
 
         // Setup for the dropdown menu
-        ArrayAdapter<String> adapter= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new ArrayList<>(folderIdNameMap.keySet()));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                new ArrayList<>(folderNameToIdMap.keySet())
+        );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerNewPostFolder.setAdapter(adapter);
 
@@ -182,37 +241,62 @@ public class DashboardActivity extends PActivity {
                 String itemName = editTextItemName.getText().toString().trim();
                 String itemLink = editTextItemLink.getText().toString().trim();
                 String selectedFolderName = spinnerNewPostFolder.getSelectedItem().toString();
-                Integer selectedFolderId = folderIdNameMap.get(selectedFolderName);
+                String selectedFolderId = folderNameToIdMap.get(selectedFolderName);
 
-                if (itemName == null || itemName == "" || itemLink == null || itemLink == "") {
-                    Toast.makeText(DashboardActivity.this, "Cannot create post, please enter name and link", Toast.LENGTH_LONG).show();
+                if (itemName == "" || itemLink == null || itemLink == "") {
+                    Toast.makeText(
+                            DashboardActivity.this,
+                            "Cannot create post, please enter name and link",
+                            Toast.LENGTH_LONG
+                    ).show();
                     return;
                 }
 
                 if (!itemLink.matches("^((http|https):\\/\\/)(www.)?[a-zA-Z0-9@:%._\\\\+~#?&/=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\\\+~#?&/=]*)$")) {
-                    Toast.makeText(DashboardActivity.this, "Invalid Link", Toast.LENGTH_LONG).show();
+                    Toast.makeText(
+                            DashboardActivity.this,
+                            "Invalid Link",
+                            Toast.LENGTH_LONG
+                    ).show();
                     return;
                 }
 
                 // Handle post creation logic
-                try {
-                    // Create the post in the API
-                    int newPostID = API.addPost(itemName, itemLink, currentUser.getId());
+                Call<ResponseBody> call = apiService.createPost(
+                        currentUser.getTokenHeaderString(),
+                        new PostRequest(itemName, "", itemLink, selectedFolderId)
+                );
 
-                    // Update the post's folder in the API
-                    API.addPostToFolder(newPostID, selectedFolderId);
-                } catch (APIException e) {
-                    throw new RuntimeException(e);
-                }
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            // Display success message, then reload Dashboard
+                            // For simplicity, let's just display a toast message with the post details
+                            Toast.makeText(
+                                    DashboardActivity.this,
+                                    "Post created:\nName: " + itemName + "\nLink: " + itemLink,
+                                    Toast.LENGTH_LONG
+                            ).show();
+                            dialog.dismiss();
+                            Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(
+                                    DashboardActivity.this,
+                                    "Post creation failed.",
+                                    Toast.LENGTH_LONG
+                            ).show();
+                        }
+                    }
 
-                // For simplicity, let's just display a toast message with the post details
-                Toast.makeText(DashboardActivity.this, "Post created:\nName: " + itemName + "\nLink: " + itemLink, Toast.LENGTH_LONG).show();
-                dialog.dismiss();
-
-                finish();
-                overridePendingTransition(0, 0);
-                startActivity(getIntent());
-                overridePendingTransition(0, 0);
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(DashboardActivity.this, "Post creation failed.", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
 
@@ -254,18 +338,43 @@ public class DashboardActivity extends PActivity {
                 String itemName = editTextItemName.getText().toString().trim();
 
                 // Handle folder creation logic
-                try {
-                    int newFolderId = API.addFolder(itemName, currentUser.getId());
-                    API.addUserToFolder(currentUser.getId(), newFolderId, FolderAccess.FULL_ACCESS);
+                Call<ResponseBody> call = apiService.createFolder(
+                        currentUser.getTokenHeaderString(),
+                        new FolderRequest(itemName)
+                );
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            // Display success message, then restart the activity
+                            Toast.makeText(
+                                    DashboardActivity.this,
+                                    "Folder created!",
+                                    Toast.LENGTH_LONG
+                            ).show();
+                            // Reload Dashboard
+                            Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(
+                                    DashboardActivity.this,
+                                    "Folder creation failed.",
+                                    Toast.LENGTH_LONG
+                            ).show();
+                        }
+                    }
 
-                    userFolders = API.getFoldersForUserId(currentUser.getId());
-                    folderAdapter.notifyItemInserted(userFolders.size() - 1);
-                } catch (APIException e) {
-                    throw new RuntimeException(e);
-                }
-
-                // For simplicity, let's just display a toast message with the post details
-                Toast.makeText(DashboardActivity.this, "Folder created", Toast.LENGTH_LONG).show();
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(
+                                DashboardActivity.this,
+                                "Folder creation failed.",
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                });
                 dialog.dismiss();
             }
         });
@@ -291,41 +400,65 @@ public class DashboardActivity extends PActivity {
         Intent intent = null;
         switch (item.getItemId()) {
             case R.id.ctx_menu_edit_folder:
-                intent = new Intent(DashboardActivity.this, EditFolderActivity_v2.class );
+                intent = new Intent(DashboardActivity.this, EditFolderActivity_v2.class);
                 intent.putExtra("folderId", folder.getId());
-                intent.putExtra("folderName", folder.getName());
+                intent.putExtra("folderName", folder.getTitle());
                 intent.putExtra("folderShared", true);
                 startActivity(intent);
-                finish();
+                //finish();
                 break;
             case R.id.ctx_menu_share_folder:
                 intent = new Intent(DashboardActivity.this, Shared_Folder_v2.class);
                 intent.putExtra("folderId", folder.getId());
-                intent.putExtra("folderName", folder.getName());
+                intent.putExtra("folderName", folder.getTitle());
                 startActivity(intent);
-                finish();
+                //finish();
                 break;
             case R.id.ctx_menu_delete_folder:
-                try {
-                    // Remove all access
-                    HashMap<Integer, FolderAccess> folderUsers = API.getAccessForFolderId(folder.getId());
-                    folderUsers.forEach((userId, folderAccess) -> {
-                        try {
-                            API.removeUserFromFolder(folder.getId(), userId);
-                        } catch (APIException e) { }
-                    });
+                // Delete the folder
+                Call<ResponseBody> call = apiService.deleteFolder(
+                        currentUser.getTokenHeaderString(),
+                        folder.getId()
+                );
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(DashboardActivity.this, "folder deleted successful.", Toast.LENGTH_LONG).show();
+                            // Reload Dashboard
+                            Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            String error = utils.parseError(response);
+                            if (error != null) {
+                                Toast.makeText(
+                                        DashboardActivity.this,
+                                        "Folder deletion failed: " + error,
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            } else {
+                                Toast.makeText(
+                                        DashboardActivity.this,
+                                        "Folder deletion failed.",
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        }
+                    }
 
-                    // Delete the folder
-                    API.deleteFolder(folder.getId());
-                    userFolders = API.getFoldersForUserId(currentUser.getId());
-                    folderAdapter.notifyItemInserted(userFolders.size() - 1);
-                } catch (APIException e) {
-                    throw new RuntimeException(e);
-                }
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(
+                                DashboardActivity.this,
+                                "Folder deletion failed.",
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                });
                 break;
         }
         return true;
     }
-
 }
-
