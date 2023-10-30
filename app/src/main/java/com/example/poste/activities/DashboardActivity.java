@@ -256,8 +256,7 @@ public class DashboardActivity extends PActivity {
                 // Handle folder creation logic
                 try {
                     int newFolderId = API.addFolder(itemName, currentUser.getId());
-                    // @TODO update this enum now that FolderAccess.OWNER has been deprecated
-                    API.addUserToFolder(currentUser.getId(), newFolderId, FolderAccess.OWNER);
+                    API.addUserToFolder(currentUser.getId(), newFolderId, FolderAccess.FULL_ACCESS);
 
                     userFolders = API.getFoldersForUserId(currentUser.getId());
                     folderAdapter.notifyItemInserted(userFolders.size() - 1);
