@@ -27,7 +27,7 @@ import com.example.poste.callbacks.UpdateCallback;
 import com.example.poste.models.Folder;
 import com.example.poste.http.FolderRequest;
 import com.example.poste.http.MyApiService;
-import com.example.poste.http.PostRequest;
+import com.example.poste.http.CreatePostRequest;
 import com.example.poste.http.RetrofitClient;
 import com.example.poste.models.User;
 import com.example.poste.utils.utils;
@@ -206,112 +206,7 @@ public class DashboardActivity extends PActivity {
         popupMenu.show();
     }
 
-
-    private void showCreatePostDialog() {
-        // Inflate the layout for the dialog
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View dialogView = inflater.inflate(R.layout.layout_dialog_create_post, null);
-
-        // Find the RadioGroup and EditText fields in the dialog
-        EditText editTextItemName = dialogView.findViewById(R.id.editTextItemName);
-        EditText editTextItemLink = dialogView.findViewById(R.id.editTextItemLink);
-        Spinner spinnerNewPostFolder = dialogView.findViewById(R.id.spinnerNewPostFolder);
-
-        // Setup for the dropdown menu
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                new ArrayList<>(folderNameToIdMap.keySet())
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerNewPostFolder.setAdapter(adapter);
-
-        // Create the AlertDialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(dialogView);
-        builder.setTitle("Create Post");
-
-        // Set the positive button (Create button) click listener
-        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Get the item name and link from the EditText fields
-                String itemName = editTextItemName.getText().toString().trim();
-                String itemLink = editTextItemLink.getText().toString().trim();
-                String selectedFolderName = spinnerNewPostFolder.getSelectedItem().toString();
-                String selectedFolderId = folderNameToIdMap.get(selectedFolderName);
-
-                if (itemName == "" || itemLink == null || itemLink == "") {
-                    Toast.makeText(
-                            DashboardActivity.this,
-                            "Cannot create post, please enter name and link",
-                            Toast.LENGTH_LONG
-                    ).show();
-                    return;
-                }
-
-                if (!itemLink.matches("^((http|https):\\/\\/)(www.)?[a-zA-Z0-9@:%._\\\\+~#?&/=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\\\+~#?&/=]*)$")) {
-                    Toast.makeText(
-                            DashboardActivity.this,
-                            "Invalid Link",
-                            Toast.LENGTH_LONG
-                    ).show();
-                    return;
-                }
-
-                // Handle post creation logic
-                Call<ResponseBody> call = apiService.createPost(
-                        currentUser.getTokenHeaderString(),
-                        new PostRequest(itemName, "", itemLink, selectedFolderId)
-                );
-
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.isSuccessful()) {
-                            // Display success message, then reload Dashboard
-                            // For simplicity, let's just display a toast message with the post details
-                            Toast.makeText(
-                                    DashboardActivity.this,
-                                    "Post created:\nName: " + itemName + "\nLink: " + itemLink,
-                                    Toast.LENGTH_LONG
-                            ).show();
-                            dialog.dismiss();
-                            Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(
-                                    DashboardActivity.this,
-                                    "Post creation failed.",
-                                    Toast.LENGTH_LONG
-                            ).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(DashboardActivity.this, "Post creation failed.", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        });
-
-        // Set the negative button (Cancel button) click listener
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Dismiss the dialog (do nothing)
-                dialog.dismiss();
-            }
-        });
-
-        // Show the AlertDialog
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
+    // Removed Create Post dialog in favor of NewPostActivity
 
     private void showCreateFolderDialog() {
         // Inflate the layout for the dialog
