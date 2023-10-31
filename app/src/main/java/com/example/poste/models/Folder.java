@@ -62,16 +62,6 @@ public class Folder {
         return title;
     }
 
-    public Post getPostFromFolder(String postId){
-        for (Post post:
-                posts) {
-            if (post.getId().equals(postId)){
-                return post;
-            }
-        }
-        return null;
-    }
-
     /**
      * Returns the user permission of the folder, as a String.
      * @return the user permission of the folder, as a String.

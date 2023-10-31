@@ -67,9 +67,13 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
     implementation 'commons-validator:commons-validator:1.7'
+    // Unit testing dependencies
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:5.3.1'
+    // Android testing dependencies (optional)
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
     annotationProcessor 'androidx.room:room-compiler:2.5.0'
     implementation 'com.google.android.gms:play-services-auth:20.4.1'
     implementation ('com.twitter:twitter-api-java-sdk:2.0.3'){
