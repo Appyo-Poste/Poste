@@ -9,12 +9,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -27,13 +25,11 @@ import com.example.poste.callbacks.UpdateCallback;
 import com.example.poste.models.Folder;
 import com.example.poste.http.FolderRequest;
 import com.example.poste.http.MyApiService;
-import com.example.poste.http.CreatePostRequest;
 import com.example.poste.http.RetrofitClient;
 import com.example.poste.models.User;
 import com.example.poste.utils.utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -50,7 +46,6 @@ public class DashboardActivity extends PActivity {
     private RecyclerView folderRecyclerView;
     private FolderAdapter folderAdapter;
     public ImageView optionsView;
-    public HashMap<String, String> folderNameToIdMap = new HashMap<>();
     private MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
 
     /**
@@ -112,13 +107,6 @@ public class DashboardActivity extends PActivity {
             @Override
             public void onSuccess() {
                 userFolders = currentUser.getFolders(); // update our local copy of the folders
-                folderNameToIdMap.clear(); // clear our map of folder names to folder IDs
-                for (Folder folder : userFolders) {  // repopulate the map
-                    folderNameToIdMap.put(
-                            folder.getTitle(),
-                            folder.getId()
-                    );
-                }
                 // Fill folder view (Recycler View)
                 // Note: This is not the best way to do this, because it means every time
                 // DashboardActivity restarts, a new Adapter is created, but it works for now. The
@@ -172,7 +160,6 @@ public class DashboardActivity extends PActivity {
         // Update current user's information, which calls the updateCallback when finished
         currentUser.updateFoldersAndPosts(updateCallback);
     }
-
 
     private void showCreateItemDialog() {
         // Find the [+] button on the dashboard
@@ -286,72 +273,4 @@ public class DashboardActivity extends PActivity {
         dialog.show();
     }
 
-    // menu item select listener
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        Folder folder = folderAdapter.getLocalDataSetItem();
-        Intent intent = null;
-        switch (item.getItemId()) {
-            case R.id.ctx_menu_edit_folder:
-                intent = new Intent(DashboardActivity.this, EditFolderActivity.class);
-                intent.putExtra("folderId", folder.getId());
-                intent.putExtra("folderName", folder.getTitle());
-                intent.putExtra("folderShared", true);
-                startActivity(intent);
-                //finish();
-                break;
-            case R.id.ctx_menu_share_folder:
-                intent = new Intent(DashboardActivity.this, Shared_Folder.class);
-                intent.putExtra("folderId", folder.getId());
-                intent.putExtra("folderName", folder.getTitle());
-                startActivity(intent);
-                //finish();
-                break;
-            case R.id.ctx_menu_delete_folder:
-                // Delete the folder
-                Call<ResponseBody> call = apiService.deleteFolder(
-                        currentUser.getTokenHeaderString(),
-                        folder.getId()
-                );
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.isSuccessful()) {
-                            Toast.makeText(DashboardActivity.this, "folder deleted successful.", Toast.LENGTH_LONG).show();
-                            // Reload Dashboard
-                            Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            String error = utils.parseError(response);
-                            if (error != null) {
-                                Toast.makeText(
-                                        DashboardActivity.this,
-                                        "Folder deletion failed: " + error,
-                                        Toast.LENGTH_LONG
-                                ).show();
-                            } else {
-                                Toast.makeText(
-                                        DashboardActivity.this,
-                                        "Folder deletion failed.",
-                                        Toast.LENGTH_LONG
-                                ).show();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(
-                                DashboardActivity.this,
-                                "Folder deletion failed.",
-                                Toast.LENGTH_LONG
-                        ).show();
-                    }
-                });
-                break;
-        }
-        return true;
-    }
 }
