@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 
 import com.example.poste.models.Folder;
 import com.example.poste.models.Post;
+import com.example.poste.models.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,6 +99,54 @@ public class DataModelUnitTest {
     @Test
     public void folderModelGetPostsTest(){
         assertEquals(postsInFolder, testFolder.getPosts());
+    }
+
+
+    User user = User.getUser();
+
+    @Test
+    public void testSingletonUserObject(){
+        assertEquals(User.getUser(),user);
+    }
+
+    String token = "abc123token";
+    String email = "abc@email.com";
+    String firstName = "abc";
+    String lastName = "abc";
+
+    @Test
+    public void testGetAndSetToken(){
+        user.setToken(token);
+        assertEquals(user.getToken(),token);
+        assertEquals(user.getTokenHeaderString(), "Token " + token);
+        assertTrue(user.isLoggedIn());
+    }
+
+    @Test
+    public void testGetAndSetFirstName(){
+        user.setFirstName(firstName);
+        assertEquals(user.getFirstName(),firstName);
+    }
+
+    @Test
+    public void testGetAndSetLastName(){
+        user.setLastName(lastName);
+        assertEquals(user.getLastName(),lastName);
+    }
+
+    @Test
+    public void testGetAndSetEmail(){
+        user.setEmail(email);
+        assertEquals(user.getEmail(),email);
+    }
+
+    @Test
+    public void testGetFolderAndGetPost(){
+        user.getFolders().add(testFolder);
+        assertEquals(user.getFolder("1"),testFolder);
+        assertNull(user.getFolder("3"));
+        assertEquals(user.getPost("1"),testPost);
+        assertNull(user.getPost("3"));
     }
 
 }
