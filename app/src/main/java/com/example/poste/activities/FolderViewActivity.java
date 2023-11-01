@@ -65,7 +65,8 @@ public class FolderViewActivity extends AppCompatActivity {
         // Create listeners for the folder buttons
         newBut.setOnClickListener(view -> {
             PosteApplication.setSelectedPost(null);
-            Intent intent = new Intent(FolderViewActivity.this, EditPostActivity.class);
+            Intent intent = new Intent(FolderViewActivity.this, NewPostActivity.class);
+            intent.putExtra("default", PosteApplication.getSelectedFolder().getTitle());
             startActivity(intent);
         });
 
