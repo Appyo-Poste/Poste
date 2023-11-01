@@ -82,8 +82,8 @@ public class DashboardActivity extends PActivity {
 
         // Click listener for the add folder button
         addButton.setOnClickListener(v -> {
-            // Show the create item dialog
-            showCreateItemDialog();
+            // Show the create folder dialog
+            showCreateFolderDialog();
         });
 
         folderRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
@@ -159,38 +159,6 @@ public class DashboardActivity extends PActivity {
 
         // Update current user's information, which calls the updateCallback when finished
         currentUser.updateFoldersAndPosts(updateCallback);
-    }
-
-    private void showCreateItemDialog() {
-        // Find the [+] button on the dashboard
-        Button addButton = findViewById(R.id.dashboard_add_folder_btn);
-
-        // Create a PopupMenu
-        PopupMenu popupMenu = new PopupMenu(this, addButton);
-        popupMenu.inflate(R.menu.menu_create_item);
-
-        // Set a MenuItemClickListener to handle the selection
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.menu_folder:
-                        // Handle folder creation
-                        showCreateFolderDialog();
-                        return true;
-                    case R.id.menu_post:
-                        // Handle post creation
-                        Intent intent = new Intent(DashboardActivity.this, NewPostActivity.class);
-                        startActivity(intent);
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        });
-
-        // Show the PopupMenu
-        popupMenu.show();
     }
 
     // Removed Create Post dialog in favor of NewPostActivity

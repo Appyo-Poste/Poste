@@ -25,7 +25,6 @@ public class OptionsActivity extends AppCompatActivity {
     GoogleSignInClient gsc;
     Button Signoutbtn;
 
-
     /**
      * Called when the activity is created
      *
@@ -44,17 +43,9 @@ public class OptionsActivity extends AppCompatActivity {
         // Set the activity layout
         setContentView(R.layout.activity_options);
 
-        Button linkAccountsBtn = findViewById(R.id.options_link_accounts_btn);
-
         Signoutbtn = findViewById(R.id.Signoutbtn);
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         gsc = GoogleSignIn.getClient(this,gso);
-
-        //Creating the link to LinkAccount page
-        linkAccountsBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(OptionsActivity.this, LinkAccounts.class);
-            startActivity(intent);
-        });
 
         Signoutbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,9 +53,6 @@ public class OptionsActivity extends AppCompatActivity {
                 signout();
             }
         });
-
-
-
     }
 
     public void signout(){
@@ -75,7 +63,5 @@ public class OptionsActivity extends AppCompatActivity {
                 startActivity(new Intent(OptionsActivity.this, LoginActivity.class));
             }
         });
-
     }
-
 }
