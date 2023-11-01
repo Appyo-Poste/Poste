@@ -17,14 +17,9 @@ public class ValidationUtilsUnitTest {
     @Mock
     private Context mockContext;
 
-    @Mock
-    private Toast mockToast;
-
     @Before
     public void setUp(){
         mockContext = mock(Context.class);
-        mockToast = mock(Toast.class);
-
     }
 
     @Test
@@ -33,15 +28,30 @@ public class ValidationUtilsUnitTest {
         boolean result = ValidationUtils.validatePassword(mockContext, validPassword);
         assertTrue(result);
     }
+    // TODO test password > 32 char
+    // TODO test password < 8 char
+
+    @Test
+    public void testValidConfirmPassword(){
+        String validPassword = "ValidPass";
+        String confirmPassword = "ValidPass";
+        assertTrue(ValidationUtils.validatePassword(mockContext,validPassword,confirmPassword));
+    }
+    // TODO test password not matching
+    // TODO test password not matching that is invalid (i.e. <8 char or >32 char)
+
+    @Test
+    public void testValidNames(){
+        String firstName = "John";
+        String lastName = "Doe";
+        assertTrue(ValidationUtils.validateNames(mockContext, firstName, lastName));
+    }
+    // TODO test empty first name
+    // TODO test empty last name
+    // TODO test >32 char first name
+    // TODO test >32 char last name
 
     /*
-    @Test
-    public void testInvalidShortPassword(){
-        String shortPassword = "short";
-        boolean result = ValidationUtils.validatePassword(mockContext, shortPassword);
-        assertFalse(result);
-    }
-
     @Test
     public void testInvalidLongPassword(){
         String longPassword = "0123456789012345678901234567890123";
