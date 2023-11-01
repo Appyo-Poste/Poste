@@ -62,6 +62,11 @@ public class Folder {
         return title;
     }
 
+    @Override
+    public String toString() {
+        return title;
+    }
+
     /**
      * Returns the user permission of the folder, as a String.
      * @return the user permission of the folder, as a String.
