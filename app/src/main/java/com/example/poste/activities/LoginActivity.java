@@ -52,7 +52,8 @@ public class LoginActivity extends AppCompatActivity {
         passwordField = findViewById(R.id.editTextTextPassword);
 
         buttonLoginSubmit = findViewById(R.id.loginLoginbtn);
-
+        Boolean isReturn = getIntent().getBooleanExtra("return", false); // if true, dont start dashboard activity, just finish this one
+        Log.d("debug", "isReturn: " + isReturn);
 
         // adds a hyperlink to redirect user to the login page
         SpannableString spannable = new SpannableString(hyperlinkTextView.getText());
@@ -108,10 +109,17 @@ public class LoginActivity extends AppCompatActivity {
                         } catch (JSONException err){
                             Log.e("Json Error", err.toString());
                         }
-                        // open dashboard activity
-                        Intent dashboardIntent = new Intent(LoginActivity.this, DashboardActivity.class);
-                        finish();
-                        startActivity(dashboardIntent);
+                        if (isReturn){
+                            Log.d("debug", "isReturn is true");
+                            Log.d("debug", "Finishing activity, returning to previous activity");
+                            finish();
+                        } else {
+                            Log.d("debug", "isReturn is false");
+                            Log.d("debug", "Starting dashboard activity");
+                            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                            finish();
+                            startActivity(intent);
+                        }
                     }else {
                         Toast.makeText(LoginActivity.this, "Incorrect credentials.", Toast.LENGTH_SHORT).show();
                     }

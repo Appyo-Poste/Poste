@@ -60,7 +60,7 @@ public interface MyApiService {
     @POST("posts/")
     Call<ResponseBody> createPost(
             @Header("Authorization") String authToken,
-            @Body PostRequest postRequest
+            @Body CreatePostRequest createPostRequest
     );
 
     /**
