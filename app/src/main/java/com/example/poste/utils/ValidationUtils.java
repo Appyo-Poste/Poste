@@ -7,6 +7,14 @@ import org.apache.commons.validator.routines.EmailValidator;
 
 public class ValidationUtils {
 
+    /**
+     * Validate names are valid
+     * Ensures first and last name are not empty and are at most 32 characters
+     * @param context the activity within which this is called
+     * @param firstName String variable containing the first name
+     * @param lastName String variable containing the last name
+     * @return boolean. True if names are valid, false otherwise
+     */
     public static boolean validateNames(Context context, String firstName, String lastName) {
         if (firstName.isEmpty()) {
             Toast.makeText(context, "Please enter your first name!", Toast.LENGTH_SHORT).show();
@@ -24,6 +32,12 @@ public class ValidationUtils {
         return true;
     }
 
+    /**
+     * Validate email is valid
+     * @param context the activity within which this is called
+     * @param email String variable containing the email
+     * @return boolean. True if email is valid, false otherwise
+     */
     public static boolean validateEmail(Context context, String email) {
         if (EmailValidator.getInstance().isValid(email)){
             return true;
@@ -33,6 +47,13 @@ public class ValidationUtils {
         }
     }
 
+    /**
+     * Validate password matches and is valid
+     * @param context the activity within which this is called
+     * @param password String variable containing the password
+     * @param confirmPassword String variable containing the password confirmation
+     * @return boolean. True if password is valid, false otherwise
+     */
     public static boolean validatePassword(Context context, String password, String confirmPassword) {
         if (!password.equals(confirmPassword)) {
             Toast.makeText(context, "Passwords do not match!", Toast.LENGTH_SHORT).show();

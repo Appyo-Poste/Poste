@@ -1,15 +1,15 @@
 package com.example.poste.http;
 
-public class PostRequest {
+public class CreatePostRequest {
     private String title;
     private String description;
     private String url;
-    private String folder;
+    private String folder_id;
 
-    public PostRequest(String title, String description, String url, String folder) {
+    public CreatePostRequest(String title, String description, String url, String folder_id) {
         this.title = title;
         this.description = description;
         this.url = url;
-        this.folder = folder;
+        this.folder_id = folder_id;
     }
 }

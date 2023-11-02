@@ -62,6 +62,11 @@ public class Folder {
         return title;
     }
 
+    @Override
+    public String toString() {
+        return title;
+    }
+
     public Post getPostFromFolder(String postId){
         for (Post post:
                 posts) {

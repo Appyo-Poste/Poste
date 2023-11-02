@@ -1,16 +1,13 @@
 package com.example.poste.models;
 
 import com.example.poste.callbacks.UpdateCallback;
-import com.example.poste.http.CreatePost;
 import com.example.poste.http.MyApiService;
 import com.example.poste.http.RetrofitClient;
 import com.example.poste.utils.DebugUtils;
 import com.example.poste.callbacks.PostDeletionCallback;
 import com.example.poste.utils.utils;
 
-import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -225,16 +222,16 @@ public class User {
     public void updateFoldersAndPosts(UpdateCallback callback) {
         MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
         Call<ResponseBody> call = apiService.getData(getTokenHeaderString());
+        List<Folder> backup = new ArrayList<>(user.getFolders());
+        List<Folder> newFolders = new ArrayList<>();
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if(response.isSuccessful()) {
-                    List<Folder> backup = user.folders;
-                    // convert response to json obj
                     try {
                         String jsonResponse = response.body().string();
                         Log.d("Response", jsonResponse);
-                        user.folders.clear();
+                        // user.folders.clear();
                         JSONArray jsonArray = new JSONArray(jsonResponse);
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject folder = jsonArray.getJSONObject(i);
@@ -263,8 +260,10 @@ public class User {
                                     .setPosts(posts)
                                     .setId(folderId)
                                     .build();
-                            user.addFolder(newFolder);
+                            newFolders.add(newFolder);
                         }
+                        user.folders.clear();
+                        user.folders.addAll(newFolders);
                         Log.d(
                                 "UserDebug",
                                 "Retrieved user data from API from User.updateFoldersAndPosts()"
@@ -290,6 +289,8 @@ public class User {
                         "UserDebug",
                         "Error retrieving user data from API in User.updateFoldersAndPosts(), " +
                                 "no response received: ", t);
+                user.folders.clear();
+                user.folders.addAll(backup);
                 callback.onError("Unable to retrieve folders and posts, please try " +
                         "again");
             }
@@ -389,55 +390,7 @@ public class User {
         }
     }
 
-    /**
-     * Adds a new post the given folder
-     *
-     * @param folder folder to add the new post to
-     */
-    public void createNewPost(Folder folder, Context context, String title, String description, String url) {
-        MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
-        Call<ResponseBody> call = apiService.createPost(getTokenHeaderString() ,new CreatePost(title, description, url, folder.getTitle()));
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(context,"Post Created", Toast.LENGTH_LONG).show();
-                }
-                else {
-                    Toast.makeText(context,"Post Creation Failed", Toast.LENGTH_LONG).show();
-                    Log.d("Post Creation Failed","Create New Post call returned a response that was not successful");
-                }
-            }
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(context, "Server Not Responding", Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    /**
-     * Deletes a given post from a given folder in the data model and backend
-     *
-     * @param post the post you want to delete
-     */
-    public void deletePost(Context context, Post post, Folder folder) {
-        MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
-        Call<ResponseBody> call = apiService.deletePost(getTokenHeaderString() , post.getId());
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(context,"Post Deleted", Toast.LENGTH_LONG).show();
-                }
-                else {
-                    Toast.makeText(context,"Failed to delete post.", Toast.LENGTH_LONG).show();
-                    Log.d("Delete Post Failed","Delete Post call returned a response that was not successful");
-                }
-            }
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(context, "Server Not Responding", Toast.LENGTH_LONG).show();
-            }
-        });
+    public boolean isLoggedIn() {
+        return (token != null && !token.isEmpty());
     }
 }
