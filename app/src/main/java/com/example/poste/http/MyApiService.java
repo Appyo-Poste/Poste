@@ -47,7 +47,7 @@ public interface MyApiService {
             @Body EditFolderRequest editFolderRequest
     );
 
-    @POST("data/folder")
+    @POST("data/folder/")
     Call<ResponseBody> updateFolderPermissions(
             @Header("Authorization") String authToken,
             @Body UpdateFolderPermissionsRequest updateFolderPermissionsRequest

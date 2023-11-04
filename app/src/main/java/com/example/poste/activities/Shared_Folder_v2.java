@@ -100,11 +100,15 @@ public class Shared_Folder_v2 extends AppCompatActivity {
                 e.printStackTrace();
                 Toast.makeText(this, R.string.internal_error, Toast.LENGTH_LONG).show();
             }
+            sendToDashboard();
         });
 
         cancelBtn.setOnClickListener(view -> {
-            Intent newIntent = new Intent(Shared_Folder_v2.this, DashboardActivity.class);
-            startActivity(newIntent);
+            sendToDashboard();
         });
+    }
+    private void sendToDashboard() {
+        Intent newIntent = new Intent(Shared_Folder_v2.this, DashboardActivity.class);
+        startActivity(newIntent);
     }
 }
