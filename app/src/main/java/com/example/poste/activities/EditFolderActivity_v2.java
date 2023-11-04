@@ -7,13 +7,23 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.poste.R;
 import com.example.poste.api.poste.API;
 import com.example.poste.api.poste.exceptions.APIException;
-import com.example.poste.api.poste.models.Folder;
+import com.example.poste.models.Folder;
+import com.example.poste.http.EditFolderRequest;
+import com.example.poste.http.MyApiService;
+import com.example.poste.http.RetrofitClient;
+import com.example.poste.models.User;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * The EditFolderActivity class adds functionality to the activity_edit_folder_v2.xml layout
@@ -51,16 +61,32 @@ public class EditFolderActivity_v2 extends AppCompatActivity {
         // Save button push
         saveBtn.setOnClickListener(view -> {
             try {
-                // Find folder
-                int targetFolderId = intent.getIntExtra("folderId",-1);
-                Folder targetFolder = API.getFolderById(targetFolderId);
+                 String folderId = intent.getStringExtra("folderId");
+                 Folder currentFolder = User.getUser().getFolder(folderId);
+                String title = folderNameView.getText().toString();
+                MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
+                Call<ResponseBody> call = apiService.editFolder(
+                        User.getUser().getTokenHeaderString(),
+                        folderId,
+                        new EditFolderRequest(title));
 
-                // Apply changes
-                targetFolder.setName(folderNameView.getText().toString());
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()){
+                            currentFolder.setTitle(title);
+                            Toast.makeText(EditFolderActivity_v2.this,"Edit folder successful!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(EditFolderActivity_v2.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
 
-                // Commit changes
-                targetFolder.update();
-            } catch (APIException e) {
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(EditFolderActivity_v2.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
 

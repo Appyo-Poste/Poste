@@ -20,7 +20,7 @@ public class Folder {
     /**
      * The title of the folder.
      */
-    private final String title;
+    private String title;
 
     /**
      * The user permission of the folder. Should mirror the FolderPermission class of the backend.
@@ -60,6 +60,10 @@ public class Folder {
      */
     public String getTitle() {
         return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @Override
