@@ -40,6 +40,19 @@ public interface MyApiService {
             @Header("Authorization") String authToken
     );
 
+    @PATCH("data/folder/{id}")
+    Call<ResponseBody> editFolder(
+            @Header("Authorization") String authToken,
+            @Path("id") String id,
+            @Body EditFolderRequest editFolderRequest
+    );
+
+    @POST("data/folder/")
+    Call<ResponseBody> updateFolderPermissions(
+            @Header("Authorization") String authToken,
+            @Body UpdateFolderPermissionsRequest updateFolderPermissionsRequest
+    );
+
     @POST("folders/")
     Call<ResponseBody> createFolder(
             @Header("Authorization") String authToken,
