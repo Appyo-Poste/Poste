@@ -64,22 +64,11 @@
         android:id="@+id/textViewShareFolderName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="19dp"
         android:text="Folder Name"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/imageViewShareFolderIcon"
-        app:layout_constraintTop_toBottomOf="@+id/editTextEmailToShareWith" />
-
-    <Spinner
-        android:id="@+id/share_folder_spinner"
-        android:layout_width="210dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="4dp"
-        android:textAlignment="center"
-        app:layout_constraintStart_toStartOf="@+id/textViewShareFolderName"
-        app:layout_constraintTop_toBottomOf="@+id/textViewShareFolderName" />
+        app:layout_constraintStart_toStartOf="@+id/textViewShareFolderEmailLabel"
+        app:layout_constraintTop_toBottomOf="@+id/textViewShareFolderEmailLabel" />
 
     <TextView
         android:id="@+id/textViewShareFolderPermissions"
@@ -90,7 +79,7 @@
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/imageViewShareFolderIcon"
-        app:layout_constraintTop_toBottomOf="@+id/share_folder_spinner" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextEmailToShareWith" />
 
     <Spinner
         android:id="@+id/share_folder_permissions_spinner"
