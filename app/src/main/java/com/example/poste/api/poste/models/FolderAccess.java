@@ -1,18 +1,22 @@
 package com.example.poste.api.poste.models;
 
 public enum FolderAccess {
-    NONE(0),
-    VIEWER(1),
-    EDITOR(2),
-    FULL_ACCESS(3);
+    NONE(0, "none"),
+    VIEWER(1, "viewer"),
+    EDITOR(2, "editor"),
+    FULL_ACCESS(3, "full_access");
 
     private final int value;
+    private final String stringValue;
 
-    FolderAccess(final int newValue) {
+    FolderAccess(final int newValue, final String stringValue) {
         value = newValue;
+        this.stringValue = stringValue;
     }
 
     public int getValue() { return value; }
+
+    public String getStringValue() { return stringValue; }
 
     public static FolderAccess valueOf(int value) {
         switch (value) {
