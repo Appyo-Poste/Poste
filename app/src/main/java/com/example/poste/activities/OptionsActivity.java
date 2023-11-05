@@ -25,7 +25,6 @@ public class OptionsActivity extends AppCompatActivity {
     GoogleSignInClient gsc;
     Button Signoutbtn;
 
-
     /**
      * Called when the activity is created
      *
@@ -63,6 +62,12 @@ public class OptionsActivity extends AppCompatActivity {
             }
         });
 
+        Button accountSettings = findViewById(R.id.options_accounts_btn);
+        accountSettings.setOnClickListener(view ->
+        {
+            Intent accountSettingsIntent = new Intent(OptionsActivity.this, AccountActivity.class);
+            startActivity(accountSettingsIntent);
+        });
 
 
     }
