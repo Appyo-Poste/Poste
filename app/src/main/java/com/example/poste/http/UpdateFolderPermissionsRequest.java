@@ -7,9 +7,9 @@ public class UpdateFolderPermissionsRequest {
         this.folderId = folderId;
         // this is necessary else the user is sometimes not found
         this.email = email.toLowerCase();
-        this.permission = permission;
+        this.permission = permission.getStringValue();
     }
     private String folderId;
     private String email;
-    private FolderAccess permission;
+    private String permission;
 }
