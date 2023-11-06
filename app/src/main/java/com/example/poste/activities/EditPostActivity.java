@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.poste.PosteApplication;
 import com.example.poste.R;
 import com.example.poste.http.EditPostRequest;
 import com.example.poste.http.MyApiService;
@@ -62,7 +63,7 @@ public class EditPostActivity extends AppCompatActivity {
         Post currentPost;
 
         String folderId = getIntent().getStringExtra("folderID");
-        String postId = getIntent().getStringExtra("postID");
+        String postId = PosteApplication.getSelectedPost().getId();
 
         if (folderId == null) {
             Log.e("Error", "EditPostActivity onCreate: Folder ID not found");
