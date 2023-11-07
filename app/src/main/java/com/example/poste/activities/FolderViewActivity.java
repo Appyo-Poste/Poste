@@ -72,7 +72,10 @@ public class FolderViewActivity extends AppCompatActivity {
 
         settingsBut.setOnClickListener(view -> {
             Intent intent = new Intent(FolderViewActivity.this, EditFolderActivity_v2.class);
+            intent.putExtra("folderId", PosteApplication.getSelectedFolder().getId());
+            intent.putExtra("folderName", PosteApplication.getSelectedFolder().getTitle());
             startActivity(intent);
+            finish();
         });
 
         // Set folder name in title bar
@@ -118,6 +121,8 @@ public class FolderViewActivity extends AppCompatActivity {
                 PosteApplication.setSelectedPost(post);
                 if (PosteApplication.getSelectedPost() != null) {
                     intent = new Intent(FolderViewActivity.this, EditPostActivity.class);
+                    intent.putExtra("postID", post.getId());
+                    intent.putExtra("folderID", PosteApplication.getSelectedFolder().getId());
                     startActivity(intent);
                 }
                 break;
@@ -139,6 +144,8 @@ public class FolderViewActivity extends AppCompatActivity {
                         }
                     };
                     User.getUser().deletePostFromServer(PosteApplication.getSelectedPost(), postDeletionCallback);
+                    finish();
+                    recreate();
                 }
                 break;
         }

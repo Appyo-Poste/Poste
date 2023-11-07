@@ -89,7 +89,6 @@ public class EditFolderActivity_v2 extends AppCompatActivity {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-
             sendToDashboard();
         });
 
@@ -103,5 +102,6 @@ public class EditFolderActivity_v2 extends AppCompatActivity {
     private void sendToDashboard() {
         Intent newIntent = new Intent(EditFolderActivity_v2.this, DashboardActivity.class);
         startActivity(newIntent);
+        finish();
     }
 }
