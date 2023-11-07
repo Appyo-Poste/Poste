@@ -94,4 +94,10 @@ public interface MyApiService {
     Call<ResponseBody> registerUser(
             @Body RegisterRequest registerRequest
     );
+
+    @POST("users/changepassword")
+    Call<ResponseBody> editUser(
+            @Header("Authorization") String authToken,
+            @Body EditAccountRequest editAccountRequest
+    );
 }
