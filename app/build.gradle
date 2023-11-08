@@ -81,7 +81,8 @@ spotbugs {
     ignoreFailures = true
     showProgress = true
     effort = 'max'
-    reportsDir = file("$project.buildDir/reports")
+    reportsDir = file("$project.buildDir/reports/spotbugs")
+    // changes the level of severity of bugs that make it into the report
     //reportLevel = 'high'
 }
 
@@ -89,7 +90,6 @@ tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
     dependsOn 'assembleDebug'
     classes = files("$project.buildDir/intermediates/javac")
     reports {
-        // Enable HTML report only
         html.enabled = true
         xml.enabled = false
     }
