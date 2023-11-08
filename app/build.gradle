@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'checkstyle'
+    id "com.github.spotbugs" version "5.0.12"
 }
 
 def apikeyPropertiesFile = rootProject.file("apikey.properties")
@@ -76,6 +77,23 @@ checkstyle {
     ignoreFailures = true
 }
 
+spotbugs {
+    ignoreFailures = true
+    showProgress = true
+    effort = 'max'
+    reportsDir = file("$project.buildDir/reports")
+    //reportLevel = 'high'
+}
+
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
+    dependsOn 'assembleDebug'
+    classes = files("$project.buildDir/intermediates/javac")
+    reports {
+        // Enable HTML report only
+        html.enabled = true
+        xml.enabled = false
+    }
+}
 
 dependencies {
     implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.9.0'
