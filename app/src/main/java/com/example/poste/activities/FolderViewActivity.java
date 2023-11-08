@@ -3,6 +3,7 @@ package com.example.poste.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -18,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.poste.PosteApplication;
 import com.example.poste.adapters.PostAdapter;
 import com.example.poste.R;
+import com.example.poste.api.poste.API;
+import com.example.poste.api.poste.exceptions.APIException;
 import com.example.poste.callbacks.PostDeletionCallback;
 import com.example.poste.models.Post;
 import com.example.poste.models.User;
@@ -57,9 +60,6 @@ public class FolderViewActivity extends AppCompatActivity {
         TextView folderName = findViewById(R.id.folderNameText);
         ImageButton newBut = findViewById(R.id.newPost);
         ImageButton settingsBut = findViewById(R.id.folderSettings);
-        Button openBut = findViewById(R.id.buttonOpen);
-        Button editBut = findViewById(R.id.buttonEdit);
-        Button deleteBut = findViewById(R.id.buttonDelete);
         postRecyclerView = findViewById(R.id.posts_recycler_view);
 
         // Create listeners for the folder buttons
@@ -72,47 +72,10 @@ public class FolderViewActivity extends AppCompatActivity {
 
         settingsBut.setOnClickListener(view -> {
             Intent intent = new Intent(FolderViewActivity.this, EditFolderActivity_v2.class);
+            intent.putExtra("folderId", PosteApplication.getSelectedFolder().getId());
+            intent.putExtra("folderName", PosteApplication.getSelectedFolder().getTitle());
             startActivity(intent);
-        });
-
-        // Create listeners for the post buttons
-        openBut.setOnClickListener(view -> {
-            if (PosteApplication.getSelectedPost() != null) {
-                try {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PosteApplication.getSelectedPost().getUrl()));
-                    startActivity(browserIntent);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(FolderViewActivity.this, R.string.internal_error, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        editBut.setOnClickListener(view -> {
-            if (PosteApplication.getSelectedPost() != null) {
-                Intent intent = new Intent(FolderViewActivity.this, EditPostActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        deleteBut.setOnClickListener(view -> {
-            if (PosteApplication.getSelectedPost() != null) {
-                PostDeletionCallback postDeletionCallback = new PostDeletionCallback() {
-                    @Override
-                    public void onSuccess() {
-                        Toast.makeText(FolderViewActivity.this, R.string.post_deleted, Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(FolderViewActivity.this, FolderViewActivity.class);
-                        finish();
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onError(String errorMessage) {
-                        Toast.makeText(FolderViewActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                    }
-                };
-                User.getUser().deletePostFromServer(PosteApplication.getSelectedPost(), postDeletionCallback);
-            }
+            finish();
         });
 
         // Set folder name in title bar
@@ -122,11 +85,6 @@ public class FolderViewActivity extends AppCompatActivity {
         if (PosteApplication.getSelectedFolder().getPosts().size() > 0) {
             emptyText.setVisibility(View.GONE);
         }
-        else {
-            openBut.setVisibility(View.GONE);
-            editBut.setVisibility(View.GONE);
-            deleteBut.setVisibility(View.GONE);
-        }
 
         // Fill post view (Recycler View)
         postRecyclerView.setLayoutManager(new LinearLayoutManager(FolderViewActivity.this));
@@ -135,15 +93,62 @@ public class FolderViewActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(int position, Post post) {
                         PosteApplication.setSelectedPost(post);
+                        try {
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PosteApplication.getSelectedPost().getUrl()));
+                            startActivity(browserIntent);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(FolderViewActivity.this, R.string.internal_error, Toast.LENGTH_LONG).show();
+                        }
                     }
 
                     @Override
-                    public void onItemLongClick(int position, Post model) {
-                            // No Long click action
+                    public void onItemLongClick(int position, Post post) {
+                        PosteApplication.setSelectedPost(post);
                     }
                 },
                 PosteApplication.getSelectedFolder().getPosts()
         );
         postRecyclerView.setAdapter(postAdapter);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        Post post = postAdapter.getLocalDataSetItem();
+        Intent intent = null;
+        switch (item.getItemId()) {
+            case R.id.ctx_menu_edit_post:
+                PosteApplication.setSelectedPost(post);
+                if (PosteApplication.getSelectedPost() != null) {
+                    intent = new Intent(FolderViewActivity.this, EditPostActivity.class);
+                    intent.putExtra("postID", post.getId());
+                    intent.putExtra("folderID", PosteApplication.getSelectedFolder().getId());
+                    startActivity(intent);
+                }
+                break;
+            case R.id.ctx_menu_delete_post:
+                PosteApplication.setSelectedPost(post);
+                if (PosteApplication.getSelectedPost() != null) {
+                    PostDeletionCallback postDeletionCallback = new PostDeletionCallback() {
+                        @Override
+                        public void onSuccess() {
+                            Toast.makeText(FolderViewActivity.this, R.string.post_deleted, Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(FolderViewActivity.this, FolderViewActivity.class);
+                            finish();
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onError(String errorMessage) {
+                            Toast.makeText(FolderViewActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                        }
+                    };
+                    User.getUser().deletePostFromServer(PosteApplication.getSelectedPost(), postDeletionCallback);
+                    finish();
+                    recreate();
+                }
+                break;
+        }
+        return true;
     }
 }
