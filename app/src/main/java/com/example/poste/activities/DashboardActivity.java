@@ -273,4 +273,72 @@ public class DashboardActivity extends PActivity {
         dialog.show();
     }
 
+    // menu item select listener
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        Folder folder = folderAdapter.getLocalDataSetItem();
+        Intent intent = null;
+        switch (item.getItemId()) {
+            case R.id.ctx_menu_edit_folder:
+                intent = new Intent(DashboardActivity.this, EditFolderActivity_v2.class);
+                intent.putExtra("folderId", folder.getId());
+                intent.putExtra("folderName", folder.getTitle());
+                intent.putExtra("folderShared", true);
+                startActivity(intent);
+                //finish();
+                break;
+            case R.id.ctx_menu_share_folder:
+                intent = new Intent(DashboardActivity.this, Shared_Folder_v2.class);
+                intent.putExtra("folderId", folder.getId());
+                intent.putExtra("folderName", folder.getTitle());
+                startActivity(intent);
+                //finish();
+                break;
+            case R.id.ctx_menu_delete_folder:
+                // Delete the folder
+                Call<ResponseBody> call = apiService.deleteFolder(
+                        currentUser.getTokenHeaderString(),
+                        folder.getId()
+                );
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(DashboardActivity.this, "folder deleted successful.", Toast.LENGTH_LONG).show();
+                            // Reload Dashboard
+                            Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            String error = utils.parseError(response);
+                            if (error != null) {
+                                Toast.makeText(
+                                        DashboardActivity.this,
+                                        "Folder deletion failed: " + error,
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            } else {
+                                Toast.makeText(
+                                        DashboardActivity.this,
+                                        "Folder deletion failed.",
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(
+                                DashboardActivity.this,
+                                "Folder deletion failed.",
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                });
+                break;
+        }
+        return true;
+    }
 }
