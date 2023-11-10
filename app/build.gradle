@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'checkstyle'
 }
 
 def apikeyPropertiesFile = rootProject.file("apikey.properties")
@@ -53,6 +54,28 @@ android {
         viewBinding true
     }
 }
+
+apply plugin: 'checkstyle'
+
+checkstyle {
+    description = 'code style check'
+    group 'verification'
+    configFile = file("$project.rootDir/config/checkstyle/checkstyle.xml")
+}
+
+task checkstyle(type: Checkstyle, group: 'verification') {
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+    exclude '**/R.java'
+    classpath = files()
+}
+
+
+checkstyle {
+    ignoreFailures = true
+}
+
 
 dependencies {
     implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.9.0'
