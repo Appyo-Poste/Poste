@@ -22,6 +22,7 @@ import com.example.poste.R;
 import com.example.poste.api.poste.API;
 import com.example.poste.api.poste.exceptions.APIException;
 import com.example.poste.callbacks.PostDeletionCallback;
+import com.example.poste.callbacks.UpdateCallback;
 import com.example.poste.models.Post;
 import com.example.poste.models.User;
 
@@ -31,6 +32,7 @@ import com.example.poste.models.User;
  * selected folder.
  */
 public class FolderViewActivity extends AppCompatActivity {
+    private User currentUser;
     private PostAdapter postAdapter;
     private RecyclerView postRecyclerView;
 
@@ -56,6 +58,7 @@ public class FolderViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_folder_view);
 
         // Prep vars
+        currentUser = User.getUser();
         TextView emptyText = findViewById(R.id.folderViewEmptyText);
         TextView folderName = findViewById(R.id.folderNameText);
         ImageButton newBut = findViewById(R.id.newPost);
@@ -78,38 +81,53 @@ public class FolderViewActivity extends AppCompatActivity {
             finish();
         });
 
-        // Set folder name in title bar
-        folderName.setText(PosteApplication.getSelectedFolder().getTitle());
+        UpdateCallback updateCallback = new UpdateCallback() {
+            @Override
+            public void onSuccess() {
+                // Set folder name in title bar
+                folderName.setText(PosteApplication.getSelectedFolder().getTitle());
 
-        // Remove empty text if posts exist in folder or remove buttons if the folder is empty
-        if (PosteApplication.getSelectedFolder().getPosts().size() > 0) {
-            emptyText.setVisibility(View.GONE);
-        }
+                // Remove empty text if posts exist in folder or remove buttons if the folder is empty
+                if (PosteApplication.getSelectedFolder().getPosts().size() > 0) {
+                    emptyText.setVisibility(View.GONE);
+                }
 
-        // Fill post view (Recycler View)
-        postRecyclerView.setLayoutManager(new LinearLayoutManager(FolderViewActivity.this));
-        postAdapter = new PostAdapter(
-                new PostAdapter.ClickListener() {
-                    @Override
-                    public void onItemClick(int position, Post post) {
-                        PosteApplication.setSelectedPost(post);
-                        try {
-                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PosteApplication.getSelectedPost().getUrl()));
-                            startActivity(browserIntent);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Toast.makeText(FolderViewActivity.this, R.string.internal_error, Toast.LENGTH_LONG).show();
-                        }
-                    }
+                // Fill post view (Recycler View)
+                postRecyclerView.setLayoutManager(new LinearLayoutManager(FolderViewActivity.this));
+                postAdapter = new PostAdapter(
+                        new PostAdapter.ClickListener() {
+                            @Override
+                            public void onItemClick(int position, Post post) {
+                                PosteApplication.setSelectedPost(post);
+                                try {
+                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PosteApplication.getSelectedPost().getUrl()));
+                                    startActivity(browserIntent);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(FolderViewActivity.this, R.string.internal_error, Toast.LENGTH_LONG).show();
+                                }
+                            }
 
-                    @Override
-                    public void onItemLongClick(int position, Post post) {
-                        PosteApplication.setSelectedPost(post);
-                    }
-                },
-                PosteApplication.getSelectedFolder().getPosts()
-        );
-        postRecyclerView.setAdapter(postAdapter);
+                            @Override
+                            public void onItemLongClick(int position, Post post) {
+                                PosteApplication.setSelectedPost(post);
+                            }
+                        },
+                        PosteApplication.getSelectedFolder().getPosts()
+                );
+                postRecyclerView.setAdapter(postAdapter);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Toast.makeText(
+                        FolderViewActivity.this,
+                        "Unable to retrieve folders and posts, please try again.",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        };
+        currentUser.updateFoldersAndPosts(updateCallback);
     }
 
     @Override
