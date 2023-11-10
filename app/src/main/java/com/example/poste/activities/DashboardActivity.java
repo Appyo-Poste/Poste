@@ -43,12 +43,14 @@ import retrofit2.Response;
  */
 public class DashboardActivity extends PActivity {
     private User currentUser;
+    private Button addButton;
     private List<com.example.poste.models.Folder> userFolders;
     private RecyclerView folderRecyclerView;
     private FolderAdapter folderAdapter;
-    public ImageView optionsView;
+    private ImageView optionsView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
+    private UpdateCallback updateCallback;
 
     /**
      * Called when the activity is created
@@ -59,54 +61,30 @@ public class DashboardActivity extends PActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Configure window settings for fullscreen mode
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getSupportActionBar().hide();
+        configureWindow();
+        prepVars();
+        setListeners();
+        createUpdateCallback();
+        currentUser.updateFoldersAndPosts(updateCallback);
+    }
 
-        // Set the activity layout
-        setContentView(R.layout.activity_dashboard);
-
-        // Setup refresh
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            // Reload Dashboard
-            reloadDashboard();
-        });
-
-
-        // Prep vars
-        currentUser = User.getUser();
-        //currentUser.updateFoldersAndPosts(this);
-        optionsView = findViewById(R.id.Optionsbtn);
-        folderRecyclerView = findViewById(R.id.folder_recycler_view);
-        Button addButton = findViewById(R.id.dashboard_add_folder_btn);
-
-        // Click listener for the options button
-        optionsView.setOnClickListener(view -> {
-            // Send to Options activity
-            Intent intent = new Intent(DashboardActivity.this, OptionsActivity.class);
-            startActivity(intent);
-        });
-
-        // Click listener for the add folder button
-        addButton.setOnClickListener(v -> {
-            // Show the create item dialog
-            showCreateItemDialog();
-        });
-
-        folderRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-
-        // This callback defines what will happen after the user's folders and posts are updated
-        // It is a way to handle asynchronous code.
-        // Since the updateFoldersAndPosts call happens off the main thread, we cannot expect
-        // that it will finish in time for us to use the updated data in the onCreate method.
-        // Instead, we define a callback that will be called when the update is finished.
-        // This callback is passed to the updateFoldersAndPosts method, which will call it
-        // when the update is finished saying it succeeded or failed.
-        // We simply define what we will do if it succeeds or fails.
-        UpdateCallback updateCallback = new UpdateCallback() {
+    /**
+     * Creates a callback to be used when the user's folders and posts are updated
+     * (i.e. when the user's folders and posts are retrieved from the API)
+     * If the callback already exists, this method does nothing.
+     * It is a way to handle asynchronous code.
+     * Since the updateFoldersAndPosts call happens off the main thread, we cannot expect
+     * that it will finish in time for us to use the updated data in the onCreate method.
+     * Instead, we define a callback that will be called when the update is finished.
+     * This callback is passed to the updateFoldersAndPosts method, which will call it
+     * when the update is finished saying it succeeded or failed.
+     * We simply define what we will do if it succeeds or fails.
+     */
+    private void createUpdateCallback() {
+        if (updateCallback != null) {
+            return;
+        }
+        updateCallback = new UpdateCallback() {
             /**
              * This defines what will happen if the update succeeds; what we want the application
              * to do in a success case.
@@ -166,9 +144,58 @@ public class DashboardActivity extends PActivity {
                 ).show();
             }
         };
+    }
 
-        // Update current user's information, which calls the updateCallback when finished
-        currentUser.updateFoldersAndPosts(updateCallback);
+    /**
+     * Sets the listeners for the buttons on the dashboard
+     */
+    private void setListeners() {
+        optionsView.setOnClickListener(view -> {
+            // Send to Options activity
+            Intent intent = new Intent(DashboardActivity.this, OptionsActivity.class);
+            startActivity(intent);
+        });
+
+        // Click listener for the add folder button
+        addButton.setOnClickListener(v -> {
+            // Show the create item dialog
+            showCreateItemDialog();
+        });
+    }
+
+    /**
+     * Prepares the variables used in the activity. Checks if they are null, and if they are,
+     * initializes them. This saves us from resetting them every time the activity is restarted.
+     */
+    private void prepVars() {
+        currentUser = User.getUser(); // always get updated user, in case someone else logged in
+        if (optionsView == null) {
+            optionsView = findViewById(R.id.Optionsbtn);
+        }
+        if (folderRecyclerView == null) {
+            folderRecyclerView = findViewById(R.id.folder_recycler_view);
+            folderRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+        }
+        if (addButton == null) {
+            addButton = findViewById(R.id.dashboard_add_folder_btn);
+        }
+    }
+
+    /**
+     * Configures the window
+     */
+    private void configureWindow() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getSupportActionBar().hide();
+        setContentView(R.layout.activity_dashboard);
+
+        // Setup refresh
+        if (swipeRefreshLayout == null) {
+            swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+            swipeRefreshLayout.setOnRefreshListener(this::reloadDashboard);
+        }
     }
 
     /**
