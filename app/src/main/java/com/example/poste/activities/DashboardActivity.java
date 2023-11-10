@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.poste.PosteApplication;
 import com.example.poste.adapters.FolderAdapter;
@@ -46,6 +47,7 @@ public class DashboardActivity extends PActivity {
     private RecyclerView folderRecyclerView;
     private FolderAdapter folderAdapter;
     public ImageView optionsView;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
 
     /**
@@ -65,6 +67,14 @@ public class DashboardActivity extends PActivity {
 
         // Set the activity layout
         setContentView(R.layout.activity_dashboard);
+
+        // Setup refresh
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            // Reload Dashboard
+            reloadDashboard();
+        });
+
 
         // Prep vars
         currentUser = User.getUser();
@@ -159,6 +169,19 @@ public class DashboardActivity extends PActivity {
 
         // Update current user's information, which calls the updateCallback when finished
         currentUser.updateFoldersAndPosts(updateCallback);
+    }
+
+    /**
+     * Reloads the Dashboard by ending this activity and starting a new one
+     * This is intended to be used by the swipe refresh layout to allow the user to refresh the
+     * dashboard by swiping down
+     */
+    private void reloadDashboard() {
+        Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
+        finish();
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private void showCreateItemDialog() {
