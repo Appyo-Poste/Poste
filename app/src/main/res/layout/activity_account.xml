@@ -21,25 +21,45 @@
 
             <ImageView
                 android:id="@+id/AccountLogo"
-                android:layout_width="135dp"
-                android:layout_height="49dp"
+                android:layout_width="270dp"
+                android:layout_height="98dp"
                 android:layout_marginTop="4dp"
-                app:srcCompat="@drawable/poste_logo_inpixio" />
+                app:srcCompat="@drawable/new_logo" />
+
+            <TextView
+                android:id="@+id/AccountCurrentPasswordTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="90dp"
+                android:text="Enter Current Password:"
+                android:textSize="24sp"
+                android:textAlignment="center"
+                />
+
+            <EditText
+                android:id="@+id/AccountCurrentPasswordEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:ems="10"
+                android:hint="Current Password"
+                android:inputType="textPassword"
+                android:minHeight="48dp"
+                android:textAlignment="center" />
 
             <TextView
                 android:id="@+id/AccountNewPasswordtxt"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="130dp"
-                android:layout_marginTop="96dp"
+                android:layout_marginTop="20dp"
                 android:text="New Password:"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:textAlignment="center" />
 
             <EditText
                 android:id="@+id/AccountNewPasswordEnter"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="105dp"
                 android:layout_marginTop="5dp"
                 android:height="48dp"
                 android:ems="10"
@@ -50,18 +70,17 @@
 
             <TextView
                 android:id="@+id/AccountConfirmPasswordtxt"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="110dp"
                 android:layout_marginTop="20dp"
-                android:text="Confirm Password:"
-                android:textSize="24sp" />
+                android:text="Confirm New Password:"
+                android:textSize="24sp"
+                android:textAlignment="center" />
 
             <EditText
                 android:id="@+id/AccountConfirmPasswordEnter"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="105dp"
                 android:layout_marginTop="5dp"
                 android:ems="10"
                 android:hint="Confirm Password"

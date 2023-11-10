@@ -55,11 +55,17 @@ public class ValidationUtils {
      * @return boolean. True if password is valid, false otherwise
      */
     public static boolean validatePassword(Context context, String password, String confirmPassword) {
-        if (!password.equals(confirmPassword)) {
-            Toast.makeText(context, "Passwords do not match!", Toast.LENGTH_SHORT).show();
+        if (validatePassword(context, password)){
+            if (!password.equals(confirmPassword)) {
+                Toast.makeText(context, "Passwords do not match!", Toast.LENGTH_SHORT).show();
+                return false;
+            } else {
+                return true;
+            }
+        } else{
             return false;
         }
-        return validatePassword(context, password);
+
     }
 
     /**

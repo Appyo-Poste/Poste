@@ -53,6 +53,15 @@ public class OptionsActivity extends AppCompatActivity {
                 signout();
             }
         });
+
+        Button accountSettings = findViewById(R.id.options_accounts_btn);
+        accountSettings.setOnClickListener(view ->
+        {
+            Intent accountSettingsIntent = new Intent(OptionsActivity.this, AccountActivity.class);
+            startActivity(accountSettingsIntent);
+        });
+
+
     }
 
     public void signout(){
