@@ -39,10 +39,12 @@
             <EditText
                 android:id="@+id/AccountCurrentPasswordEditText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="46dp"
+                android:background="@drawable/edittext_rounded_gray"
                 android:layout_marginTop="5dp"
                 android:ems="10"
                 android:hint="Current Password"
+                android:autofillHints="password"
                 android:inputType="textPassword"
                 android:minHeight="48dp"
                 android:textAlignment="center" />
@@ -94,7 +96,7 @@
                 android:layout_height="56dp"
                 android:layout_marginStart="130dp"
                 android:layout_marginTop="30dp"
-                android:backgroundTint="#B0BC2C2C"
+                style="@style/RedButton"
                 android:text="Save" />
         </LinearLayout>
     </ScrollView>
