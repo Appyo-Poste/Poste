@@ -85,11 +85,7 @@ public class EditPostActivity extends AppCompatActivity {
         }
 
         buttonCancelChanges.setOnClickListener(view -> {
-//            Intent returnToFolderIntent = new Intent(EditPostActivity.this, FolderViewActivity.class);
             finish();
-//            returnToFolderIntent.putExtra("postID", postId);
-//            returnToFolderIntent.putExtra("folderID", folderId);
-//            startActivity(returnToFolderIntent);
         });
 
         buttonSaveChanges.setOnClickListener(view -> {
