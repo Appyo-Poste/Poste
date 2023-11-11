@@ -32,6 +32,12 @@ public class FolderViewActivity extends AppCompatActivity {
     private static UpdateCallback updateCallback;
     private PostAdapter postAdapter;
     private RecyclerView postRecyclerView;
+    private TextView emptyText;
+
+    private TextView folderName;
+
+    private ImageButton newBut;
+    private ImageButton settingsBut;
 
     @Override
     public void onBackPressed() {
@@ -48,32 +54,24 @@ public class FolderViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Clear post selection
         PosteApplication.setSelectedPost(null);
+        configureWindow();
+        prepVars();
+        setListeners();
+        updateData();
+    }
 
-        // Configure window settings for fullscreen mode
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getSupportActionBar().hide();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateData();
+    }
 
-        // Set the activity layout
-        setContentView(R.layout.activity_folder_view);
-
-        // Prep vars
-        TextView emptyText = findViewById(R.id.folderViewEmptyText);
-        TextView folderName = findViewById(R.id.folderNameText);
-        ImageButton newBut = findViewById(R.id.newPost);
-        ImageButton settingsBut = findViewById(R.id.folderSettings);
-        postRecyclerView = findViewById(R.id.posts_recycler_view);
-
-        // Create listeners for the folder buttons
+    private void setListeners() {
         newBut.setOnClickListener(view -> {
             PosteApplication.setSelectedPost(null);
             Intent intent = new Intent(FolderViewActivity.this, NewPostActivity.class);
             intent.putExtra("default", PosteApplication.getSelectedFolder().getTitle());
-            intent.putExtra("ReturnToFolderView", true);
             startActivity(intent);
         });
 
@@ -81,10 +79,16 @@ public class FolderViewActivity extends AppCompatActivity {
             Intent intent = new Intent(FolderViewActivity.this, EditFolderActivity.class);
             intent.putExtra("folderId", PosteApplication.getSelectedFolder().getId());
             intent.putExtra("folderName", PosteApplication.getSelectedFolder().getTitle());
-            intent.putExtra("ReturnToFolderView", true);
             startActivity(intent);
         });
+    }
 
+    private void prepVars() {
+        emptyText = findViewById(R.id.folderViewEmptyText);
+        folderName = findViewById(R.id.folderNameText);
+        newBut = findViewById(R.id.newPost);
+        settingsBut = findViewById(R.id.folderSettings);
+        postRecyclerView = findViewById(R.id.posts_recycler_view);
         updateCallback = new UpdateCallback() {
             @Override
             public void onSuccess() {
@@ -133,7 +137,17 @@ public class FolderViewActivity extends AppCompatActivity {
                 ).show();
             }
         };
-        UpdateView();
+    }
+
+    private void configureWindow() {
+        // Configure window settings for fullscreen mode
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getSupportActionBar().hide();
+
+        // Set the activity layout
+        setContentView(R.layout.activity_folder_view);
     }
 
     @Override
@@ -174,7 +188,7 @@ public class FolderViewActivity extends AppCompatActivity {
         return true;
     }
 
-    public static void UpdateView() {
+    private void updateData() {
         User.getUser().updateFoldersAndPosts(updateCallback);
     }
 }

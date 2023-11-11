@@ -157,31 +157,22 @@ public class NewPostActivity extends AppCompatActivity {
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
                             Toast.makeText(NewPostActivity.this, "Created post!", Toast.LENGTH_SHORT).show();
-                            sendBack(newPostIntent);
                         } else {
                             Toast.makeText(NewPostActivity.this, "Failed to create post", Toast.LENGTH_SHORT).show();
                             Log.d("NewPostActivity", "Failed to create post: " + response.code() + " " + response.message());
+
                         }
+                        finish();
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         Toast.makeText(NewPostActivity.this, "Faied to create post", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 });
             }
         });
     }
 
-    private void sendBack(Intent intent) {
-        Intent newIntent;
-        if (intent.getBooleanExtra("ReturnToFolderView", false) == true) {
-            newIntent = new Intent(NewPostActivity.this, FolderViewActivity.class);
-        }
-        else {
-            newIntent = new Intent(NewPostActivity.this, DashboardActivity.class);
-        }
-        startActivity(newIntent);
-        finish();
-    }
 }
