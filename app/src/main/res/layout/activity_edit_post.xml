@@ -5,14 +5,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="200px"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="125px"
+        android:background="#430000"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
     <ImageView
         android:id="@+id/imageViewLogoP"
+        android:layout_width="95dp"
+        android:layout_height="114dp"
         android:contentDescription="@string/poste_logo_description"
-        android:layout_width="100dp"
-        android:layout_height="135dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/newlogo_p" />
+        app:srcCompat="@drawable/newlogo_p_noback" />
 
     <ImageView
         android:id="@+id/imageViewEditPostIcon"
@@ -49,14 +64,15 @@
     <EditText
         android:id="@+id/editTextPostLink"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_height="46dp"
+        android:background="@drawable/edittext_rounded_gray"
         android:inputType="text"
         android:paddingStart="12dp"
+
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewEditPostIcon" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewEditPostUrl"
+        app:layout_constraintWidth_percent="0.9" />
 
     <TextView
         android:id="@+id/textViewPostTitle"
@@ -72,26 +88,27 @@
     <EditText
         android:id="@+id/editTextPostTitle"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="46dp"
+        android:background="@drawable/edittext_rounded_gray"
         android:inputType="text"
         android:paddingStart="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewPostTitle"
-        android:layout_marginTop="12dp" />
-
+        app:layout_constraintWidth_percent="0.9" />
 
     <EditText
         android:id="@+id/editTextPostTags"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_height="46dp"
+        android:background="@drawable/edittext_rounded_gray"
         android:inputType="text"
         android:paddingStart="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textViewPostTag" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewPostTag"
+        app:layout_constraintWidth_percent="0.9" />
 
     <TextView
         android:id="@+id/textViewPostTag"
@@ -107,15 +124,15 @@
     <EditText
         android:id="@+id/editTextPostDescription"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="34dp"
+        android:layout_height="46dp"
         android:inputType="text"
         android:paddingStart="12dp"
+        android:background="@drawable/edittext_rounded_gray"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textViewPostDescription" />
-
+        app:layout_constraintTop_toBottomOf="@+id/textViewPostDescription"
+        app:layout_constraintWidth_percent="0.9" />
     <TextView
         android:id="@+id/textViewPostDescription"
         android:layout_width="wrap_content"
@@ -129,32 +146,36 @@
 
     <Button
         android:id="@+id/buttonSaveChanges"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="23dp"
-        android:text="Save Changes"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="50dp"
+        android:text="Save Post"
+        style="@style/RedButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPostTags" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextPostTags"
+        app:layout_constraintWidth_percent="0.6" />
 
     <Button
         android:id="@+id/buttonCancelChanges"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Cancel Changes"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="10dp"
+        android:text="Cancel Post"
+        style="@style/GrayButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonSaveChanges" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonSaveChanges"
+        app:layout_constraintWidth_percent="0.6" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="42dp" />
+        app:layout_constraintGuide_end="369dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

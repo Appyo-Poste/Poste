@@ -16,7 +16,6 @@ import com.example.poste.http.RetrofitClient;
 import com.example.poste.models.Folder;
 import com.example.poste.models.Post;
 import com.example.poste.models.User;
-import com.example.poste.utils.DebugUtils;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -48,8 +47,8 @@ public class EditPostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_post);
-
-        DebugUtils.logUserFoldersAndPosts(User.getUser());
+        getSupportActionBar().hide();
+//        DebugUtils.logUserFoldersAndPosts(User.getUser());
 
         EditText postLink = findViewById(R.id.editTextPostLink);
         EditText postTitle = findViewById(R.id.editTextPostTitle);
