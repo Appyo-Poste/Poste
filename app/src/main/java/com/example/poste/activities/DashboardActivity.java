@@ -50,7 +50,12 @@ public class DashboardActivity extends PActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private final MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
     private UpdateCallback updateCallback;
-
+    
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        reloadDashboard();
+    }
 
     /**
      * Called when the activity is created
