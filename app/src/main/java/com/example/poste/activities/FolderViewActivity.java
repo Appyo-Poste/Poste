@@ -171,17 +171,16 @@ public class FolderViewActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess() {
                             Toast.makeText(FolderViewActivity.this, R.string.post_deleted, Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(FolderViewActivity.this, FolderViewActivity.class);
-                            startActivity(intent);
+                            recreate();
                         }
 
                         @Override
                         public void onError(String errorMessage) {
                             Toast.makeText(FolderViewActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                            recreate();
                         }
                     };
                     User.getUser().deletePostFromServer(PosteApplication.getSelectedPost(), postDeletionCallback);
-                    recreate();
                 }
                 break;
         }

@@ -136,14 +136,11 @@ public class NewPostActivity extends AppCompatActivity {
             if (folder_id.equals("0")) {
                 Log.d("NewPostActivity", "Default folder (0) selected");
                 Toast.makeText(this, "Select a folder to save post!", Toast.LENGTH_SHORT).show();
-                return;
             } else {
                 Log.d("NewPostActivity", "Folder id: " + folder_id);
                 String title = ((EditText) findViewById(R.id.editTextPostTitle)).getText().toString();
                 String url = ((EditText) findViewById(R.id.editTextPostLink)).getText().toString();
                 String description = ((EditText) findViewById(R.id.editTextPostDescription)).getText().toString();
-
-
                 CreatePostRequest request = new CreatePostRequest(
                         title,
                         description,
