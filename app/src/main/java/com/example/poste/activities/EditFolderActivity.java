@@ -27,7 +27,7 @@ import retrofit2.Response;
  * The EditFolderActivity class adds functionality to the activity_edit_folder_v2.xml layout
  */
 @SuppressLint("UseSwitchCompatOrMaterialCode")
-public class EditFolderActivity_v2 extends AppCompatActivity {
+public class EditFolderActivity extends AppCompatActivity {
 
     /**
      * Called when the activity is created
@@ -45,7 +45,7 @@ public class EditFolderActivity_v2 extends AppCompatActivity {
         getSupportActionBar().hide();
 
         // Set the activity layout
-        setContentView(R.layout.activity_edit_folder_v2);
+        setContentView(R.layout.activity_edit_folder);
 
         // Prep vars
         Intent intent = getIntent();
@@ -73,15 +73,15 @@ public class EditFolderActivity_v2 extends AppCompatActivity {
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()){
                             currentFolder.setTitle(title);
-                            Toast.makeText(EditFolderActivity_v2.this,"Edit folder successful!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditFolderActivity.this,"Edit folder successful!", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(EditFolderActivity_v2.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditFolderActivity.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(EditFolderActivity_v2.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditFolderActivity.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
                     }
                 });
             } catch (Exception e) {
@@ -100,10 +100,10 @@ public class EditFolderActivity_v2 extends AppCompatActivity {
     private void sendBack(Intent intent) {
         Intent newIntent;
         if (intent.getBooleanExtra("ReturnToFolderView", false) == true) {
-            newIntent = new Intent(EditFolderActivity_v2.this, FolderViewActivity.class);
+            newIntent = new Intent(EditFolderActivity.this, FolderViewActivity.class);
         }
         else {
-            newIntent = new Intent(EditFolderActivity_v2.this, DashboardActivity.class);
+            newIntent = new Intent(EditFolderActivity.this, DashboardActivity.class);
         }
         startActivity(newIntent);
         finish();

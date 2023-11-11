@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.EditFolderActivity_v2">
+    tools:context=".activities.EditFolderActivity">
 
     <ImageView
         android:id="@+id/imageViewLogoP"
@@ -16,7 +16,7 @@
         app:srcCompat="@drawable/newlogo_p" />
 
     <ImageView
-        android:id="@+id/imageViewShareFolderIcon"
+        android:id="@+id/imageViewEditFolderIcon"
         android:contentDescription="@string/edit_post_icon"
         android:layout_width="100dp"
         android:layout_height="100dp"
@@ -27,69 +27,38 @@
         app:srcCompat="@drawable/edit_post_icon" />
 
     <TextView
-        android:id="@+id/textViewShareFolderEmailLabel"
+        android:id="@+id/textViewEditFolderTitleLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Share Folder"
+        android:text="Edit Folder"
         android:textSize="35sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageViewShareFolderIcon"
-        app:layout_constraintTop_toTopOf="@+id/imageViewShareFolderIcon" />
+        app:layout_constraintStart_toEndOf="@+id/imageViewEditFolderIcon"
+        app:layout_constraintTop_toTopOf="@+id/imageViewEditFolderIcon" />
 
     <TextView
-        android:id="@+id/textViewShareFolderEmail"
+        android:id="@+id/textViewEditFolderName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="19dp"
-        android:text="Email:"
+        android:text="Name:"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/imageViewShareFolderIcon"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewShareFolderIcon" />
+        app:layout_constraintStart_toStartOf="@+id/imageViewEditFolderIcon"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewEditFolderIcon" />
 
     <EditText
-        android:id="@+id/editTextEmailToShareWith"
+        android:id="@+id/editTextNameOfFolder"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="19dp"
+        android:layout_marginTop="40dp"
         android:inputType="text"
         android:paddingStart="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewShareFolderIcon" />
+        app:layout_constraintTop_toBottomOf="@+id/imageViewEditFolderIcon" />
 
-
-    <TextView
-        android:id="@+id/textViewShareFolderName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Folder Name"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/textViewShareFolderEmailLabel"
-        app:layout_constraintTop_toBottomOf="@+id/textViewShareFolderEmailLabel" />
-
-    <TextView
-        android:id="@+id/textViewShareFolderPermissions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="19dp"
-        android:text="Share Permissions"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/imageViewShareFolderIcon"
-        app:layout_constraintTop_toBottomOf="@+id/editTextEmailToShareWith" />
-
-    <Spinner
-        android:id="@+id/share_folder_permissions_spinner"
-        android:layout_width="210dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="4dp"
-        android:textAlignment="center"
-        app:layout_constraintStart_toStartOf="@+id/textViewShareFolderPermissions"
-        app:layout_constraintTop_toBottomOf="@+id/textViewShareFolderPermissions" />
 
     <Button
         android:id="@+id/buttonSaveChanges"
@@ -100,7 +69,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/share_folder_permissions_spinner" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextNameOfFolder" />
 
     <Button
         android:id="@+id/buttonCancelChanges"
@@ -117,5 +86,3 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-

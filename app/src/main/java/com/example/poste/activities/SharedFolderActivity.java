@@ -26,9 +26,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * The AccountActivity class adds functionality to the activity_shared_folder_v2.xml layout
+ * The AccountActivity class adds functionality to the activity_shared_folder.xml layout
  */
-public class Shared_Folder_v2 extends AppCompatActivity {
+public class SharedFolderActivity extends AppCompatActivity {
     /**
      * Called when the activity is created
      *
@@ -45,7 +45,7 @@ public class Shared_Folder_v2 extends AppCompatActivity {
         getSupportActionBar().hide();
 
         // Set the activity layout
-        setContentView(R.layout.activity_shared_folder_v2);
+        setContentView(R.layout.activity_shared_folder);
 
         TextView folderNameView = findViewById(R.id.textViewShareFolderName);
         EditText emailView = findViewById(R.id.editTextEmailToShareWith);
@@ -84,15 +84,15 @@ public class Shared_Folder_v2 extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()){
-                            Toast.makeText(Shared_Folder_v2.this,"Share folder successful!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SharedFolderActivity.this,"Share folder successful!", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(Shared_Folder_v2.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SharedFolderActivity.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(Shared_Folder_v2.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SharedFolderActivity.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -108,7 +108,7 @@ public class Shared_Folder_v2 extends AppCompatActivity {
         });
     }
     private void sendToDashboard() {
-        Intent newIntent = new Intent(Shared_Folder_v2.this, DashboardActivity.class);
+        Intent newIntent = new Intent(SharedFolderActivity.this, DashboardActivity.class);
         startActivity(newIntent);
     }
 }

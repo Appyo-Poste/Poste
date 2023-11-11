@@ -11,7 +11,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,19 +37,8 @@ public class FolderViewActivity extends AppCompatActivity {
     public void onBackPressed() {
         PosteApplication.setSelectedPost(null);
         PosteApplication.setSelectedFolder(null);
-        Intent back = new Intent(FolderViewActivity.this, DashboardActivity.class);
-        finish();
-        startActivity(back);
+        super.onBackPressed();
     }
-
-    //@Override
-    //protected void onRestart() {
-    //    super.onRestart();
-    //    Intent intent = new Intent(FolderViewActivity.this, FolderViewActivity.class);
-    //    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-    //    startActivity(intent);
-    //    finish();
-    //}
 
     /**
      * Called when the activity is created
@@ -87,16 +75,14 @@ public class FolderViewActivity extends AppCompatActivity {
             intent.putExtra("default", PosteApplication.getSelectedFolder().getTitle());
             intent.putExtra("ReturnToFolderView", true);
             startActivity(intent);
-            finish();
         });
 
         settingsBut.setOnClickListener(view -> {
-            Intent intent = new Intent(FolderViewActivity.this, EditFolderActivity_v2.class);
+            Intent intent = new Intent(FolderViewActivity.this, EditFolderActivity.class);
             intent.putExtra("folderId", PosteApplication.getSelectedFolder().getId());
             intent.putExtra("folderName", PosteApplication.getSelectedFolder().getTitle());
             intent.putExtra("ReturnToFolderView", true);
             startActivity(intent);
-            finish();
         });
 
         updateCallback = new UpdateCallback() {
@@ -162,7 +148,6 @@ public class FolderViewActivity extends AppCompatActivity {
                     intent.putExtra("postID", post.getId());
                     intent.putExtra("folderID", PosteApplication.getSelectedFolder().getId());
                     startActivity(intent);
-                    finish();
                 }
                 break;
             case R.id.ctx_menu_delete_post:
@@ -174,7 +159,6 @@ public class FolderViewActivity extends AppCompatActivity {
                             Toast.makeText(FolderViewActivity.this, R.string.post_deleted, Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(FolderViewActivity.this, FolderViewActivity.class);
                             startActivity(intent);
-                            finish();
                         }
 
                         @Override
@@ -183,7 +167,6 @@ public class FolderViewActivity extends AppCompatActivity {
                         }
                     };
                     User.getUser().deletePostFromServer(PosteApplication.getSelectedPost(), postDeletionCallback);
-                    finish();
                     recreate();
                 }
                 break;
