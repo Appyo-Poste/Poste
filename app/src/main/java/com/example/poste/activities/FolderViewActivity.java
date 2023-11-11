@@ -7,7 +7,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,8 +38,8 @@ public class FolderViewActivity extends AppCompatActivity {
 
     private TextView folderName;
 
-    private ImageButton newBut;
-    private ImageButton settingsBut;
+    private Button newBut;
+    private ImageView settingsBut;
 
     @Override
     public void onBackPressed() {
