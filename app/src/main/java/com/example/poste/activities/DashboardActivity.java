@@ -1,7 +1,6 @@
 package com.example.poste.activities;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.poste.PosteApplication;
 import com.example.poste.adapters.FolderAdapter;
@@ -42,11 +42,14 @@ import retrofit2.Response;
  */
 public class DashboardActivity extends PActivity {
     private User currentUser;
+    private Button addButton;
     private List<com.example.poste.models.Folder> userFolders;
     private RecyclerView folderRecyclerView;
     private FolderAdapter folderAdapter;
-    public ImageView optionsView;
-    private MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
+    private ImageView optionsView;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private final MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
+    private UpdateCallback updateCallback;
 
     @Override
     public void onBackPressed() {
@@ -72,47 +75,30 @@ public class DashboardActivity extends PActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Configure window settings for fullscreen mode
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getSupportActionBar().hide();
+        configureWindow();
+        prepVars();
+        setListeners();
+        createUpdateCallback();
+        currentUser.updateFoldersAndPosts(updateCallback);
+    }
 
-        // Set the activity layout
-        setContentView(R.layout.activity_dashboard);
-
-        // Prep vars
-        currentUser = User.getUser();
-        //currentUser.updateFoldersAndPosts(this);
-        optionsView = findViewById(R.id.Optionsbtn);
-        folderRecyclerView = findViewById(R.id.folder_recycler_view);
-        Button addButton = findViewById(R.id.dashboard_add_folder_btn);
-
-        // Click listener for the options button
-        optionsView.setOnClickListener(view -> {
-            // Send to Options activity
-            Intent intent = new Intent(DashboardActivity.this, OptionsActivity.class);
-            startActivity(intent);
-            finish();
-        });
-
-        // Click listener for the add folder button
-        addButton.setOnClickListener(v -> {
-            // Show the create item dialog
-            showCreateItemDialog();
-        });
-
-        folderRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-
-        // This callback defines what will happen after the user's folders and posts are updated
-        // It is a way to handle asynchronous code.
-        // Since the updateFoldersAndPosts call happens off the main thread, we cannot expect
-        // that it will finish in time for us to use the updated data in the onCreate method.
-        // Instead, we define a callback that will be called when the update is finished.
-        // This callback is passed to the updateFoldersAndPosts method, which will call it
-        // when the update is finished saying it succeeded or failed.
-        // We simply define what we will do if it succeeds or fails.
-        UpdateCallback updateCallback = new UpdateCallback() {
+    /**
+     * Creates a callback to be used when the user's folders and posts are updated
+     * (i.e. when the user's folders and posts are retrieved from the API)
+     * If the callback already exists, this method does nothing.
+     * It is a way to handle asynchronous code.
+     * Since the updateFoldersAndPosts call happens off the main thread, we cannot expect
+     * that it will finish in time for us to use the updated data in the onCreate method.
+     * Instead, we define a callback that will be called when the update is finished.
+     * This callback is passed to the updateFoldersAndPosts method, which will call it
+     * when the update is finished saying it succeeded or failed.
+     * We simply define what we will do if it succeeds or fails.
+     */
+    private void createUpdateCallback() {
+        if (updateCallback != null) {
+            return;
+        }
+        updateCallback = new UpdateCallback() {
             /**
              * This defines what will happen if the update succeeds; what we want the application
              * to do in a success case.
@@ -172,9 +158,71 @@ public class DashboardActivity extends PActivity {
                 ).show();
             }
         };
+    }
 
-        // Update current user's information, which calls the updateCallback when finished
-        currentUser.updateFoldersAndPosts(updateCallback);
+    /**
+     * Sets the listeners for the buttons on the dashboard
+     */
+    private void setListeners() {
+        optionsView.setOnClickListener(view -> {
+            // Send to Options activity
+            Intent intent = new Intent(DashboardActivity.this, OptionsActivity.class);
+            startActivity(intent);
+        });
+
+        // Click listener for the add folder button
+        addButton.setOnClickListener(v -> {
+            // Show the create item dialog
+            showCreateItemDialog();
+        });
+    }
+
+    /**
+     * Prepares the variables used in the activity. Checks if they are null, and if they are,
+     * initializes them. This saves us from resetting them every time the activity is restarted.
+     */
+    private void prepVars() {
+        currentUser = User.getUser(); // always get updated user, in case someone else logged in
+        if (optionsView == null) {
+            optionsView = findViewById(R.id.Optionsbtn);
+        }
+        if (folderRecyclerView == null) {
+            folderRecyclerView = findViewById(R.id.folder_recycler_view);
+            folderRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+        }
+        if (addButton == null) {
+            addButton = findViewById(R.id.dashboard_add_folder_btn);
+        }
+    }
+
+    /**
+     * Configures the window
+     */
+    private void configureWindow() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getSupportActionBar().hide();
+        setContentView(R.layout.activity_dashboard);
+
+        // Setup refresh
+        if (swipeRefreshLayout == null) {
+            swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+            swipeRefreshLayout.setOnRefreshListener(this::reloadDashboard);
+        }
+    }
+
+    /**
+     * Reloads the Dashboard by ending this activity and starting a new one
+     * This is intended to be used by the swipe refresh layout to allow the user to refresh the
+     * dashboard by swiping down
+     */
+    private void reloadDashboard() {
+        Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
+        finish();
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private void showCreateItemDialog() {
@@ -186,22 +234,19 @@ public class DashboardActivity extends PActivity {
         popupMenu.inflate(R.menu.menu_create_item);
 
         // Set a MenuItemClickListener to handle the selection
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.menu_folder:
-                        // Handle folder creation
-                        showCreateFolderDialog();
-                        return true;
-                    case R.id.menu_post:
-                        // Handle post creation
-                        Intent intent = new Intent(DashboardActivity.this, NewPostActivity.class);
-                        startActivity(intent);
-                        return true;
-                    default:
-                        return false;
-                }
+        popupMenu.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.menu_folder:
+                    // Handle folder creation
+                    showCreateFolderDialog();
+                    return true;
+                case R.id.menu_post:
+                    // Handle post creation
+                    Intent intent = new Intent(DashboardActivity.this, NewPostActivity.class);
+                    startActivity(intent);
+                    return true;
+                default:
+                    return false;
             }
         });
 
@@ -225,63 +270,57 @@ public class DashboardActivity extends PActivity {
         builder.setTitle("Create Folder");
 
         // Set the positive button (Create button) click listener
-        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setPositiveButton("Create", (dialog, which) -> {
 
 
-                // Get the item name and link from the EditText fields
-                String itemName = editTextItemName.getText().toString().trim();
+            // Get the item name and link from the EditText fields
+            String itemName = editTextItemName.getText().toString().trim();
 
-                // Handle folder creation logic
-                Call<ResponseBody> call = apiService.createFolder(
-                        currentUser.getTokenHeaderString(),
-                        new FolderRequest(itemName)
-                );
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.isSuccessful()) {
-                            // Display success message, then restart the activity
-                            Toast.makeText(
-                                    DashboardActivity.this,
-                                    "Folder created!",
-                                    Toast.LENGTH_LONG
-                            ).show();
-                            // Reload Dashboard
-                            Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(
-                                    DashboardActivity.this,
-                                    "Folder creation failed.",
-                                    Toast.LENGTH_LONG
-                            ).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+            // Handle folder creation logic
+            Call<ResponseBody> call = apiService.createFolder(
+                    currentUser.getTokenHeaderString(),
+                    new FolderRequest(itemName)
+            );
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful()) {
+                        // Display success message, then restart the activity
+                        Toast.makeText(
+                                DashboardActivity.this,
+                                "Folder created!",
+                                Toast.LENGTH_LONG
+                        ).show();
+                        // Reload Dashboard
+                        Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(intent);
+                        finish();
+                    } else {
                         Toast.makeText(
                                 DashboardActivity.this,
                                 "Folder creation failed.",
                                 Toast.LENGTH_LONG
                         ).show();
                     }
-                });
-                dialog.dismiss();
-            }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(
+                            DashboardActivity.this,
+                            "Folder creation failed.",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+            });
+            dialog.dismiss();
         });
 
         // Set the negative button (Cancel button) click listener
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Dismiss the dialog (do nothing)
-                dialog.dismiss();
-            }
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+            // Dismiss the dialog (do nothing)
+            dialog.dismiss();
         });
 
         // Show the AlertDialog
@@ -293,7 +332,7 @@ public class DashboardActivity extends PActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         Folder folder = folderAdapter.getLocalDataSetItem();
-        Intent intent = null;
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.ctx_menu_edit_folder:
                 intent = new Intent(DashboardActivity.this, EditFolderActivity_v2.class);
