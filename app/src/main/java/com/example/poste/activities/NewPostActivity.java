@@ -1,12 +1,9 @@
 package com.example.poste.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,17 +15,11 @@ import android.widget.Toast;
 import com.example.poste.R;
 import com.example.poste.callbacks.UpdateCallback;
 import com.example.poste.http.CreatePostRequest;
-import com.example.poste.http.LoginRequest;
 import com.example.poste.http.MyApiService;
 import com.example.poste.http.RetrofitClient;
 import com.example.poste.models.Folder;
 import com.example.poste.models.User;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +42,7 @@ public class NewPostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
+        getSupportActionBar().hide();
         newPostIntent = getIntent();
         buttonSaveChanges = findViewById(R.id.buttonSaveChanges);
         buttonCancelChanges = findViewById(R.id.buttonCancelChanges);
