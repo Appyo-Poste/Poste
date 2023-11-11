@@ -12,8 +12,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.poste.R;
-import com.example.poste.api.poste.API;
-import com.example.poste.api.poste.exceptions.APIException;
 import com.example.poste.models.Folder;
 import com.example.poste.http.EditFolderRequest;
 import com.example.poste.http.MyApiService;
@@ -89,18 +87,24 @@ public class EditFolderActivity_v2 extends AppCompatActivity {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            sendToDashboard();
+            sendBack(intent);
         });
 
         // Cancel button push
         cancelBtn.setOnClickListener(view -> {
-            sendToDashboard();
+            sendBack(intent);
         });
 
     }
 
-    private void sendToDashboard() {
-        Intent newIntent = new Intent(EditFolderActivity_v2.this, DashboardActivity.class);
+    private void sendBack(Intent intent) {
+        Intent newIntent;
+        if (intent.getBooleanExtra("ReturnToFolderView", false) == true) {
+            newIntent = new Intent(EditFolderActivity_v2.this, FolderViewActivity.class);
+        }
+        else {
+            newIntent = new Intent(EditFolderActivity_v2.this, DashboardActivity.class);
+        }
         startActivity(newIntent);
         finish();
     }

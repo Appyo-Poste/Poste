@@ -48,6 +48,22 @@ public class DashboardActivity extends PActivity {
     public ImageView optionsView;
     private MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
 
+    @Override
+    public void onBackPressed() {
+        Intent back = new Intent(DashboardActivity.this, OptionsActivity.class);
+        startActivity(back);
+        finish();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
+        finish();
+    }
+
     /**
      * Called when the activity is created
      *

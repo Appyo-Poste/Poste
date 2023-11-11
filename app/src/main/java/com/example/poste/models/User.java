@@ -254,9 +254,6 @@ public class User {
                                         .setId(postId)
                                         .build();
                                 posts.add(newPost);
-                                if (PosteApplication.getSelectedPost().getId().equals(postId)) {
-                                    PosteApplication.setSelectedPost(newPost);
-                                }
                             }
                             Folder newFolder = new Folder.Builder()
                                     .setTitle(folderTitle)
@@ -265,9 +262,6 @@ public class User {
                                     .setId(folderId)
                                     .build();
                             newFolders.add(newFolder);
-                            if (PosteApplication.getSelectedFolder().getId().equals(folderId)) {
-                                PosteApplication.setSelectedFolder(newFolder);
-                            }
                         }
                         user.folders.clear();
                         user.folders.addAll(newFolders);

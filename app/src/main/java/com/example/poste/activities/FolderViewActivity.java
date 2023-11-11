@@ -7,11 +7,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,8 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.poste.PosteApplication;
 import com.example.poste.adapters.PostAdapter;
 import com.example.poste.R;
-import com.example.poste.api.poste.API;
-import com.example.poste.api.poste.exceptions.APIException;
 import com.example.poste.callbacks.PostDeletionCallback;
 import com.example.poste.callbacks.UpdateCallback;
 import com.example.poste.models.Post;
@@ -32,9 +30,18 @@ import com.example.poste.models.User;
  * selected folder.
  */
 public class FolderViewActivity extends AppCompatActivity {
-    private User currentUser;
+    private static UpdateCallback updateCallback;
     private PostAdapter postAdapter;
     private RecyclerView postRecyclerView;
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Intent intent = new Intent(FolderViewActivity.this, FolderViewActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
+        finish();
+    }
 
     /**
      * Called when the activity is created
@@ -58,7 +65,6 @@ public class FolderViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_folder_view);
 
         // Prep vars
-        currentUser = User.getUser();
         TextView emptyText = findViewById(R.id.folderViewEmptyText);
         TextView folderName = findViewById(R.id.folderNameText);
         ImageButton newBut = findViewById(R.id.newPost);
@@ -77,13 +83,15 @@ public class FolderViewActivity extends AppCompatActivity {
             Intent intent = new Intent(FolderViewActivity.this, EditFolderActivity_v2.class);
             intent.putExtra("folderId", PosteApplication.getSelectedFolder().getId());
             intent.putExtra("folderName", PosteApplication.getSelectedFolder().getTitle());
+            intent.putExtra("ReturnToFolderView", true);
             startActivity(intent);
-            finish();
         });
 
-        UpdateCallback updateCallback = new UpdateCallback() {
+        updateCallback = new UpdateCallback() {
             @Override
             public void onSuccess() {
+                // reset selected folder
+                PosteApplication.setSelectedFolder(User.getUser().getFolder(PosteApplication.getSelectedFolder().getId()));
                 // Set folder name in title bar
                 folderName.setText(PosteApplication.getSelectedFolder().getTitle());
 
@@ -127,7 +135,7 @@ public class FolderViewActivity extends AppCompatActivity {
                 ).show();
             }
         };
-        currentUser.updateFoldersAndPosts(updateCallback);
+        UpdateView();
     }
 
     @Override
@@ -168,5 +176,9 @@ public class FolderViewActivity extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+
+    public static void UpdateView() {
+        User.getUser().updateFoldersAndPosts(updateCallback);
     }
 }
