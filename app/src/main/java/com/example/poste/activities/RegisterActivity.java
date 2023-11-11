@@ -78,6 +78,7 @@ public class RegisterActivity extends AppCompatActivity {
                             // open dashboard activity
                             Intent dashboardIntent = new Intent(RegisterActivity.this, IntroActivity.class);
                             startActivity(dashboardIntent);
+                            finish();
                         } else {
                             Toast.makeText(RegisterActivity.this, "Registration failed.", Toast.LENGTH_SHORT).show();
                         }
@@ -92,7 +93,9 @@ public class RegisterActivity extends AppCompatActivity {
         });
         backButton.setOnClickListener(v -> {
             // Simulate a back press; go back to LandingActivity
-            getOnBackPressedDispatcher().onBackPressed();
+            Intent dashboardIntent = new Intent(RegisterActivity.this, IntroActivity.class);
+            startActivity(dashboardIntent);
+            finish();
         });
     }
 }

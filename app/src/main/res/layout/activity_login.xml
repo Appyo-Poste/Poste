@@ -68,7 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginStart="23dp"
+        android:layout_marginStart="12dp"
         android:text="Don't have an account?"
         app:layout_constraintEnd_toStartOf="@+id/hyperlinkTextViewToRegister"
         app:layout_constraintHorizontal_bias="0.5"

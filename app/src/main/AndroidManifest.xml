@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.EditFolderActivity_v2"
+            android:name=".activities.EditFolderActivity"
             android:exported="false" />
         <activity
             android:name=".activities.EditPostActivity"
@@ -77,7 +77,7 @@
             android:name=".activities.OptionsActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.Shared_Folder_v2"
+            android:name=".activities.SharedFolderActivity"
             android:exported="false" />
         <activity
             android:name=".activities.IntroActivity"

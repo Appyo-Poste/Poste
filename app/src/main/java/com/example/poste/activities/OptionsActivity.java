@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 import com.example.poste.R;
+import com.example.poste.models.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -47,11 +48,12 @@ public class OptionsActivity extends AppCompatActivity {
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         gsc = GoogleSignIn.getClient(this,gso);
 
-        Signoutbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signout();
-            }
+        Signoutbtn.setOnClickListener(view -> {
+            User.getUser().logout();
+            Intent intent = new Intent(getApplicationContext(), IntroActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
         });
 
         Button accountSettings = findViewById(R.id.options_accounts_btn);
@@ -59,18 +61,9 @@ public class OptionsActivity extends AppCompatActivity {
         {
             Intent accountSettingsIntent = new Intent(OptionsActivity.this, AccountActivity.class);
             startActivity(accountSettingsIntent);
+            finish();
         });
 
 
-    }
-
-    public void signout(){
-        gsc.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(Task<Void> task) {
-                finish();
-                startActivity(new Intent(OptionsActivity.this, LoginActivity.class));
-            }
-        });
     }
 }

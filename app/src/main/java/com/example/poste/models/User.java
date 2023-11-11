@@ -1,5 +1,6 @@
 package com.example.poste.models;
 
+import com.example.poste.PosteApplication;
 import com.example.poste.callbacks.UpdateCallback;
 import com.example.poste.http.MyApiService;
 import com.example.poste.http.RetrofitClient;
@@ -392,5 +393,9 @@ public class User {
 
     public boolean isLoggedIn() {
         return (token != null && !token.isEmpty());
+    }
+
+    public void logout() {
+        user = null;
     }
 }

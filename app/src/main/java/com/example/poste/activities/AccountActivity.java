@@ -98,8 +98,8 @@ public class AccountActivity extends AppCompatActivity {
 
                         // Send to dashboard page
                         Intent intent = new Intent(AccountActivity.this, DashboardActivity.class);
-                        finish();
                         startActivity(intent);
+                        finish();
                     } else{
                         String errorMessage;
                         try {

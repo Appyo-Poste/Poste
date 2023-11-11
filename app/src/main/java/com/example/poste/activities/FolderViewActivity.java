@@ -7,7 +7,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,9 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.poste.PosteApplication;
 import com.example.poste.adapters.PostAdapter;
 import com.example.poste.R;
-import com.example.poste.api.poste.API;
-import com.example.poste.api.poste.exceptions.APIException;
 import com.example.poste.callbacks.PostDeletionCallback;
+import com.example.poste.callbacks.UpdateCallback;
 import com.example.poste.models.Post;
 import com.example.poste.models.User;
 
@@ -31,8 +29,22 @@ import com.example.poste.models.User;
  * selected folder.
  */
 public class FolderViewActivity extends AppCompatActivity {
+    private static UpdateCallback updateCallback;
     private PostAdapter postAdapter;
     private RecyclerView postRecyclerView;
+    private TextView emptyText;
+
+    private TextView folderName;
+
+    private ImageButton newBut;
+    private ImageButton settingsBut;
+
+    @Override
+    public void onBackPressed() {
+        PosteApplication.setSelectedPost(null);
+        PosteApplication.setSelectedFolder(null);
+        super.onBackPressed();
+    }
 
     /**
      * Called when the activity is created
@@ -42,27 +54,20 @@ public class FolderViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Clear post selection
         PosteApplication.setSelectedPost(null);
+        configureWindow();
+        prepVars();
+        setListeners();
+        updateData();
+    }
 
-        // Configure window settings for fullscreen mode
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getSupportActionBar().hide();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateData();
+    }
 
-        // Set the activity layout
-        setContentView(R.layout.activity_folder_view);
-
-        // Prep vars
-        TextView emptyText = findViewById(R.id.folderViewEmptyText);
-        TextView folderName = findViewById(R.id.folderNameText);
-        ImageButton newBut = findViewById(R.id.newPost);
-        ImageButton settingsBut = findViewById(R.id.folderSettings);
-        postRecyclerView = findViewById(R.id.posts_recycler_view);
-
-        // Create listeners for the folder buttons
+    private void setListeners() {
         newBut.setOnClickListener(view -> {
             PosteApplication.setSelectedPost(null);
             Intent intent = new Intent(FolderViewActivity.this, NewPostActivity.class);
@@ -71,45 +76,78 @@ public class FolderViewActivity extends AppCompatActivity {
         });
 
         settingsBut.setOnClickListener(view -> {
-            Intent intent = new Intent(FolderViewActivity.this, EditFolderActivity_v2.class);
+            Intent intent = new Intent(FolderViewActivity.this, EditFolderActivity.class);
             intent.putExtra("folderId", PosteApplication.getSelectedFolder().getId());
             intent.putExtra("folderName", PosteApplication.getSelectedFolder().getTitle());
             startActivity(intent);
-            finish();
         });
+    }
 
-        // Set folder name in title bar
-        folderName.setText(PosteApplication.getSelectedFolder().getTitle());
+    private void prepVars() {
+        emptyText = findViewById(R.id.folderViewEmptyText);
+        folderName = findViewById(R.id.folderNameText);
+        newBut = findViewById(R.id.newPost);
+        settingsBut = findViewById(R.id.folderSettings);
+        postRecyclerView = findViewById(R.id.posts_recycler_view);
+        updateCallback = new UpdateCallback() {
+            @Override
+            public void onSuccess() {
+                // reset selected folder
+                PosteApplication.setSelectedFolder(User.getUser().getFolder(PosteApplication.getSelectedFolder().getId()));
+                // Set folder name in title bar
+                folderName.setText(PosteApplication.getSelectedFolder().getTitle());
 
-        // Remove empty text if posts exist in folder or remove buttons if the folder is empty
-        if (PosteApplication.getSelectedFolder().getPosts().size() > 0) {
-            emptyText.setVisibility(View.GONE);
-        }
+                // Remove empty text if posts exist in folder or remove buttons if the folder is empty
+                if (PosteApplication.getSelectedFolder().getPosts().size() > 0) {
+                    emptyText.setVisibility(View.GONE);
+                }
 
-        // Fill post view (Recycler View)
-        postRecyclerView.setLayoutManager(new LinearLayoutManager(FolderViewActivity.this));
-        postAdapter = new PostAdapter(
-                new PostAdapter.ClickListener() {
-                    @Override
-                    public void onItemClick(int position, Post post) {
-                        PosteApplication.setSelectedPost(post);
-                        try {
-                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PosteApplication.getSelectedPost().getUrl()));
-                            startActivity(browserIntent);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Toast.makeText(FolderViewActivity.this, R.string.internal_error, Toast.LENGTH_LONG).show();
-                        }
-                    }
+                // Fill post view (Recycler View)
+                postRecyclerView.setLayoutManager(new LinearLayoutManager(FolderViewActivity.this));
+                postAdapter = new PostAdapter(
+                        new PostAdapter.ClickListener() {
+                            @Override
+                            public void onItemClick(int position, Post post) {
+                                PosteApplication.setSelectedPost(post);
+                                try {
+                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PosteApplication.getSelectedPost().getUrl()));
+                                    startActivity(browserIntent);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(FolderViewActivity.this, R.string.internal_error, Toast.LENGTH_LONG).show();
+                                }
+                            }
 
-                    @Override
-                    public void onItemLongClick(int position, Post post) {
-                        PosteApplication.setSelectedPost(post);
-                    }
-                },
-                PosteApplication.getSelectedFolder().getPosts()
-        );
-        postRecyclerView.setAdapter(postAdapter);
+                            @Override
+                            public void onItemLongClick(int position, Post post) {
+                                PosteApplication.setSelectedPost(post);
+                            }
+                        },
+                        PosteApplication.getSelectedFolder().getPosts()
+                );
+                postRecyclerView.setAdapter(postAdapter);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Toast.makeText(
+                        FolderViewActivity.this,
+                        "Unable to retrieve folders and posts, please try again.",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        };
+    }
+
+    private void configureWindow() {
+        // Configure window settings for fullscreen mode
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getSupportActionBar().hide();
+
+        // Set the activity layout
+        setContentView(R.layout.activity_folder_view);
     }
 
     @Override
@@ -133,22 +171,23 @@ public class FolderViewActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess() {
                             Toast.makeText(FolderViewActivity.this, R.string.post_deleted, Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(FolderViewActivity.this, FolderViewActivity.class);
-                            finish();
-                            startActivity(intent);
+                            recreate();
                         }
 
                         @Override
                         public void onError(String errorMessage) {
                             Toast.makeText(FolderViewActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                            recreate();
                         }
                     };
                     User.getUser().deletePostFromServer(PosteApplication.getSelectedPost(), postDeletionCallback);
-                    finish();
-                    recreate();
                 }
                 break;
         }
         return true;
+    }
+
+    private void updateData() {
+        User.getUser().updateFoldersAndPosts(updateCallback);
     }
 }

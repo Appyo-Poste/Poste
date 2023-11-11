@@ -9,12 +9,25 @@ import android.widget.Button;
 import android.content.Intent;
 
 import com.example.poste.R;
+import com.example.poste.models.User;
 
 /**
  * The IntroActivity class adds functionality to the activity_intro.xml layout
  * This is the first page the user sees when they open the app
  */
 public class IntroActivity extends AppCompatActivity {
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        User user = User.getUser();
+        if (!user.getToken().equals("")) {
+            Intent intent = new Intent(IntroActivity.this, DashboardActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
     /**
      * Called when the activity is created
      *
@@ -23,6 +36,13 @@ public class IntroActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        User user = User.getUser();
+        if (!user.getToken().equals("")) {
+            Intent intent = new Intent(IntroActivity.this, DashboardActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         // Configure window settings for fullscreen mode
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -41,6 +61,7 @@ public class IntroActivity extends AppCompatActivity {
         buttonRegister.setOnClickListener(view -> {
             Intent intent = new Intent(IntroActivity.this, RegisterActivity.class);
             startActivity(intent);
+            finish();
         });
 
         // Click listener for the login button -- takes user to login page (LoginActivity)

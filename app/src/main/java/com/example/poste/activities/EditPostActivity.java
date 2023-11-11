@@ -1,6 +1,5 @@
 package com.example.poste.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -85,11 +84,7 @@ public class EditPostActivity extends AppCompatActivity {
         }
 
         buttonCancelChanges.setOnClickListener(view -> {
-            Intent returnToFolderIntent = new Intent(EditPostActivity.this, FolderViewActivity.class);
             finish();
-            returnToFolderIntent.putExtra("postID", postId);
-            returnToFolderIntent.putExtra("folderID", folderId);
-            startActivity(returnToFolderIntent);
         });
 
         buttonSaveChanges.setOnClickListener(view -> {
@@ -112,6 +107,7 @@ public class EditPostActivity extends AppCompatActivity {
                             currentPost.setDescription(description);
                             currentPost.setUrl(url);
                             Toast.makeText(EditPostActivity.this,"Edit post successful!", Toast.LENGTH_SHORT).show();
+                            finish();
                         } else {
                             String errorMessage = utils.parseError(response);
                             if (errorMessage != null) {
@@ -120,11 +116,13 @@ public class EditPostActivity extends AppCompatActivity {
                                 Toast.makeText(EditPostActivity.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
                             }
                         }
+                        finish();
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         Toast.makeText(EditPostActivity.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 });
             }

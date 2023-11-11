@@ -12,8 +12,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.poste.R;
-import com.example.poste.api.poste.API;
-import com.example.poste.api.poste.exceptions.APIException;
 import com.example.poste.models.Folder;
 import com.example.poste.http.EditFolderRequest;
 import com.example.poste.http.MyApiService;
@@ -29,7 +27,7 @@ import retrofit2.Response;
  * The EditFolderActivity class adds functionality to the activity_edit_folder_v2.xml layout
  */
 @SuppressLint("UseSwitchCompatOrMaterialCode")
-public class EditFolderActivity_v2 extends AppCompatActivity {
+public class EditFolderActivity extends AppCompatActivity {
 
     /**
      * Called when the activity is created
@@ -47,7 +45,7 @@ public class EditFolderActivity_v2 extends AppCompatActivity {
         getSupportActionBar().hide();
 
         // Set the activity layout
-        setContentView(R.layout.activity_edit_folder_v2);
+        setContentView(R.layout.activity_edit_folder);
 
         // Prep vars
         Intent intent = getIntent();
@@ -75,33 +73,29 @@ public class EditFolderActivity_v2 extends AppCompatActivity {
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()){
                             currentFolder.setTitle(title);
-                            Toast.makeText(EditFolderActivity_v2.this,"Edit folder successful!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditFolderActivity.this,"Edit folder successful!", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(EditFolderActivity_v2.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditFolderActivity.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
                         }
+                        finish();
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(EditFolderActivity_v2.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditFolderActivity.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 });
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            sendToDashboard();
         });
 
         // Cancel button push
         cancelBtn.setOnClickListener(view -> {
-            sendToDashboard();
+            finish();
         });
 
     }
 
-    private void sendToDashboard() {
-        Intent newIntent = new Intent(EditFolderActivity_v2.this, DashboardActivity.class);
-        startActivity(newIntent);
-        finish();
-    }
 }
