@@ -121,11 +121,13 @@ public class EditPostActivity extends AppCompatActivity {
                                 Toast.makeText(EditPostActivity.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
                             }
                         }
+                        finish();
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         Toast.makeText(EditPostActivity.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 });
             }

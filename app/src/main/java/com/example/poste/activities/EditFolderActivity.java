@@ -77,35 +77,25 @@ public class EditFolderActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(EditFolderActivity.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
                         }
+                        finish();
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         Toast.makeText(EditFolderActivity.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 });
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            sendBack(intent);
         });
 
         // Cancel button push
         cancelBtn.setOnClickListener(view -> {
-            sendBack(intent);
+            finish();
         });
 
     }
 
-    private void sendBack(Intent intent) {
-        Intent newIntent;
-        if (intent.getBooleanExtra("ReturnToFolderView", false) == true) {
-            newIntent = new Intent(EditFolderActivity.this, FolderViewActivity.class);
-        }
-        else {
-            newIntent = new Intent(EditFolderActivity.this, DashboardActivity.class);
-        }
-        startActivity(newIntent);
-        finish();
-    }
 }
