@@ -40,6 +40,14 @@
             android:layout_margin="10dp" >
 
             <Button
+                android:id="@+id/options_accounts_btn"
+                android:layout_width="200dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:backgroundTint="#B0BC2C2C"
+                android:text="Account Settings" />
+
+            <Button
                 android:id="@+id/Signoutbtn"
                 android:layout_width="200dp"
                 android:layout_height="48dp"
