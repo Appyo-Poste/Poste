@@ -46,6 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        getSupportActionBar().hide();
 
         TextView hyperlinkTextView = findViewById(R.id.hyperlinkTextViewToRegister);
         usernameField = findViewById(R.id.editTextTextEmailAddress);
