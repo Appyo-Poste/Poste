@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".activities.DashboardActivity">
@@ -54,11 +54,10 @@
 
                     <ImageView
                         android:id="@+id/Optionsbtn"
-                        android:layout_width="57dp"
-                        android:layout_height="62dp"
-                        android:layout_marginEnd="4dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginTop="14dp"
                         android:minWidth="50dp"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/dashboard_add_folder_btn"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/options" />
@@ -68,7 +67,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/folder_recycler_view"
                     android:layout_width="411dp"
-                    android:layout_height="655dp"
+                    android:layout_height="600dp"
                     android:layoutDirection="inherit"
                     android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -82,8 +81,8 @@
 
                 <ImageView
                     android:id="@+id/accountLogo2"
-                    android:layout_width="65dp"
-                    android:layout_height="57dp"
+                    android:layout_width="95dp"
+                    android:layout_height="114dp"
                     android:layout_marginTop="-45dp"
                     android:background="#00430000"
                     android:contentDescription="@string/poste_logo_description"

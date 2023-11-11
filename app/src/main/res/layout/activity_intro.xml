@@ -22,14 +22,17 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/accountLogo3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="230dp"
-                android:background="#FFFFFF"
-                android:backgroundTint="#FFFFFF"
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="100dp"
                 android:contentDescription="@string/poste_logo_description"
-                app:srcCompat="@drawable/poste_logo_inpixio" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5"
+                app:srcCompat="@drawable/new_logo" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -43,7 +46,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="100dp"
                     android:layout_marginBottom="10dp"
-                    android:backgroundTint="#B0BC2C2C"
+                    style="@style/RedButton"
                     android:text="Create Account" />
 
                 <Button
@@ -52,7 +55,7 @@
                     android:layout_width="172dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="52dp"
-                    android:backgroundTint="#B0BC2C2C"
+                    style="@style/RedButton"
                     android:text="Login" />
 
             </LinearLayout>
