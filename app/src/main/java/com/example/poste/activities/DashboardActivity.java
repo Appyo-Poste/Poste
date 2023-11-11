@@ -51,20 +51,6 @@ public class DashboardActivity extends PActivity {
     private final MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
     private UpdateCallback updateCallback;
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startActivity(intent);
-        finish();
-    }
 
     /**
      * Called when the activity is created
@@ -127,8 +113,6 @@ public class DashboardActivity extends PActivity {
                                 PosteApplication.setSelectedFolder(model);
                                 Intent intent = new Intent(DashboardActivity.this, FolderViewActivity.class);
                                 startActivity(intent);
-                                finish();
-                                // dashboard
                             }
 
                             @Override
@@ -291,11 +275,7 @@ public class DashboardActivity extends PActivity {
                                 "Folder created!",
                                 Toast.LENGTH_LONG
                         ).show();
-                        // Reload Dashboard
-                        Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        startActivity(intent);
-                        finish();
+                        reloadDashboard();
                     } else {
                         Toast.makeText(
                                 DashboardActivity.this,
@@ -358,11 +338,7 @@ public class DashboardActivity extends PActivity {
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
                             Toast.makeText(DashboardActivity.this, "folder deleted successful.", Toast.LENGTH_LONG).show();
-                            // Reload Dashboard
-                            Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                            startActivity(intent);
-                            finish();
+                            reloadDashboard();
                         } else {
                             String error = utils.parseError(response);
                             if (error != null) {
