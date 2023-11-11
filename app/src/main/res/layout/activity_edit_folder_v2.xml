@@ -6,14 +6,29 @@
     android:layout_height="match_parent"
     tools:context=".activities.EditFolderActivity_v2">
 
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="200px"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="125px"
+        android:background="#430000"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
     <ImageView
         android:id="@+id/imageViewLogoP"
+        android:layout_width="95dp"
+        android:layout_height="114dp"
         android:contentDescription="@string/poste_logo_description"
-        android:layout_width="100dp"
-        android:layout_height="135dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/newlogo_p" />
+        app:srcCompat="@drawable/newlogo_p_noback" />
 
     <ImageView
         android:id="@+id/imageViewEditFolderIcon"
@@ -50,38 +65,41 @@
     <EditText
         android:id="@+id/editTextNameOfFolder"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_height="46dp"
+        android:background="@drawable/edittext_rounded_gray"
         android:inputType="text"
         android:paddingStart="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewEditFolderIcon" />
 
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewEditFolderName"
+        app:layout_constraintWidth_percent="0.9" />
 
     <Button
         android:id="@+id/buttonSaveChanges"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="23dp"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="50dp"
         android:text="Save Changes"
+        style="@style/RedButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextNameOfFolder" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextNameOfFolder"
+        app:layout_constraintWidth_percent="0.6" />
 
     <Button
         android:id="@+id/buttonCancelChanges"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="10dp"
         android:text="Cancel Changes"
+        style="@style/GrayButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonSaveChanges" />
-
+        app:layout_constraintTop_toBottomOf="@+id/buttonSaveChanges"
+        app:layout_constraintWidth_percent="0.6" />
 
 
 

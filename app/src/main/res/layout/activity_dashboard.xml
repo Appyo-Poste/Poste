@@ -28,6 +28,7 @@
                 android:background="#430000"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -50,8 +51,9 @@
 
                 <ImageView
                     android:id="@+id/Optionsbtn"
-                    android:layout_width="57dp"
-                    android:layout_height="62dp"
+                    android:layout_width="39dp"
+                    android:layout_height="41dp"
+                    android:layout_marginTop="13dp"
                     android:layout_marginEnd="4dp"
                     android:minWidth="50dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -64,7 +66,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/folder_recycler_view"
                 android:layout_width="411dp"
-                android:layout_height="655dp"
+                android:layout_height="600dp"
                 android:layoutDirection="inherit"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -78,8 +80,8 @@
 
             <ImageView
                 android:id="@+id/accountLogo2"
-                android:layout_width="65dp"
-                android:layout_height="57dp"
+                android:layout_width="95dp"
+                android:layout_height="114dp"
                 android:layout_marginTop="-45dp"
                 android:background="#00430000"
                 android:contentDescription="@string/poste_logo_description"
