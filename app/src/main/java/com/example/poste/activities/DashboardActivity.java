@@ -50,9 +50,7 @@ public class DashboardActivity extends PActivity {
 
     @Override
     public void onBackPressed() {
-        Intent back = new Intent(DashboardActivity.this, OptionsActivity.class);
-        startActivity(back);
-        finish();
+        super.onBackPressed();
     }
 
     @Override

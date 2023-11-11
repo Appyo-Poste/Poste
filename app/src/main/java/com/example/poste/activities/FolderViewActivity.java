@@ -85,6 +85,7 @@ public class FolderViewActivity extends AppCompatActivity {
             intent.putExtra("folderName", PosteApplication.getSelectedFolder().getTitle());
             intent.putExtra("ReturnToFolderView", true);
             startActivity(intent);
+            finish();
         });
 
         updateCallback = new UpdateCallback() {
