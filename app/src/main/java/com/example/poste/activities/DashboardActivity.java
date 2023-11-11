@@ -1,7 +1,6 @@
 package com.example.poste.activities;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -49,7 +48,7 @@ public class DashboardActivity extends PActivity {
     private FolderAdapter folderAdapter;
     private ImageView optionsView;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
+    private final MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
     private UpdateCallback updateCallback;
 
     /**
@@ -220,22 +219,19 @@ public class DashboardActivity extends PActivity {
         popupMenu.inflate(R.menu.menu_create_item);
 
         // Set a MenuItemClickListener to handle the selection
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.menu_folder:
-                        // Handle folder creation
-                        showCreateFolderDialog();
-                        return true;
-                    case R.id.menu_post:
-                        // Handle post creation
-                        Intent intent = new Intent(DashboardActivity.this, NewPostActivity.class);
-                        startActivity(intent);
-                        return true;
-                    default:
-                        return false;
-                }
+        popupMenu.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.menu_folder:
+                    // Handle folder creation
+                    showCreateFolderDialog();
+                    return true;
+                case R.id.menu_post:
+                    // Handle post creation
+                    Intent intent = new Intent(DashboardActivity.this, NewPostActivity.class);
+                    startActivity(intent);
+                    return true;
+                default:
+                    return false;
             }
         });
 
@@ -259,63 +255,57 @@ public class DashboardActivity extends PActivity {
         builder.setTitle("Create Folder");
 
         // Set the positive button (Create button) click listener
-        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setPositiveButton("Create", (dialog, which) -> {
 
 
-                // Get the item name and link from the EditText fields
-                String itemName = editTextItemName.getText().toString().trim();
+            // Get the item name and link from the EditText fields
+            String itemName = editTextItemName.getText().toString().trim();
 
-                // Handle folder creation logic
-                Call<ResponseBody> call = apiService.createFolder(
-                        currentUser.getTokenHeaderString(),
-                        new FolderRequest(itemName)
-                );
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.isSuccessful()) {
-                            // Display success message, then restart the activity
-                            Toast.makeText(
-                                    DashboardActivity.this,
-                                    "Folder created!",
-                                    Toast.LENGTH_LONG
-                            ).show();
-                            // Reload Dashboard
-                            Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(
-                                    DashboardActivity.this,
-                                    "Folder creation failed.",
-                                    Toast.LENGTH_LONG
-                            ).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+            // Handle folder creation logic
+            Call<ResponseBody> call = apiService.createFolder(
+                    currentUser.getTokenHeaderString(),
+                    new FolderRequest(itemName)
+            );
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful()) {
+                        // Display success message, then restart the activity
+                        Toast.makeText(
+                                DashboardActivity.this,
+                                "Folder created!",
+                                Toast.LENGTH_LONG
+                        ).show();
+                        // Reload Dashboard
+                        Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(intent);
+                        finish();
+                    } else {
                         Toast.makeText(
                                 DashboardActivity.this,
                                 "Folder creation failed.",
                                 Toast.LENGTH_LONG
                         ).show();
                     }
-                });
-                dialog.dismiss();
-            }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(
+                            DashboardActivity.this,
+                            "Folder creation failed.",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+            });
+            dialog.dismiss();
         });
 
         // Set the negative button (Cancel button) click listener
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Dismiss the dialog (do nothing)
-                dialog.dismiss();
-            }
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+            // Dismiss the dialog (do nothing)
+            dialog.dismiss();
         });
 
         // Show the AlertDialog
@@ -327,7 +317,7 @@ public class DashboardActivity extends PActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         Folder folder = folderAdapter.getLocalDataSetItem();
-        Intent intent = null;
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.ctx_menu_edit_folder:
                 intent = new Intent(DashboardActivity.this, EditFolderActivity_v2.class);
