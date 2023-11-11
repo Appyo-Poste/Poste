@@ -394,4 +394,8 @@ public class User {
     public boolean isLoggedIn() {
         return (token != null && !token.isEmpty());
     }
+
+    public void logout() {
+        user = null;
+    }
 }
