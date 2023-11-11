@@ -66,6 +66,7 @@ public class OptionsActivity extends AppCompatActivity {
         {
             Intent accountSettingsIntent = new Intent(OptionsActivity.this, AccountActivity.class);
             startActivity(accountSettingsIntent);
+            finish();
         });
 
 

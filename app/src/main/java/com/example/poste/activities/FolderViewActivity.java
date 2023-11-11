@@ -35,13 +35,22 @@ public class FolderViewActivity extends AppCompatActivity {
     private RecyclerView postRecyclerView;
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
-        Intent intent = new Intent(FolderViewActivity.this, FolderViewActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startActivity(intent);
+    public void onBackPressed() {
+        PosteApplication.setSelectedPost(null);
+        PosteApplication.setSelectedFolder(null);
+        Intent back = new Intent(FolderViewActivity.this, DashboardActivity.class);
         finish();
+        startActivity(back);
     }
+
+    //@Override
+    //protected void onRestart() {
+    //    super.onRestart();
+    //    Intent intent = new Intent(FolderViewActivity.this, FolderViewActivity.class);
+    //    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+    //    startActivity(intent);
+    //    finish();
+    //}
 
     /**
      * Called when the activity is created
@@ -76,7 +85,9 @@ public class FolderViewActivity extends AppCompatActivity {
             PosteApplication.setSelectedPost(null);
             Intent intent = new Intent(FolderViewActivity.this, NewPostActivity.class);
             intent.putExtra("default", PosteApplication.getSelectedFolder().getTitle());
+            intent.putExtra("ReturnToFolderView", true);
             startActivity(intent);
+            finish();
         });
 
         settingsBut.setOnClickListener(view -> {
@@ -151,6 +162,7 @@ public class FolderViewActivity extends AppCompatActivity {
                     intent.putExtra("postID", post.getId());
                     intent.putExtra("folderID", PosteApplication.getSelectedFolder().getId());
                     startActivity(intent);
+                    finish();
                 }
                 break;
             case R.id.ctx_menu_delete_post:
@@ -161,8 +173,8 @@ public class FolderViewActivity extends AppCompatActivity {
                         public void onSuccess() {
                             Toast.makeText(FolderViewActivity.this, R.string.post_deleted, Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(FolderViewActivity.this, FolderViewActivity.class);
-                            finish();
                             startActivity(intent);
+                            finish();
                         }
 
                         @Override

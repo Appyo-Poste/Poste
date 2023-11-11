@@ -35,6 +35,13 @@ import retrofit2.Response;
  */
 public class AccountActivity extends AppCompatActivity {
 
+    @Override
+    public void onBackPressed() {
+        Intent back = new Intent(AccountActivity.this, OptionsActivity.class);
+        startActivity(back);
+        finish();
+    }
+
     /**
      * Called when the activity is created
      *
@@ -98,8 +105,8 @@ public class AccountActivity extends AppCompatActivity {
 
                         // Send to dashboard page
                         Intent intent = new Intent(AccountActivity.this, DashboardActivity.class);
-                        finish();
                         startActivity(intent);
+                        finish();
                     } else{
                         String errorMessage;
                         try {

@@ -38,13 +38,6 @@ public class LoginActivity extends AppCompatActivity {
     public Button buttonLoginSubmit;
     private EditText usernameField, passwordField;
 
-    @Override
-    public void onBackPressed() {
-        Intent back = new Intent(LoginActivity.this, IntroActivity.class);
-        startActivity(back);
-        finish();
-    }
-
     /**
      * function that runs on creation of the activity
      * @param savedInstanceState A bundle containing the saved instance state

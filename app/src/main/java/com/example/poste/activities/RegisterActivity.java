@@ -100,7 +100,8 @@ public class RegisterActivity extends AppCompatActivity {
         });
         backButton.setOnClickListener(v -> {
             // Simulate a back press; go back to LandingActivity
-            getOnBackPressedDispatcher().onBackPressed();
+            Intent dashboardIntent = new Intent(RegisterActivity.this, IntroActivity.class);
+            startActivity(dashboardIntent);
             finish();
         });
     }

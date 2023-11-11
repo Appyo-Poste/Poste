@@ -48,7 +48,6 @@ public class IntroActivity extends AppCompatActivity {
         buttonLogin.setOnClickListener(view -> {
             Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
             startActivity(intent);
-            finish();
         });
     }
 }

@@ -51,6 +51,7 @@ public class DashboardActivity extends PActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+
     }
 
     @Override
@@ -92,6 +93,7 @@ public class DashboardActivity extends PActivity {
             // Send to Options activity
             Intent intent = new Intent(DashboardActivity.this, OptionsActivity.class);
             startActivity(intent);
+            finish();
         });
 
         // Click listener for the add folder button
@@ -139,7 +141,7 @@ public class DashboardActivity extends PActivity {
                                 PosteApplication.setSelectedFolder(model);
                                 Intent intent = new Intent(DashboardActivity.this, FolderViewActivity.class);
                                 startActivity(intent);
-                                // Don't finish this activity, so that we can come back to the
+                                finish();
                                 // dashboard
                             }
 
@@ -299,14 +301,12 @@ public class DashboardActivity extends PActivity {
                 intent.putExtra("folderName", folder.getTitle());
                 intent.putExtra("folderShared", true);
                 startActivity(intent);
-                //finish();
                 break;
             case R.id.ctx_menu_share_folder:
                 intent = new Intent(DashboardActivity.this, Shared_Folder_v2.class);
                 intent.putExtra("folderId", folder.getId());
                 intent.putExtra("folderName", folder.getTitle());
                 startActivity(intent);
-                //finish();
                 break;
             case R.id.ctx_menu_delete_folder:
                 // Delete the folder
