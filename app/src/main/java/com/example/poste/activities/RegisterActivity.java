@@ -38,13 +38,6 @@ public class RegisterActivity extends AppCompatActivity {
     private Button backButton;
 
     @Override
-    public void onBackPressed() {
-        Intent back = new Intent(RegisterActivity.this, IntroActivity.class);
-        startActivity(back);
-        finish();
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);

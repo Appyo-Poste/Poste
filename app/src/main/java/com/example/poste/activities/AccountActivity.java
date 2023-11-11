@@ -35,13 +35,6 @@ import retrofit2.Response;
  */
 public class AccountActivity extends AppCompatActivity {
 
-    @Override
-    public void onBackPressed() {
-        Intent back = new Intent(AccountActivity.this, OptionsActivity.class);
-        startActivity(back);
-        finish();
-    }
-
     /**
      * Called when the activity is created
      *

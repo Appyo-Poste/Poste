@@ -26,13 +26,6 @@ public class OptionsActivity extends AppCompatActivity {
     GoogleSignInClient gsc;
     Button Signoutbtn;
 
-    @Override
-    public void onBackPressed() {
-        Intent back = new Intent(OptionsActivity.this, DashboardActivity.class);
-        startActivity(back);
-        finish();
-    }
-
     /**
      * Called when the activity is created
      *
