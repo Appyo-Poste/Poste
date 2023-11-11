@@ -136,14 +136,11 @@ public class NewPostActivity extends AppCompatActivity {
             if (folder_id.equals("0")) {
                 Log.d("NewPostActivity", "Default folder (0) selected");
                 Toast.makeText(this, "Select a folder to save post!", Toast.LENGTH_SHORT).show();
-                return;
             } else {
                 Log.d("NewPostActivity", "Folder id: " + folder_id);
                 String title = ((EditText) findViewById(R.id.editTextPostTitle)).getText().toString();
                 String url = ((EditText) findViewById(R.id.editTextPostLink)).getText().toString();
                 String description = ((EditText) findViewById(R.id.editTextPostDescription)).getText().toString();
-
-
                 CreatePostRequest request = new CreatePostRequest(
                         title,
                         description,
@@ -157,21 +154,22 @@ public class NewPostActivity extends AppCompatActivity {
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
                             Toast.makeText(NewPostActivity.this, "Created post!", Toast.LENGTH_SHORT).show();
-                            finish();
-                            Intent intent = new Intent(NewPostActivity.this, DashboardActivity.class);
-                            startActivity(intent);
                         } else {
                             Toast.makeText(NewPostActivity.this, "Failed to create post", Toast.LENGTH_SHORT).show();
                             Log.d("NewPostActivity", "Failed to create post: " + response.code() + " " + response.message());
+
                         }
+                        finish();
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         Toast.makeText(NewPostActivity.this, "Faied to create post", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 });
             }
         });
     }
+
 }

@@ -1,92 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activities.DashboardActivity">
+    android:layout_height="match_parent">
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".activities.DashboardActivity">
 
-
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/linearLayout5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/linearLayout4"
-                android:layout_width="413dp"
-                android:layout_height="63dp"
-                android:background="#430000"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:id="@+id/linearLayout5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-
-                <Button
-                    android:id="@+id/dashboard_add_folder_btn"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:layout_marginStart="288dp"
-                    android:backgroundTint="#430000"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
-                    android:textAlignment="center"
-                    app:icon="@android:drawable/ic_input_add"
-                    app:iconPadding="0dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/Optionsbtn"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/linearLayout4"
+                    android:layout_width="413dp"
+                    android:layout_height="63dp"
+                    android:background="#430000"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
+
+
+                    <Button
+                        android:id="@+id/dashboard_add_folder_btn"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_marginStart="288dp"
+                        android:backgroundTint="#430000"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:textAlignment="center"
+                        app:icon="@android:drawable/ic_input_add"
+                        app:iconPadding="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/Optionsbtn"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/Optionsbtn"
+                        android:layout_width="57dp"
+                        android:layout_height="62dp"
+                        android:layout_marginEnd="4dp"
+                        android:minWidth="50dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/dashboard_add_folder_btn"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/options" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/folder_recycler_view"
+                    android:layout_width="411dp"
+                    android:layout_height="655dp"
+                    android:layoutDirection="inherit"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/accountLogo2"
+                    tools:layoutManager="GridLayoutManager"
+                    tools:listitem="@layout/folder_view_item"
+                    tools:spanCount="3" />
 
                 <ImageView
-                    android:id="@+id/Optionsbtn"
-                    android:layout_width="57dp"
-                    android:layout_height="62dp"
-                    android:layout_marginEnd="4dp"
-                    android:minWidth="50dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/dashboard_add_folder_btn"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/options" />
+                    android:id="@+id/accountLogo2"
+                    android:layout_width="65dp"
+                    android:layout_height="57dp"
+                    android:layout_marginTop="-45dp"
+                    android:background="#00430000"
+                    android:contentDescription="@string/poste_logo_description"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
+                    app:srcCompat="@drawable/newlogo_p_noback" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/folder_recycler_view"
-                android:layout_width="411dp"
-                android:layout_height="655dp"
-                android:layoutDirection="inherit"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/accountLogo2"
-                tools:layoutManager="GridLayoutManager"
-                tools:listitem="@layout/folder_view_item"
-                tools:spanCount="3" />
-
-            <ImageView
-                android:id="@+id/accountLogo2"
-                android:layout_width="65dp"
-                android:layout_height="57dp"
-                android:layout_marginTop="-45dp"
-                android:background="#00430000"
-                android:contentDescription="@string/poste_logo_description"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
-                app:srcCompat="@drawable/newlogo_p_noback" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
