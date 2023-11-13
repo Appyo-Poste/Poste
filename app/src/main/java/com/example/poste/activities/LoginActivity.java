@@ -3,8 +3,6 @@ package com.example.poste.activities;
 import static com.example.poste.utils.ValidationUtils.validateEmail;
 import static com.example.poste.utils.ValidationUtils.validatePassword;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -16,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.poste.R;
 import com.example.poste.http.LoginRequest;

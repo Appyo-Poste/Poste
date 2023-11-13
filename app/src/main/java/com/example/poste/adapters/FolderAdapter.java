@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.poste.PosteApplication;
 import com.example.poste.R;
 import com.example.poste.models.Folder;
 

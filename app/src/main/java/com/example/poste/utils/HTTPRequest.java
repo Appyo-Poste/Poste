@@ -1,7 +1,6 @@
 package com.example.poste.utils;
 
 import android.os.AsyncTask;
-import android.text.PrecomputedText;
 import android.util.Log;
 
 import okhttp3.OkHttpClient;

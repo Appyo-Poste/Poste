@@ -5,10 +5,8 @@ import com.example.poste.api.poste.exceptions.APIException;
 import com.example.poste.api.poste.exceptions.EmailAlreadyUsedException;
 import com.example.poste.api.poste.exceptions.IncompleteRequestException;
 import com.example.poste.api.poste.exceptions.MalformedResponseException;
-import com.example.poste.api.poste.exceptions.NoUserFoundException;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 

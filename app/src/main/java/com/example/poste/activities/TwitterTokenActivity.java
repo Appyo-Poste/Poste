@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.poste.PosteApplication;
 import com.example.poste.R;
 import com.example.poste.api.twitter.OAuth20GetAccessToken;
 import com.github.scribejava.core.model.OAuth2AccessToken;

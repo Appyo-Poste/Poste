@@ -2,7 +2,6 @@ package com.example.poste.api.twitter;
 
 import android.app.Application;
 
-import com.example.poste.PosteApplication;
 import com.example.poste.BuildConfig;
 import com.example.poste.api.poste.API;
 import com.github.scribejava.core.model.OAuth2AccessToken;
@@ -12,14 +11,10 @@ import com.twitter.clientlib.ApiException;
 import com.twitter.clientlib.TwitterCredentialsOAuth2;
 import com.twitter.clientlib.api.TwitterApi;
 import com.twitter.clientlib.auth.TwitterOAuth20Service;
-import com.twitter.clientlib.model.Get2UsersIdBookmarksResponse;
 import com.twitter.clientlib.model.Get2UsersMeResponse;
-import com.twitter.clientlib.model.Media;
-import com.twitter.clientlib.model.Photo;
 import com.twitter.clientlib.model.Tweet;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;

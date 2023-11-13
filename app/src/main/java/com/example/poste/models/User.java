@@ -1,24 +1,25 @@
 package com.example.poste.models;
 
-import com.example.poste.PosteApplication;
-import com.example.poste.callbacks.UpdateCallback;
-import com.example.poste.http.MyApiService;
-import com.example.poste.http.RetrofitClient;
-import com.example.poste.utils.DebugUtils;
-import com.example.poste.callbacks.PostDeletionCallback;
-import com.example.poste.utils.utils;
-
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import okhttp3.ResponseBody;
+import com.example.poste.callbacks.PostDeletionCallback;
+import com.example.poste.callbacks.UpdateCallback;
+import com.example.poste.http.MyApiService;
+import com.example.poste.http.RetrofitClient;
+import com.example.poste.utils.DebugUtils;
+import com.example.poste.utils.utils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,8 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.poste.PosteApplication;
-import com.example.poste.adapters.PostAdapter;
 import com.example.poste.R;
+import com.example.poste.adapters.PostAdapter;
 import com.example.poste.callbacks.PostDeletionCallback;
 import com.example.poste.callbacks.UpdateCallback;
 import com.example.poste.models.Post;

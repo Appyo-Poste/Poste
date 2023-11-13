@@ -19,13 +19,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.poste.PosteApplication;
-import com.example.poste.adapters.FolderAdapter;
 import com.example.poste.R;
+import com.example.poste.adapters.FolderAdapter;
 import com.example.poste.callbacks.UpdateCallback;
-import com.example.poste.models.Folder;
 import com.example.poste.http.FolderRequest;
 import com.example.poste.http.MyApiService;
 import com.example.poste.http.RetrofitClient;
+import com.example.poste.models.Folder;
 import com.example.poste.models.User;
 import com.example.poste.utils.utils;
 
