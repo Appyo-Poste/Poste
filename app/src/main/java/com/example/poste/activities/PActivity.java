@@ -7,14 +7,6 @@ import android.util.TypedValue;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.poste.utils.HTTPRequest;
-
-import org.json.JSONObject;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
 /**
  * Custom created AppCompatActivity class which we use to
  * add and implement multiple helper methods.

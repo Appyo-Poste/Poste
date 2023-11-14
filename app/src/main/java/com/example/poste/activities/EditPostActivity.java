@@ -12,16 +12,14 @@ import com.example.poste.R;
 import com.example.poste.http.EditPostRequest;
 import com.example.poste.http.MyApiService;
 import com.example.poste.http.RetrofitClient;
-import com.example.poste.models.Folder;
 import com.example.poste.models.Post;
 import com.example.poste.models.User;
+import com.example.poste.utils.utils;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import com.example.poste.utils.utils;
 
 /**
  * The EditPostActivity class adds functionality to the activity_edit_post.xml layout
@@ -56,21 +54,13 @@ public class EditPostActivity extends AppCompatActivity {
         Button buttonSaveChanges = findViewById(R.id.buttonSaveChanges);
         Button buttonCancelChanges = findViewById(R.id.buttonCancelChanges);
 
-        Folder currentFolder = null;
         Post currentPost;
 
-        String folderId = getIntent().getStringExtra("folderID");
         String postId = getIntent().getStringExtra("postID");
-
-        if (folderId == null) {
-            Log.e("Error", "EditPostActivity onCreate: Folder ID not found");
-        } else {
-            currentFolder = User.getUser().getFolder(folderId);
-        }
 
         if (postId == null){
             currentPost = null;
-            Log.e("Error", "EditPostActivity onCreate: Post ID not found");
+            Log.e("Error", "EditPostActivity onCreate: Post not found");
         } else {
             currentPost = User.getUser().getPost(postId);
         }

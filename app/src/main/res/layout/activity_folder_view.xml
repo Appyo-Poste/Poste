@@ -55,8 +55,8 @@
 
             <ImageView
                 android:id="@+id/folderSettings"
-                android:layout_width="57dp"
-                android:layout_height="62dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_marginRight="15dp"
                 android:minWidth="50dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -70,8 +70,8 @@
 
         <ImageView
             android:id="@+id/accountLogo2"
-            android:layout_width="65dp"
-            android:layout_height="57dp"
+            android:layout_width="95dp"
+            android:layout_height="114dp"
             android:layout_marginTop="-45dp"
             android:background="#00430000"
             android:contentDescription="@string/poste_logo_description"

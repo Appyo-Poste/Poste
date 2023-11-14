@@ -1,7 +1,5 @@
 package com.example.poste.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
@@ -13,8 +11,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.poste.R;
-import com.example.poste.api.poste.models.FolderAccess;
+import com.example.poste.models.FolderAccess;
 import com.example.poste.http.MyApiService;
 import com.example.poste.http.RetrofitClient;
 import com.example.poste.http.UpdateFolderPermissionsRequest;

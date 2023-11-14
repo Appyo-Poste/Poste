@@ -1,13 +1,5 @@
 package com.example.poste.models;
 
-import com.example.poste.http.MyApiService;
-import com.example.poste.http.RetrofitClient;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 /**
  * Represents a Post of the Poste app. Should closely mirror the Backend Post model.
  */

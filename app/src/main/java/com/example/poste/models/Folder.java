@@ -1,16 +1,6 @@
 package com.example.poste.models;
 
-import com.example.poste.http.CreatePost;
-import com.example.poste.http.MyApiService;
-import com.example.poste.http.RetrofitClient;
-
-import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Represents a Folder of the Poste app. Should closely mirror the Backend Folder model.
@@ -69,16 +59,6 @@ public class Folder {
     @Override
     public String toString() {
         return title;
-    }
-
-    public Post getPostFromFolder(String postId){
-        for (Post post:
-                posts) {
-            if (post.getId().equals(postId)){
-                return post;
-            }
-        }
-        return null;
     }
 
     /**

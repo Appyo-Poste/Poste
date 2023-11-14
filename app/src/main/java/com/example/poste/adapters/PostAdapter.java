@@ -1,9 +1,5 @@
 package com.example.poste.adapters;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -15,12 +11,9 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.poste.PosteApplication;
 import com.example.poste.R;
-import com.example.poste.models.Folder;
 import com.example.poste.models.Post;
 
-import java.io.InputStream;
 import java.util.List;
 
 /**

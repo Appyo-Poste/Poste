@@ -1,22 +1,23 @@
 package com.example.poste.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
-
-import com.example.poste.R;
-
 import static com.example.poste.utils.ValidationUtils.validateEmail;
 import static com.example.poste.utils.ValidationUtils.validateNames;
 import static com.example.poste.utils.ValidationUtils.validatePassword;
+
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.poste.R;
 import com.example.poste.http.MyApiService;
 import com.example.poste.http.RegisterRequest;
 import com.example.poste.http.RetrofitClient;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;

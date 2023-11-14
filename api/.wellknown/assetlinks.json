@@ -1,5 +1,0 @@
-[{
-    "relation": ["delegate_permission/common.handle_all_urls"],
-    "target" : { "namespace": "android_app", "package_name": "com.example.poste",
-                 "sha256_cert_fingerprints": ["11:15:AD:57:E1:57:F6:6D:33:A8:65:77:08:10:86:42:0B:02:3B:65:86:2A:F1:D4:2A:99:16:D0:AF:20:A3:13"] }
-  }]

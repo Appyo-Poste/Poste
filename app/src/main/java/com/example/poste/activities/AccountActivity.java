@@ -2,17 +2,16 @@ package com.example.poste.activities;
 
 import static com.example.poste.utils.ValidationUtils.validatePassword;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.content.Intent;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.poste.R;
 import com.example.poste.http.EditAccountRequest;

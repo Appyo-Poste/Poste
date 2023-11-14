@@ -12,10 +12,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.poste.R;
-import com.example.poste.models.Folder;
 import com.example.poste.http.EditFolderRequest;
 import com.example.poste.http.MyApiService;
 import com.example.poste.http.RetrofitClient;
+import com.example.poste.models.Folder;
 import com.example.poste.models.User;
 
 import okhttp3.ResponseBody;

@@ -1,24 +1,25 @@
 package com.example.poste.models;
 
-import com.example.poste.PosteApplication;
-import com.example.poste.callbacks.UpdateCallback;
-import com.example.poste.http.MyApiService;
-import com.example.poste.http.RetrofitClient;
-import com.example.poste.utils.DebugUtils;
-import com.example.poste.callbacks.PostDeletionCallback;
-import com.example.poste.utils.utils;
-
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import okhttp3.ResponseBody;
+import com.example.poste.callbacks.PostDeletionCallback;
+import com.example.poste.callbacks.UpdateCallback;
+import com.example.poste.http.MyApiService;
+import com.example.poste.http.RetrofitClient;
+import com.example.poste.utils.DebugUtils;
+import com.example.poste.utils.utils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -27,6 +28,16 @@ import retrofit2.Response;
  * Represents a User of the Poste app. Should closely mirror the Backend User model.
  */
 public class User {
+
+    /**
+     * Sets the currently active Folder
+     */
+    private Folder selectedFolder;
+
+    /**
+     * Sets the currently active Post
+     */
+    private Post selectedPost;
 
     /**
      * Singleton instance of the User class.
@@ -83,60 +94,11 @@ public class User {
     }
 
     /**
-     * get the user's email
-     * @return String of email
-     */
-    public String getEmail() {
-        return email;
-    }
-
-    /**
      * sets the user's email
      * @param email String containing user email
      */
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    /**
-     * gets the user's first name
-     * @return string of the users first name
-     */
-    public String getFirstName() {
-        return firstName;
-    }
-
-    /**
-     * sets the users first name
-     * @param firstName String containing users firstName
-     */
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    /**
-     * gets the users last name
-     * @return String
-     */
-    public String getLastName() {
-        return lastName;
-    }
-
-    /**
-     * sets the user's last name
-     * @param lastName String containing user last name
-     */
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-
-    /**
-     * Adds a folder to the user's folders.
-     * @param newFolder the folder to add to the user's folders.
-     */
-    private void addFolder(Folder newFolder) {
-        folders.add(newFolder);
     }
 
     /**
@@ -397,5 +359,22 @@ public class User {
 
     public void logout() {
         user = null;
+    }
+
+    public void setSelectedFolder(Folder folder) {
+        this.selectedFolder = folder;
+
+    }
+
+    public void setSelectedPost(Post post) {
+        this.selectedPost = post;
+    }
+
+    public Folder getSelectedFolder() {
+        return selectedFolder;
+    }
+
+    public Post getSelectedPost() {
+        return selectedPost;
     }
 }
