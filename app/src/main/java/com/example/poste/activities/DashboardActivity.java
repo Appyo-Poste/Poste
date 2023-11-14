@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.poste.PosteApplication;
 import com.example.poste.R;
 import com.example.poste.adapters.FolderAdapter;
 import com.example.poste.callbacks.UpdateCallback;
@@ -115,7 +114,7 @@ public class DashboardActivity extends PActivity {
                             @Override
                             public void onItemClick(int position, Folder model) {
                                 // Send to that folder's view
-                                PosteApplication.setSelectedFolder(model);
+                                User.getUser().setSelectedFolder(model);
                                 Intent intent = new Intent(DashboardActivity.this, FolderViewActivity.class);
                                 startActivity(intent);
                             }

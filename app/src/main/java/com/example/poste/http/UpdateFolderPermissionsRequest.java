@@ -1,6 +1,6 @@
 package com.example.poste.http;
 
-import com.example.poste.api.poste.models.FolderAccess;
+import com.example.poste.models.FolderAccess;
 
 public class UpdateFolderPermissionsRequest {
     public UpdateFolderPermissionsRequest(String folderId, String email, FolderAccess permission) {

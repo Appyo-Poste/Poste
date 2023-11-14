@@ -1,4 +1,4 @@
-package com.example.poste.api.poste.models;
+package com.example.poste.models;
 
 public enum FolderAccess {
     NONE(0, "none"),

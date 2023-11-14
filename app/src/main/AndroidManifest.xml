@@ -13,7 +13,6 @@
     </queries>
 
     <application
-        android:name=".PosteApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -42,38 +41,6 @@
             android:name=".activities.FolderViewActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.TwitterTokenActivity"
-            android:exported="true"
-            android:label="@string/title_activity_twitter_token"
-            android:theme="@style/Theme.Poste.NoActionBar">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="test-project-379806.wl.r.appspot.com"
-                    android:pathPrefix="/twitter/auth"
-                    android:scheme="https" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activities.redditInstructions"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="test-project-379806.wl.r.appspot.com"
-                    android:pathPrefix="/reddit/auth"
-                    android:scheme="https" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".activities.OptionsActivity"
             android:exported="false" />
         <activity
@@ -89,9 +56,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.LinkAccounts"
-            android:exported="false" />
-        <activity
             android:name=".activities.DashboardActivity"
             android:exported="true" />
         <activity
@@ -103,10 +67,6 @@
         <activity
             android:name=".activities.RegisterActivity"
             android:exported="true" />
-        <activity
-            android:name=".activities.MainActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Poste.NoActionBar" />
     </application>
 
 </manifest>
