@@ -94,60 +94,11 @@ public class User {
     }
 
     /**
-     * get the user's email
-     * @return String of email
-     */
-    public String getEmail() {
-        return email;
-    }
-
-    /**
      * sets the user's email
      * @param email String containing user email
      */
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    /**
-     * gets the user's first name
-     * @return string of the users first name
-     */
-    public String getFirstName() {
-        return firstName;
-    }
-
-    /**
-     * sets the users first name
-     * @param firstName String containing users firstName
-     */
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    /**
-     * gets the users last name
-     * @return String
-     */
-    public String getLastName() {
-        return lastName;
-    }
-
-    /**
-     * sets the user's last name
-     * @param lastName String containing user last name
-     */
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-
-    /**
-     * Adds a folder to the user's folders.
-     * @param newFolder the folder to add to the user's folders.
-     */
-    private void addFolder(Folder newFolder) {
-        folders.add(newFolder);
     }
 
     /**
