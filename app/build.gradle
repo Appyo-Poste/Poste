@@ -4,10 +4,6 @@ plugins {
     id 'checkstyle'
 }
 
-def apikeyPropertiesFile = rootProject.file("apikey.properties")
-def apikeyProperties = new Properties()
-apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
-
 android {
     namespace 'com.example.poste'
     compileSdk 34
@@ -27,14 +23,6 @@ android {
                 arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
-
-        // should correspond to key/value pairs inside the file
-        buildConfigField("String", "TWITTER_CLIENT_KEY", apikeyProperties['TWITTER_CLIENT_KEY'])
-        buildConfigField("String", "TWITTER_CLIENT_SECRET", apikeyProperties['TWITTER_CLIENT_SECRET'])
-        buildConfigField("String", "TWITTER_CONSUMER_KEY", apikeyProperties['TWITTER_CONSUMER_KEY'])
-        buildConfigField("String", "TWITTER_CONSUMER_SECRET", apikeyProperties['TWITTER_CONSUMER_SECRET'])
-        //buildConfigField("String", "REDDIT_CLIENT_KEY", apikeyProperties['REDDIT_CLIENT_KEY'])
-        //buildConfigField("String", "REDDIT_CLIENT_SECRET", apikeyProperties['REDDIT_CLIENT_SECRET'])
     }
 
     buildTypes {
