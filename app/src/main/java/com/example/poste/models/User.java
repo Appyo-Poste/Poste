@@ -30,6 +30,16 @@ import retrofit2.Response;
 public class User {
 
     /**
+     * Sets the currently active Folder
+     */
+    private Folder selectedFolder;
+
+    /**
+     * Sets the currently active Post
+     */
+    private Post selectedPost;
+
+    /**
      * Singleton instance of the User class.
      */
     private static User user;
@@ -398,5 +408,22 @@ public class User {
 
     public void logout() {
         user = null;
+    }
+
+    public void setSelectedFolder(Folder folder) {
+        this.selectedFolder = folder;
+
+    }
+
+    public void setSelectedPost(Post post) {
+        this.selectedPost = post;
+    }
+
+    public Folder getSelectedFolder() {
+        return selectedFolder;
+    }
+
+    public Post getSelectedPost() {
+        return selectedPost;
     }
 }
