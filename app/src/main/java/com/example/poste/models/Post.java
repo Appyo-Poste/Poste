@@ -1,5 +1,9 @@
 package com.example.poste.models;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Represents a Post of the Poste app. Should closely mirror the Backend Post model.
  */
@@ -38,6 +42,11 @@ public class Post {
     private final String id;
 
     /**
+     * The tags this post has
+     */
+    private ArrayList<String> tags;
+
+    /**
      * Private constructor for the Post class. Post uses the Builder design pattern, so this should
      * not be called directly -- instead, use the {@link Builder} class to build a Post.
      * @param builder the Builder to build the Post from.
@@ -47,6 +56,7 @@ public class Post {
         this.description = builder.description;
         this.url = builder.url;
         this.id = builder.id;
+        this.tags = builder.parseTags();
     }
 
     /**
@@ -79,6 +89,7 @@ public class Post {
      */
     public String getId() { return id; }
 
+    public ArrayList<String> getTags() {return tags; }
     /**
      * Static builder class for the Post class. This is used to build a Post object.
      */
@@ -103,6 +114,11 @@ public class Post {
          * The id of the post, as identified by the backend.
          */
         private String id;
+
+        /**
+         * The list of tags as one comma separated string.
+         */
+        private String tags;
 
         /**
          * Default constructor for the Builder class.
@@ -148,6 +164,27 @@ public class Post {
         public Builder setId(String id) {
             this.id = id;
             return this;
+        }
+
+        /**
+         * Sets the tags of the post, as identified by the backend.
+         * @param tags the tags of the post, as identified by the backend.
+         * @return the Builder.
+         */
+        public Builder setTags (String tags) {
+            this.tags = tags;
+            return this;
+        }
+
+        private ArrayList<String> parseTags() {
+            ArrayList<String> ret = null;
+            if (tags.length() > 0) {
+                ret = new ArrayList<String>(Arrays.asList(tags.split(",")));
+            }
+            else {
+                ret = new ArrayList<>();
+            }
+            return ret;
         }
 
         /**

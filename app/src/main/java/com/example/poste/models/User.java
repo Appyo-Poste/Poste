@@ -209,13 +209,21 @@ public class User {
                                 String postDescription = post.getString("description");
                                 String postUrl = post.getString("url");
                                 String postId = post.getString("id");
+                                String postTags = "";
+                                if (post.has("tags")) {
+                                    postTags = post.getString("tags");
+                                }
                                 Post newPost = new Post.Builder()
                                         .setTitle(postTitle)
                                         .setDescription(postDescription)
                                         .setUrl(postUrl)
                                         .setId(postId)
+                                        .setTags(postTags)
                                         .build();
                                 posts.add(newPost);
+                                for (String s : newPost.getTags()) {
+                                    System.out.println(s);
+                                }
                             }
                             Folder newFolder = new Folder.Builder()
                                     .setTitle(folderTitle)
