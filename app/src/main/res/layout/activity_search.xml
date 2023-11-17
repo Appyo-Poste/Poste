@@ -84,7 +84,7 @@
         app:layout_constraintWidth_percent="0.9" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/search_go_button"
         android:layout_width="77dp"
         android:layout_height="46dp"
         app:layout_constraintStart_toEndOf="@id/editTextSearchBy"
@@ -112,8 +112,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/posts_recycler_view"
-        android:layout_width="352dp"
-        android:layout_height="500dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
@@ -121,6 +121,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editTextSearchBy"
+        app:layout_constraintVertical_bias="1.0"
         tools:listitem="@layout/recycler_view_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
