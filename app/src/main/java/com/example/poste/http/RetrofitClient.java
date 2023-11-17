@@ -2,6 +2,7 @@ package com.example.poste.http;
 
 import com.example.poste.R;
 import com.example.poste.models.PosteApp;
+import com.example.poste.utils.NullHostNameVerifier;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +15,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -27,20 +29,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    private static final String BASE_URL = "http://10.0.2.2:8000/api/";
+    private static final String BASE_URL = "https://10.0.2.2:443/api/";
     private static Retrofit retrofit;
     private static OkHttpClient.Builder client = null;
 
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-            logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             client = new OkHttpClient.Builder()
-                    .addInterceptor(logging);
+                    .readTimeout(5, TimeUnit.SECONDS)
+                    .addInterceptor(logging)
+                    .hostnameVerifier(new NullHostNameVerifier());
             // adds the SSL to the httpClient so it can use https with TLS encoding
             // to use need to change URl to an https one
-            //initSSL();
-
+            initSSL();
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .client(client.build())
@@ -52,11 +55,18 @@ public class RetrofitClient {
 
     private static void initSSL() {
         SSLContext sslContext = null;
-
         try {
-            sslContext = createCertificate(PosteApp.getResourcesStatic().openRawResource(R.raw.cert));
-        } catch (CertificateException | IOException | KeyStoreException |KeyManagementException | NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            sslContext = createCertificate(PosteApp.getResourcesStatic().openRawResource(R.raw.poste));
+        } catch (CertificateException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (KeyStoreException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        } catch (KeyManagementException e) {
+            throw new RuntimeException(e);
         }
 
         if(sslContext != null){
@@ -64,6 +74,16 @@ public class RetrofitClient {
         }
     }
 
+    /**
+     * creates the need info for https communication.
+     * @param trustedCertificateIS the cert file of the api.
+     * @return SSLContext for communicating with the api.
+     * @throws CertificateException
+     * @throws IOException
+     * @throws KeyStoreException
+     * @throws KeyManagementException
+     * @throws NoSuchAlgorithmException
+     */
     private static SSLContext createCertificate(InputStream trustedCertificateIS) throws CertificateException, IOException, KeyStoreException,
             KeyManagementException, NoSuchAlgorithmException {
         CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
@@ -91,6 +111,10 @@ public class RetrofitClient {
         return sslContext;
     }
 
+    /**
+     * creates a trust manager or the https connection.
+     * @return a X509 trust manager.
+     */
     private static X509TrustManager systemDefaultTrustManager() {
         try {
             TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
