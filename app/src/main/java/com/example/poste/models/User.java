@@ -209,16 +209,24 @@ public class User {
                                 String postDescription = post.getString("description");
                                 String postUrl = post.getString("url");
                                 String postId = post.getString("id");
-                                String postTags = "";
+                                String tagList = "";
                                 if (post.has("tags")) {
-                                    postTags = post.getString("tags");
+                                    JSONArray postTags = post.getJSONArray("tags");
+                                    for (int p = 0; p < postTags.length(); p++) {
+                                        tagList = tagList + postTags.getString(p);
+                                        if (p < postTags.length() - 1) {
+                                            tagList = tagList + ",";
+                                        }
+                                    }
+
+                                    System.out.println(tagList);
                                 }
                                 Post newPost = new Post.Builder()
                                         .setTitle(postTitle)
                                         .setDescription(postDescription)
                                         .setUrl(postUrl)
                                         .setId(postId)
-                                        .setTags(postTags)
+                                        .setTags(tagList)
                                         .build();
                                 posts.add(newPost);
                                 for (String s : newPost.getTags()) {
