@@ -31,6 +31,14 @@ public class Post {
         this.url = url;
     }
 
+    public void setTags(String tags) {
+        if (tags.length() < 1) {
+            return;
+        }
+        ArrayList<String> newTagList = new ArrayList<String>(Arrays.asList(tags.split(",")));
+        this.tags = newTagList;
+    }
+
     /**
      * The url of the post.
      */
@@ -176,6 +184,10 @@ public class Post {
             return this;
         }
 
+        /**
+         * Takes a list in the form of a comma separated string and splits it into a list of Strings
+         * @return an ArrayList of Strings; one string for each tag
+         */
         private ArrayList<String> parseTags() {
             ArrayList<String> ret = null;
             if (tags.length() > 0) {

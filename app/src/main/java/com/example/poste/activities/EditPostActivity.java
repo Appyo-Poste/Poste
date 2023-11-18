@@ -50,6 +50,7 @@ public class EditPostActivity extends AppCompatActivity {
         EditText postLink = findViewById(R.id.editTextPostLink);
         EditText postTitle = findViewById(R.id.editTextPostTitle);
         EditText postDescription = findViewById(R.id.editTextPostDescription);
+        EditText postTags = findViewById(R.id.editTextPostTags);
 
         Button buttonSaveChanges = findViewById(R.id.buttonSaveChanges);
         Button buttonCancelChanges = findViewById(R.id.buttonCancelChanges);
@@ -71,6 +72,16 @@ public class EditPostActivity extends AppCompatActivity {
             postTitle.setText(currentPost.getTitle());
             postDescription.setText(currentPost.getDescription());
             postLink.setText(currentPost.getUrl());
+            if (!currentPost.getTags().isEmpty()) {
+                String tagsNewText = "";
+                for (String s : currentPost.getTags()) {
+                    if (tagsNewText.length() > 0) {
+                        tagsNewText = tagsNewText + ",";
+                    }
+                    tagsNewText = tagsNewText + s;
+                }
+                postTags.setText(tagsNewText);
+            }
         }
 
         buttonCancelChanges.setOnClickListener(view -> {
@@ -82,12 +93,13 @@ public class EditPostActivity extends AppCompatActivity {
                 String title = postTitle.getText().toString();
                 String description = postDescription.getText().toString();
                 String url = postLink.getText().toString();
+                String tags = postTags.getText().toString();
 
                 MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
                 Call<ResponseBody> call = apiService.editPost(
                         User.getUser().getTokenHeaderString(),
                         postId,
-                        new EditPostRequest(title,description,url));
+                        new EditPostRequest(title,description,url,tags));
 
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -96,6 +108,7 @@ public class EditPostActivity extends AppCompatActivity {
                             currentPost.setTitle(title);
                             currentPost.setDescription(description);
                             currentPost.setUrl(url);
+                            currentPost.setTags(tags);
                             Toast.makeText(EditPostActivity.this,"Edit post successful!", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
