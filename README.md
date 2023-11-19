@@ -66,7 +66,7 @@ Handles HTTP requests to the API. Based on okhttp3 and performs all requests asy
 
  
 # Debugging Application 
-To run spotbug use the command gradle spotbugsDebug. For checkstlye use gradle checkstyle or run from file in android studio. For PMD use gradle pmd or run from file in android studio. 
+To run spotbug use the command gradle spotbugsDebug. For checkstlye use gradle checkstyle or run from file in android studio. For PMD use gradle pmd or run from file in android studio. Reports are generated in app/build/reports.
 
 Spotbugs: default rule set with the addition of https://find-sec-bugs.github.io/ 
 
