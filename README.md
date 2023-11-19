@@ -65,3 +65,11 @@ Stores the global application context and information about the currently logged
 Handles HTTP requests to the API. Based on okhttp3 and performs all requests asynchronously. 
 
  
+# Debugging Application 
+To run spotbug use the command gradle spotbugsDebug. For checkstlye use gradle checkstyle or run from file in android studio. For PMD use gradle pmd or run from file in android studio. Reports are generated in app/build/reports.
+
+Spotbugs: default rule set with the addition of https://find-sec-bugs.github.io/ 
+
+Checkstyle: Uses a modified version of checkstlye_hard from https://github.com/noveogroup/android-check. Need to update to match changes in checkstyle formatting.
+
+pmd: Uses the pmd_hard rule set from https://github.com/noveogroup/android-check.
