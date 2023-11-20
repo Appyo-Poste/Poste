@@ -82,7 +82,7 @@ To generate a self-signed certificate, follow the instructions in the SSL and Ce
 
 This will enable HTTPS on the backend but the frontend will need the .crt file to communicate with the backend.
 Make a copy of the .crt file from the backend and copy it into the resources/raw directory, they will be a
-cert.txt file as a placeholder. Replace the placeholder file with the .crt from the backend it will need to
-be named cert, so once it is all set and done the raw directory should have a single file being cert.crt. 
+cert.txt file as a placeholder. Add the cert alongside the placeholder file it will need to
+be named poste, so once it is all set and done the raw directory should have the place holder file along with the cert file being poste.crt. 
 You should be able to connect to the backend using https at this point. This file should not be committed to
 version control, and should be kept secret. As a result, it is not included in this repository.
