@@ -56,7 +56,7 @@ public class RetrofitClient {
     private static void initSSL() {
         SSLContext sslContext = null;
         try {
-            sslContext = createCertificate(PosteApp.getResourcesStatic().openRawResource(R.raw.poste));
+            sslContext = createCertificate(PosteApp.getResourcesStatic().openRawResource(R.raw.cert));
         } catch (CertificateException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
