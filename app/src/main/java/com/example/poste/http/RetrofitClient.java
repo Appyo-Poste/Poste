@@ -29,7 +29,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    private static final String BASE_URL = "https://10.0.2.2:443/api/";
+    private static final String BASE_URL = "https://10.0.2.2/api/";
     private static Retrofit retrofit;
     private static OkHttpClient.Builder client = null;
 
