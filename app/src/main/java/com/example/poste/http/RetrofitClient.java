@@ -2,7 +2,6 @@ package com.example.poste.http;
 
 import com.example.poste.R;
 import com.example.poste.models.PosteApp;
-import com.example.poste.utils.NullHostNameVerifier;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,8 +38,7 @@ public class RetrofitClient {
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             client = new OkHttpClient.Builder()
                     .readTimeout(5, TimeUnit.SECONDS)
-                    .addInterceptor(logging)
-                    .hostnameVerifier(new NullHostNameVerifier());
+                    .addInterceptor(logging);
             // adds the SSL to the httpClient so it can use https with TLS encoding
             // to use need to change URl to an https one
             initSSL();
