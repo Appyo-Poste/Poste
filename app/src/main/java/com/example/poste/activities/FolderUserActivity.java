@@ -28,10 +28,21 @@ public class FolderUserActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         setContentView(R.layout.activity_folder_user);
-        Folder folder = User.getUser().getSelectedFolder();
+
+
+        String folderID = getIntent().getStringExtra("folderId");
+        String folderName = getIntent().getStringExtra("folderName");
+
+        if (folderID == null || folderName == null) {
+            Log.d("FolderUserDebug", "Folder ID or folder name is null");
+            finish();
+        }
+
+
+        Folder folder = User.getUser().getFolder(folderID);
         List<String> sharedUsers = folder.getSharedUsers();
         TextView folderNameText = findViewById(R.id.folderNameText);
-        folderNameText.setText(folder.getTitle());
+        folderNameText.setText(folderName);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewUsers);
 
@@ -39,6 +50,8 @@ public class FolderUserActivity extends AppCompatActivity {
             @Override
             public void onItemClick(int position, String user) {
                 Log.d("UserDebug", "Clicked: User " + (position + 1) + ": " + user);
+                // unshare folder with user
+
             }
 
             @Override

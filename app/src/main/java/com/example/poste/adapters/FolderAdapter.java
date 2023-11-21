@@ -69,7 +69,9 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
             // Add context menu items (e.g., edit, share, delete) for each folder item
             menu.add(Menu.NONE, R.id.ctx_menu_edit_folder, Menu.NONE, R.string.edit);
             menu.add(Menu.NONE, R.id.ctx_menu_share_folder, Menu.NONE, R.string.share);
+            menu.add(Menu.NONE, R.id.ctx_menu_view_shares, Menu.NONE, "View Shares");
             menu.add(Menu.NONE, R.id.ctx_menu_delete_folder, Menu.NONE, R.string.delete);
+
         }
     }
 
