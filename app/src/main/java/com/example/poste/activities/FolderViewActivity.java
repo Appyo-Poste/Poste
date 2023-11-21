@@ -86,6 +86,10 @@ public class FolderViewActivity extends AppCompatActivity {
     private void prepVars() {
         emptyText = findViewById(R.id.folderViewEmptyText);
         folderName = findViewById(R.id.folderNameText);
+        folderName.setOnClickListener(view -> {
+            Intent intent = new Intent(FolderViewActivity.this, FolderUserActivity.class);
+            startActivity(intent);
+        });
         newBut = findViewById(R.id.newPost);
         settingsBut = findViewById(R.id.folderSettings);
         postRecyclerView = findViewById(R.id.posts_recycler_view);

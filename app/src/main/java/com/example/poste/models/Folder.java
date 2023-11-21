@@ -1,5 +1,6 @@
 package com.example.poste.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ public class Folder {
     /**
      * The users with whom the folder is shared, as a List of email address strings
      */
-    private List<String> sharedUsers;
+    private List<String> sharedUsers = new ArrayList<>();
 
     /**
      * The user permission of the folder. Should mirror the FolderPermission class of the backend.
