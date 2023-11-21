@@ -217,11 +217,18 @@ public class User {
                                         .build();
                                 posts.add(newPost);
                             }
+                            List<String> sharedUsers = new ArrayList<>();
+                            JSONArray sharedUsersArray = folder.getJSONArray("shared_users");
+                            for (int j = 0; j < sharedUsersArray.length(); j++) {
+                                String sharedUser = sharedUsersArray.getString(j);
+                                sharedUsers.add(sharedUser);
+                            }
                             Folder newFolder = new Folder.Builder()
                                     .setTitle(folderTitle)
                                     .setUserPermission(folderUserPermission)
                                     .setPosts(posts)
                                     .setId(folderId)
+                                    .setSharedUsers(sharedUsers)
                                     .build();
                             newFolders.add(newFolder);
                         }

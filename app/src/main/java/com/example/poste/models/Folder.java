@@ -13,6 +13,11 @@ public class Folder {
     private String title;
 
     /**
+     * The users with whom the folder is shared, as a List of email address strings
+     */
+    private List<String> sharedUsers;
+
+    /**
      * The user permission of the folder. Should mirror the FolderPermission class of the backend.
      * May be:
      * - "viewer": a viewer can only view posts within a folder
@@ -41,6 +46,7 @@ public class Folder {
         this.userPermission = builder.userPermission;
         this.posts = builder.posts;
         this.id = builder.id;
+        this.sharedUsers = builder.sharedUsers;
     }
 
 
@@ -50,6 +56,14 @@ public class Folder {
      */
     public String getTitle() {
         return title;
+    }
+
+    public List<String> getSharedUsers() {
+        return sharedUsers;
+    }
+
+    public void setSharedUsers(List<String> sharedUsers) {
+        this.sharedUsers = sharedUsers;
     }
 
     public void setTitle(String title) {
@@ -96,6 +110,11 @@ public class Folder {
         private String title;
 
         /**
+         * The users with whom the folder is shared, as a List of email address strings
+         */
+        private List<String> sharedUsers;
+
+        /**
          * The user permission of the folder. Should mirror the FolderPermission class of the
          * backend.
          * May be:
@@ -129,6 +148,16 @@ public class Folder {
          */
         public Builder setTitle(String title) {
             this.title = title;
+            return this;
+        }
+
+        /**
+         * Sets the users with whom the folder is shared, as a List of email address strings
+         * @param sharedUsers the users with whom the folder is shared, as a List of email address strings
+         * @return the Builder.
+         */
+        public Builder setSharedUsers(List<String> sharedUsers) {
+            this.sharedUsers = sharedUsers;
             return this;
         }
 

@@ -40,6 +40,14 @@ public class DebugUtils {
                     Log.d("UserDebug", "\tTitle: " + folder.getTitle());
                     Log.d("UserDebug", "\tID: " + folder.getId());
                     Log.d("UserDebug", "\tUser Permission: " + folder.getUserPermission());
+                    List<String> sharedUsers = folder.getSharedUsers();
+                    if (sharedUsers != null) {
+                        for (int j = 0; j < sharedUsers.size(); j++) {
+                            Log.d("UserDebug", "\tShared User " + (j + 1) + ": " + sharedUsers.get(j));
+                        }
+                    } else {
+                        Log.d("UserDebug", "\tNo shared users.");
+                    }
 
                     List<Post> posts = folder.getPosts();
 
