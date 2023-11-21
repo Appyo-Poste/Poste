@@ -35,7 +35,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-
                     <Button
                         android:id="@+id/dashboard_add_folder_btn"
                         android:layout_width="64dp"
@@ -48,12 +47,32 @@
                         app:icon="@android:drawable/ic_input_add"
                         app:iconPadding="0dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/Optionsbtn"
+                        app:layout_constraintEnd_toStartOf="@+id/optionsbtn"
+                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="1.0" />
+
+                    <Button
+                        android:id="@+id/dashboard_search_btn"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_marginStart="224dp"
+                        android:backgroundTint="#430000"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:textAlignment="center"
+                        app:icon="@android:drawable/ic_search_category_default"
+                        app:iconPadding="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/dashboard_add_folder_btn"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="1.0" />
 
                     <ImageView
-                        android:id="@+id/Optionsbtn"
+                        android:id="@+id/optionsbtn"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:layout_marginTop="14dp"
