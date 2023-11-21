@@ -144,7 +144,7 @@
         android:id="@+id/buttonSaveChanges"
         android:layout_width="0dp"
         android:layout_height="46dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="118dp"
         android:text="Save Post"
         style="@style/RedButton"
         app:layout_constraintEnd_toEndOf="parent"
