@@ -1,11 +1,15 @@
 package com.example.poste.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.example.poste.R;
 import com.example.poste.adapters.UserAdapter;
@@ -19,9 +23,15 @@ public class FolderUserActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getSupportActionBar().hide();
+
         setContentView(R.layout.activity_folder_user);
         Folder folder = User.getUser().getSelectedFolder();
         List<String> sharedUsers = folder.getSharedUsers();
+        TextView folderNameText = findViewById(R.id.folderNameText);
+        folderNameText.setText(folder.getTitle());
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewUsers);
 
@@ -38,10 +48,15 @@ public class FolderUserActivity extends AppCompatActivity {
         };
 
 
-        UserAdapter adapter = new UserAdapter(cl, sharedUsers);
 
-        recyclerView.setAdapter(adapter);
         registerForContextMenu(recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
+        UserAdapter adapter = new UserAdapter(cl, sharedUsers);
+        recyclerView.setAdapter(adapter);
+
     }
 }

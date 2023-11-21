@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.poste.R;
@@ -27,13 +26,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         private final TextView textView;
 
-        private final Button button;
+        private final ImageView removeButton;
 
         public ViewHolder(View view) {
             super(view);
-            button = view.findViewById(R.id.user_button_view);
+            removeButton = view.findViewById(R.id.user_button_view);
             textView = view.findViewById(R.id.user_text_view);
-            button.setOnClickListener(this);
+            removeButton.setOnClickListener(this);
             view.setOnCreateContextMenuListener(this);
         }
 
@@ -41,8 +40,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             return textView;
         }
 
-        public Button getButton() {
-            return button;
+        public ImageView getRemoveButton() {
+            return removeButton;
         }
 
         @Override
