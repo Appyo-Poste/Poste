@@ -3,6 +3,7 @@ package com.example.poste.models;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Represents a Post of the Poste app. Should closely mirror the Backend Post model.
@@ -31,12 +32,8 @@ public class Post {
         this.url = url;
     }
 
-    public void setTags(String tags) {
-        if (tags.length() < 1) {
-            return;
-        }
-        ArrayList<String> newTagList = new ArrayList<String>(Arrays.asList(tags.split(",")));
-        this.tags = newTagList;
+    public void setTags(ArrayList<String> tags) {
+        this.tags = tags;
     }
 
     /**
@@ -64,7 +61,7 @@ public class Post {
         this.description = builder.description;
         this.url = builder.url;
         this.id = builder.id;
-        this.tags = builder.parseTags();
+        this.tags = builder.tags;
     }
 
     /**
@@ -97,7 +94,30 @@ public class Post {
      */
     public String getId() { return id; }
 
-    public ArrayList<String> getTags() {return tags; }
+    public ArrayList<String> getTags() {
+        ArrayList<String> ret = new ArrayList<>();
+        for (String s : tags) {
+            ret.add(s);
+        }
+        return ret;
+    }
+
+    /**
+     * Takes a list in the form of a comma separated string and splits it into a list of Strings
+     * This static method should be used any time a comma seperated list is pased into an ArrayList
+     * @return an ArrayList of Strings; one string for each tag
+     */
+    public static ArrayList<String> parseTags(String stringOfTags) {
+        ArrayList<String> ret = new ArrayList<>();
+        if (stringOfTags.length() > 0) {
+            ret = new ArrayList<String>(Arrays.asList(stringOfTags.split(", ")));
+        }
+        else {
+            ret = new ArrayList<>();
+        }
+        return ret;
+    }
+
     /**
      * Static builder class for the Post class. This is used to build a Post object.
      */
@@ -126,7 +146,7 @@ public class Post {
         /**
          * The list of tags as one comma separated string.
          */
-        private String tags;
+        private ArrayList<String> tags;
 
         /**
          * Default constructor for the Builder class.
@@ -179,24 +199,9 @@ public class Post {
          * @param tags the tags of the post, as identified by the backend.
          * @return the Builder.
          */
-        public Builder setTags (String tags) {
+        public Builder setTags (ArrayList<String> tags) {
             this.tags = tags;
             return this;
-        }
-
-        /**
-         * Takes a list in the form of a comma separated string and splits it into a list of Strings
-         * @return an ArrayList of Strings; one string for each tag
-         */
-        private ArrayList<String> parseTags() {
-            ArrayList<String> ret = null;
-            if (tags.length() > 0) {
-                ret = new ArrayList<String>(Arrays.asList(tags.split(",")));
-            }
-            else {
-                ret = new ArrayList<>();
-            }
-            return ret;
         }
 
         /**
