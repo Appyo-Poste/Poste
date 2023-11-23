@@ -11,4 +11,6 @@ local.properties
 apikey.properties
 apikey.properties
 .idea/
-/app/src/main/res/raw/poste.crt
+*.crt
+*.key
+*.pem

@@ -40,8 +40,7 @@ public class RetrofitClient {
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             client = new OkHttpClient.Builder()
                     .readTimeout(5, TimeUnit.SECONDS)
-                    .addInterceptor(logging)
-                    .hostnameVerifier(new NullHostNameVerifier());
+                    .addInterceptor(logging);
             // adds the SSL to the httpClient so it can use https with TLS encoding
             // to use need to change URl to an https one
             initSSL();
