@@ -3,7 +3,6 @@ package com.example.poste.http;
 import com.example.poste.BuildConfig;
 import com.example.poste.R;
 import com.example.poste.models.PosteApp;
-import com.example.poste.utils.NullHostNameVerifier;
 
 import java.io.IOException;
 import java.io.InputStream;
