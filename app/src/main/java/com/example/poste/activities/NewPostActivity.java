@@ -140,11 +140,13 @@ public class NewPostActivity extends AppCompatActivity {
                 String title = ((EditText) findViewById(R.id.editTextPostTitle)).getText().toString();
                 String url = ((EditText) findViewById(R.id.editTextPostLink)).getText().toString();
                 String description = ((EditText) findViewById(R.id.editTextPostDescription)).getText().toString();
+                String tags = ((EditText) findViewById(R.id.editTextPostTags)).getText().toString();
                 CreatePostRequest request = new CreatePostRequest(
                         title,
                         description,
                         url,
-                        folder_id
+                        folder_id,
+                        tags
                 );
                 MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
                 Call<ResponseBody> call = apiService.createPost(User.getUser().getTokenHeaderString(), request);
