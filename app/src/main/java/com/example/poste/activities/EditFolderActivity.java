@@ -73,16 +73,22 @@ public class EditFolderActivity extends AppCompatActivity {
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()){
                             currentFolder.setTitle(title);
-                            Toast.makeText(EditFolderActivity.this,"Edit folder successful!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditFolderActivity.this,
+                                    getString(R.string.edit_folder_success),
+                                    Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(EditFolderActivity.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditFolderActivity.this,
+                                    getString(R.string.error_message) + response.message(),
+                                    Toast.LENGTH_SHORT).show();
                         }
                         finish();
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(EditFolderActivity.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditFolderActivity.this,
+                                R.string.edit_folder_failed,
+                                Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 });

@@ -111,7 +111,7 @@ public class NewPostActivity extends AppCompatActivity {
 
         List<Folder> folders = new ArrayList<>();
         folders.add(new Folder.Builder()
-                .setTitle("-- Select a Folder --")
+                .setTitle(getString(R.string.folder_selection))
                 .setId("0")
                 .build());
         // setup folder spinner
@@ -134,7 +134,9 @@ public class NewPostActivity extends AppCompatActivity {
             String folder_id = ((Folder) chooseFolderSpinner.getSelectedItem()).getId();
             if (folder_id.equals("0")) {
                 Log.d("NewPostActivity", "Default folder (0) selected");
-                Toast.makeText(this, "Select a folder to save post!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,
+                        getString(R.string.pick_a_folder),
+                        Toast.LENGTH_SHORT).show();
             } else {
                 Log.d("NewPostActivity", "Folder id: " + folder_id);
                 String title = ((EditText) findViewById(R.id.editTextPostTitle)).getText().toString();
@@ -154,9 +156,13 @@ public class NewPostActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
-                            Toast.makeText(NewPostActivity.this, "Created post!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(NewPostActivity.this,
+                                    getString(R.string.post_creation_success),
+                                    Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(NewPostActivity.this, "Failed to create post", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(NewPostActivity.this,
+                                    getString(R.string.post_creation_failed),
+                                    Toast.LENGTH_SHORT).show();
                             Log.d("NewPostActivity", "Failed to create post: " + response.code() + " " + response.message());
 
                         }
@@ -165,7 +171,9 @@ public class NewPostActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(NewPostActivity.this, "Faied to create post", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(NewPostActivity.this,
+                                getString(R.string.post_creation_failed),
+                                Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 });
