@@ -20,6 +20,17 @@
 
     <!--=====[ Login | End ]=====-->
 
+    <!--=====[ Search | Start ]=====-->
+    <string-array name="spinner_items">
+        <item>-- Select a field --</item>
+        <item>Link</item>
+        <item>Title</item>
+        <item>Description</item>
+        <item>Tag</item>
+    </string-array>
+    <!--=====[ Search | End ]=====-->
+
+
     <!--=====[ Shared Folder | Start ]=====-->
     <string name="shared_folder_share_success">Folder access update successful</string>
     <!--=====[ Shared Folder | End ]=====-->

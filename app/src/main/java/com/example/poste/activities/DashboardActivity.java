@@ -42,6 +42,7 @@ import retrofit2.Response;
 public class DashboardActivity extends PActivity {
     private User currentUser;
     private Button addButton;
+    private Button searchButton;
     private List<com.example.poste.models.Folder> userFolders;
     private RecyclerView folderRecyclerView;
     private FolderAdapter folderAdapter;
@@ -163,6 +164,12 @@ public class DashboardActivity extends PActivity {
             // Show the create item dialog
             showCreateItemDialog();
         });
+
+        // Sent to search activity
+        searchButton.setOnClickListener(view -> {
+            Intent sendToSearchActivity = new Intent(DashboardActivity.this, SearchActivity.class);
+            startActivity(sendToSearchActivity);
+        });
     }
 
     /**
@@ -172,7 +179,7 @@ public class DashboardActivity extends PActivity {
     private void prepVars() {
         currentUser = User.getUser(); // always get updated user, in case someone else logged in
         if (optionsView == null) {
-            optionsView = findViewById(R.id.Optionsbtn);
+            optionsView = findViewById(R.id.optionsbtn);
         }
         if (folderRecyclerView == null) {
             folderRecyclerView = findViewById(R.id.folder_recycler_view);
@@ -180,6 +187,9 @@ public class DashboardActivity extends PActivity {
         }
         if (addButton == null) {
             addButton = findViewById(R.id.dashboard_add_folder_btn);
+        }
+        if (searchButton == null) {
+            searchButton = findViewById(R.id.dashboard_search_btn);
         }
     }
 

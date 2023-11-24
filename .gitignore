@@ -11,3 +11,6 @@ local.properties
 apikey.properties
 apikey.properties
 .idea/
+*.crt
+*.key
+*.pem
