@@ -1,8 +1,8 @@
 package com.example.poste.http;
 
+import com.example.poste.BuildConfig;
 import com.example.poste.R;
 import com.example.poste.models.PosteApp;
-import com.example.poste.utils.NullHostNameVerifier;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +29,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    private static final String BASE_URL = "https://10.0.2.2/api/";
+    private static final String BASE_URL = BuildConfig.API_ENDPOINT;
     private static Retrofit retrofit;
     private static OkHttpClient.Builder client = null;
 
@@ -39,8 +39,7 @@ public class RetrofitClient {
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             client = new OkHttpClient.Builder()
                     .readTimeout(5, TimeUnit.SECONDS)
-                    .addInterceptor(logging)
-                    .hostnameVerifier(new NullHostNameVerifier());
+                    .addInterceptor(logging);
             // adds the SSL to the httpClient so it can use https with TLS encoding
             // to use need to change URl to an https one
             initSSL();
