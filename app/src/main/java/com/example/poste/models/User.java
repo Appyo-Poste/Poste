@@ -209,13 +209,26 @@ public class User {
                                 String postDescription = post.getString("description");
                                 String postUrl = post.getString("url");
                                 String postId = post.getString("id");
+                                ArrayList<String> listOfTags = new ArrayList<>();
+                                if (post.has("tags")) {
+                                    JSONArray JsonTags = post.getJSONArray("tags");
+                                    for (int p = 0; p < JsonTags.length(); p++) {
+                                        listOfTags.add(JsonTags.getString(p));
+                                    }
+
+                                    System.out.println(listOfTags);
+                                }
                                 Post newPost = new Post.Builder()
                                         .setTitle(postTitle)
                                         .setDescription(postDescription)
                                         .setUrl(postUrl)
                                         .setId(postId)
+                                        .setTags(listOfTags)
                                         .build();
                                 posts.add(newPost);
+                                for (String s : newPost.getTags()) {
+                                    System.out.println(s);
+                                }
                             }
                             Folder newFolder = new Folder.Builder()
                                     .setTitle(folderTitle)

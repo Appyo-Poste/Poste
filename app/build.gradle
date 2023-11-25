@@ -32,6 +32,21 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        development {
+            debuggable true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "API_ENDPOINT", '"https://postebackend.duckdns.org/api/"'
+            signingConfig signingConfigs.debug
+        }
+        local {
+            debuggable true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "API_ENDPOINT", '"https://10.0.2.2/api/"'
+            signingConfig signingConfigs.debug
+        }
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
