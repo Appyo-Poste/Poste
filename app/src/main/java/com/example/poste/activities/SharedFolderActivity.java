@@ -84,15 +84,21 @@ public class SharedFolderActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()){
-                            Toast.makeText(SharedFolderActivity.this,"Share folder successful!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SharedFolderActivity.this,
+                                    getString(R.string.share_folder_success),
+                                    Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(SharedFolderActivity.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SharedFolderActivity.this,
+                                    getString(R.string.error_message) + response.message(),
+                                    Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(SharedFolderActivity.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SharedFolderActivity.this,
+                                getString(R.string.Edit_shared_failed),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
 
