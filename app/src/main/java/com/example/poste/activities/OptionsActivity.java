@@ -1,6 +1,7 @@
 package com.example.poste.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
@@ -47,6 +48,11 @@ public class OptionsActivity extends AppCompatActivity {
 
         Signoutbtn.setOnClickListener(view -> {
             User.getUser().logout();
+            SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("rememberMe", false);
+            editor.putString("token", "");
+            editor.apply();
             Intent intent = new Intent(getApplicationContext(), IntroActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
