@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -50,6 +51,7 @@ public class DashboardActivity extends PActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private final MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
     private UpdateCallback updateCallback;
+    private TextView emptyText;
     
     @Override
     protected void onRestart() {
@@ -100,6 +102,11 @@ public class DashboardActivity extends PActivity {
             @Override
             public void onSuccess() {
                 userFolders = currentUser.getFolders(); // update our local copy of the folders
+                System.out.println("111111111111111111111111");
+                if (!userFolders.isEmpty()) {
+                    System.out.println("2222222222222222222222222222");
+                    emptyText.setVisibility(View.GONE);
+                }
                 // Fill folder view (Recycler View)
                 // Note: This is not the best way to do this, because it means every time
                 // DashboardActivity restarts, a new Adapter is created, but it works for now. The
@@ -190,6 +197,9 @@ public class DashboardActivity extends PActivity {
         }
         if (searchButton == null) {
             searchButton = findViewById(R.id.dashboard_search_btn);
+        }
+        if (emptyText == null) {
+            emptyText = findViewById((R.id.dashboardEmptyText));
         }
     }
 
