@@ -17,17 +17,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5"
-        app:srcCompat="@drawable/new_logo" />
+        app:srcCompat="@drawable/new_logo_poste_removebg" />
 
     <EditText
         android:id="@+id/editTextTextEmailAddress"
-        android:layout_width="0dp"
-        android:layout_height="46dp"
+        style="@style/EditTextStyle"
         android:inputType="textEmailAddress"
         android:hint="@string/enter_email"
         android:layout_marginTop="32dp"
-        android:paddingStart="12dp"
-        android:background="@drawable/edittext_rounded_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,13 +33,10 @@
 
     <EditText
         android:id="@+id/editTextTextPassword"
-        android:layout_width="0dp"
-        android:layout_height="46dp"
+        style="@style/EditTextStyle"
         android:inputType="textPassword"
         android:hint="@string/enter_password"
-        android:layout_marginTop="16dp"
-        android:paddingStart="12dp"
-        android:background="@drawable/edittext_rounded_gray"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -80,7 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Click here!"
-        android:textColorLink="#0000FF"
+        android:textColorLink="@color/hyperlink_blue"
         app:layout_constraintStart_toEndOf="@+id/TextViewAlreadyAccount"
         app:layout_constraintTop_toBottomOf="@+id/loginLoginbtn" />
 </androidx.constraintlayout.widget.ConstraintLayout>
