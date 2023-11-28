@@ -24,7 +24,7 @@ jobs:
       run: chmod +x gradlew
     - name: Replace Certificate
       run: |
-        echo "${{ secrets.REAL_CERTIFICATE }}" | base64 -d > .app/src/main/res/raw/poste.crt
+        echo "${{ secrets.REAL_CERTIFICATE }}" | base64 -d > ./app/src/main/res/raw/poste.crt
 
     - name: Build with Gradle
       run: ./gradlew assembleDevelopment
