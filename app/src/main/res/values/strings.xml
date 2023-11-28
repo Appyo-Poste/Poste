@@ -25,6 +25,10 @@
     <string name="edit_folder_success">Edit folder successful!</string>
     <!--=====[ EditFolder | End ]=====-->
 
+    <!--=====[ FolderUser | Start ]=====-->
+    <string name="unshared_folder_user">Unshared folder with </string>
+    <!--=====[ FolderUser | End ]=====-->
+
     <!--=====[ EditPost | Start ]=====-->
     <string name="edit_post_success">Edit post successful!</string>
     <!--=====[ EditPost | End ]=====-->
@@ -51,6 +55,7 @@
     <string name="enter_email">   Enter your email</string>
     <string name="enter_password">   Enter your password</string>
     <string name="login_button">Login</string>
+    <string name="remember_me">Remember me</string>
     <!--=====[ Login | End ]=====-->
 
     <!--=====[ FolderView | Start ]=====-->
@@ -75,17 +80,17 @@
     <!--=====[ ValidationUtils | Start ]=====-->
     <string name="enter_first_name">Please enter your first name!</string>
     <string name="enter_last_name">Please enter your last name!</string>
-    <string name="first_name_length">First name must be at most 32 characters!</string>
-    <string name="last_name_length">Last name must be at most 32 characters!</string>
+    <string name="error_first_name_length">First name must be at most 32 characters!</string>
+    <string name="error_last_name_length">Last name must be at most 32 characters!</string>
     <string name="invalid_email">Please enter a valid email!</string>
     <string name="password_mismatch">Passwords do not match!</string>
-    <string name="password_short">Password must be at least 8 characters!</string>
-    <string name="password_long">Password must be at most 32 characters!</string>
+    <string name="error_password_short">Password must be at least 8 characters!</string>
+    <string name="error_password_long">Password must be at most 32 characters!</string>
     <!--=====[ ValidationUtils | End ]=====-->
 
     <!--=====[ NewPost | Start ]=====-->
     <string name="folder_selection">-- Select a Folder --</string>
-    <string name="pick_a_folder">Select a folder to save post!</string>
+    <string name="error_no_folder_selected">Select a folder to save post!</string>
     <string name="post_creation_success">Created post!</string>
     <string name="post_creation_failed">Failed to create post.</string>
     <!--=====[ NewPost | End ]=====-->
@@ -117,6 +122,7 @@
     <string name="search">Search</string>
     <string name="go">Go!</string>
     <string name="post">Post</string>
+    <string name="todo">TODO</string>
     <!--=====[ Words | End ]=====-->
 
     <!--=====[ Misc | Start ]=====-->
@@ -131,6 +137,9 @@
     <string name="text_view">folderNameText</string>
     <string name="click_here">Click here!</string>
     <string name="folder_view_text">TextView</string>
+    <string name="edit_access">Edit Access</string>
+    <string name="user_name">User Name</string>
+    <string name="communication_error">Unable to communicate with server</string>
     <!--=====[ Misc | End ]=====-->
 
     <string-array name="spinner_values">
@@ -185,7 +194,7 @@
     <!--=====[ options | End ]=====-->
 
     <!--=====[ requester | Start ]=====-->
-    <string name="email_address">Email Address</string>
+    <string name="email_address_hint">Email Address</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <!--=====[ requester | End ]=====-->

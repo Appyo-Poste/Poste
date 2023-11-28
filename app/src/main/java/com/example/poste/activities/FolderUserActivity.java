@@ -72,18 +72,24 @@ public class FolderUserActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()){
-                            Toast.makeText(FolderUserActivity.this,"Unshared folder with " + email, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(FolderUserActivity.this,
+                                    getString(R.string.unshared_folder_user) + email,
+                                    Toast.LENGTH_SHORT).show();
                             sharedUsers.remove(position);
                             recyclerView.getAdapter().notifyItemRemoved(position);
                             recyclerView.getAdapter().notifyItemRangeChanged(position, sharedUsers.size());
                         } else {
-                            Toast.makeText(FolderUserActivity.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(FolderUserActivity.this,
+                                    getString(R.string.error_message) + response.message(),
+                                    Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(FolderUserActivity.this, "Unable to communicate with server", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(FolderUserActivity.this,
+                                getString(R.string.communication_error),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
 

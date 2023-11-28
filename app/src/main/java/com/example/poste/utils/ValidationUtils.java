@@ -30,12 +30,12 @@ public class ValidationUtils {
             return false;
         } else if (firstName.length() > 32) {
             Toast.makeText(context,
-                    R.string.first_name_length,
+                    R.string.error_first_name_length,
                     Toast.LENGTH_SHORT).show();
             return true;
         } else if (lastName.length() > 32) {
             Toast.makeText(context,
-                    R.string.last_name_length,
+                    R.string.error_last_name_length,
                     Toast.LENGTH_SHORT).show();
             return true;
         }
@@ -91,12 +91,12 @@ public class ValidationUtils {
     public static boolean validatePassword(Context context, String password) {
         if (password.length() < 8) {
             Toast.makeText(context,
-                    R.string.password_short,
+                    R.string.error_password_short,
                     Toast.LENGTH_SHORT).show();
             return false;
         } else if (password.length() > 32) {
             Toast.makeText(context,
-                    R.string.password_long,
+                    R.string.error_password_long,
                     Toast.LENGTH_SHORT).show();
             return false;
         }
