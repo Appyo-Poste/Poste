@@ -17,7 +17,7 @@
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="125px"
-        android:background="#430000"
+        android:background="@color/topbar_color"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView

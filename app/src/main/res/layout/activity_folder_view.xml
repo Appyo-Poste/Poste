@@ -17,7 +17,7 @@
             android:id="@+id/linearLayout4"
             android:layout_width="413dp"
             android:layout_height="63dp"
-            android:background="#430000"
+            android:background="@color/topbar_color"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
