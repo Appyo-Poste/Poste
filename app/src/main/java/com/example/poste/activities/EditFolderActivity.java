@@ -87,7 +87,7 @@ public class EditFolderActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         Toast.makeText(EditFolderActivity.this,
-                                R.string.edit_folder_failed,
+                                getString(R.string.edit_failure),
                                 Toast.LENGTH_SHORT).show();
                         finish();
                     }

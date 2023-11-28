@@ -121,7 +121,7 @@ public class EditPostActivity extends AppCompatActivity {
                                         Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(EditPostActivity.this,
-                                        getString(R.string.edit_post_failed),
+                                        getString(R.string.edit_failure),
                                         Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -131,7 +131,7 @@ public class EditPostActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         Toast.makeText(EditPostActivity.this,
-                                getString(R.string.edit_post_failed),
+                                getString(R.string.edit_failure),
                                 Toast.LENGTH_SHORT).show();
                         finish();
                     }

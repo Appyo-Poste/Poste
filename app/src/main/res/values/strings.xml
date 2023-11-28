@@ -23,12 +23,10 @@
 
     <!--=====[ EditFolder | Start ]=====-->
     <string name="edit_folder_success">Edit folder successful!</string>
-    <string name="edit_folder_failed">Edit failed, unknown error.</string>
     <!--=====[ EditFolder | End ]=====-->
 
     <!--=====[ EditPost | Start ]=====-->
     <string name="edit_post_success">Edit post successful!</string>
-    <string name="edit_post_failed">Edit failed, unknown error.</string>
     <!--=====[ EditPost | End ]=====-->
 
     <!--=====[ Register | Start ]=====-->
@@ -111,6 +109,14 @@
     <string name="title">Title</string>
     <string name="tags">Tags</string>
     <string name="description">Description</string>
+    <string name="login">Login</string>
+    <string name="options">Options</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
+    <string name="back">Back</string>
+    <string name="search">Search</string>
+    <string name="go">Go!</string>
+    <string name="post">Post</string>
     <!--=====[ Words | End ]=====-->
 
     <!--=====[ Misc | Start ]=====-->
@@ -122,6 +128,9 @@
     <string name="title_activity_twitter_token">TwitterToken</string>
     <string name="edit_post_icon">edit post icon</string>
     <string name="post_deleted">Post deleted</string>
+    <string name="text_view">folderNameText</string>
+    <string name="click_here">Click here!</string>
+    <string name="folder_view_text">TextView</string>
     <!--=====[ Misc | End ]=====-->
 
     <string-array name="spinner_values">
@@ -155,7 +164,47 @@
     <!--=====[ edit_post | End ]=====-->
 
     <!--=====[ folder_view | Start ]=====-->
-
+    <string name="folder_name_text">folderNameText</string>
+    <string name="empty_folder">Folder Empty</string>
     <!--=====[ folder_view | End ]=====-->
+
+    <!--=====[ intro | Start ]=====-->
+    <string name="create_account">Create Account</string>
+    <!--=====[ intro | End ]=====-->
+
+    <!--=====[ login | Start ]=====-->
+    <string name="no_account">Don\'t have an account?</string>
+    <!--=====[ login | End ]=====-->
+
+    <!--=====[ new_post | Start ]=====-->
+    <string name="new_post">Create New Post</string>
+    <!--=====[ new_post | End ]=====-->
+
+    <!--=====[ options | Start ]=====-->
+    <string name="account_settings">Account Settings</string>
+    <string name="signout">Sign-out</string>
+    <!--=====[ options | End ]=====-->
+
+    <!--=====[ requester | Start ]=====-->
+    <string name="email_address">Email Address</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <!--=====[ requester | End ]=====-->
+
+    <!--=====[ search | Start ]=====-->
+    <string name="search_title">Search Activity Title</string>
+    <string name="search_by">Search by</string>
+    <string name="search_empty">Search result empty!</string>
+    <!--=====[ search | End ]=====-->
+
+    <!--=====[ shared_folder | Start ]=====-->
+    <string name="email_field">Email:</string>
+    <string name="Shared_Permissions">Share Permissions</string>
+    <!--=====[ shared_folder | End ]=====-->
+
+    <!--=====[ dialog_create_post | Start ]=====-->
+    <string name="item_name">Item Name</string>
+    <string name="item_link">Item Link</string>
+    <!--=====[ dialog_create_post | End ]=====-->
     <!--=====[ layouts | End ]=====-->
 </resources>
