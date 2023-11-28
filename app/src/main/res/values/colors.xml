@@ -13,6 +13,8 @@
 
     <color name="topbar_color">#430000</color>
 
+    <color name="poste_icon_background">#F5F1F1</color>
+
 <!--    Sponsor selected color palette  -->
     <color name="color1">#6FECE4</color>
     <color name="color2">#70DAD3</color>
