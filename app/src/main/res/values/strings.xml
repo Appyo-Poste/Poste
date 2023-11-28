@@ -63,7 +63,6 @@
     <!--=====[ Misc | End ]=====-->
 
     <string-array name="spinner_values">
-        <item>No Access</item>
         <item>View Access</item>
         <item>Edit Access</item>
         <item>Full Access</item>
