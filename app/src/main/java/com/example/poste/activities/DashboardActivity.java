@@ -265,7 +265,7 @@ public class DashboardActivity extends PActivity {
         // Create the AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView);
-        builder.setTitle(getString(R.string.new_folder));
+        builder.setTitle(getString(R.string.create_folder));
 
         // Set the positive button (Create button) click listener
         builder.setPositiveButton(getString(R.string.create), (dialog, which) -> {

@@ -28,7 +28,7 @@
         <EditText
             android:id="@+id/editTextEmail"
             android:layout_width="match_parent"
-            android:hint="@string/email_address"
+            android:hint="@string/email_address_hint"
             android:layout_height="46dp"
             android:background="@drawable/edittext_rounded_gray"
             android:inputType="textEmailAddress"
