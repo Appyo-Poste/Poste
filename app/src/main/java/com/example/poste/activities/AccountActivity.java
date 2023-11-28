@@ -118,7 +118,7 @@ public class AccountActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Toast.makeText(AccountActivity.this, getString(R.string.edit_failure), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AccountActivity.this, getString(R.string.password_change_failure), Toast.LENGTH_SHORT).show();
                 }
             });
 
