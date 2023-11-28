@@ -11,13 +11,13 @@
         android:id="@+id/editTextItemName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Item Name" />
+        android:hint="@string/item_name" />
 
     <EditText
         android:id="@+id/editTextItemLink"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Item Link" />
+        android:hint="@string/item_link" />
 
     <Spinner
         android:id="@+id/spinnerNewPostFolder"

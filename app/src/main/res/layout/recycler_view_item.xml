@@ -36,7 +36,7 @@
             android:layout_marginStart="10dp"
             android:textAlignment="center"
             android:textSize="25sp"
-            android:text="TextView"
+            android:text="@string/folder_view_text"
             android:textColor="#3B3B3B" />
     </LinearLayout>
 

@@ -131,7 +131,7 @@ public class FolderViewActivity extends AppCompatActivity {
             public void onError(String errorMessage) {
                 Toast.makeText(
                         FolderViewActivity.this,
-                        "Unable to retrieve folders and posts, please try again.",
+                        getString(R.string.folder_retrieve_error),
                         Toast.LENGTH_SHORT
                 ).show();
             }

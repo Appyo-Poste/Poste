@@ -76,19 +76,25 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if(response.isSuccessful()) {
-                            Toast.makeText(RegisterActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this,
+                                    getString(R.string.register_success),
+                                    Toast.LENGTH_SHORT).show();
                             // open dashboard activity
                             Intent dashboardIntent = new Intent(RegisterActivity.this, IntroActivity.class);
                             startActivity(dashboardIntent);
                             finish();
                         } else {
-                            Toast.makeText(RegisterActivity.this, "Registration failed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this,
+                                    getString(R.string.register_failed),
+                                    Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(RegisterActivity.this, "Registration failed.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this,
+                                getString(R.string.register_failed),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
             }

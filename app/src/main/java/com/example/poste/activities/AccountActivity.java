@@ -76,7 +76,7 @@ public class AccountActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.isSuccessful()){
-                        Toast.makeText(AccountActivity.this, "Password changed successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AccountActivity.this, getString(R.string.password_change_success), Toast.LENGTH_SHORT).show();
                         String jsonResponse;
                         try {
                             jsonResponse = response.body().string();
@@ -111,14 +111,14 @@ public class AccountActivity extends AppCompatActivity {
                         if (errorMessage != null) {
                             Toast.makeText(AccountActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(AccountActivity.this, "Password change failed, unknown error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AccountActivity.this, getString(R.string.password_change_failure), Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Toast.makeText(AccountActivity.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AccountActivity.this, getString(R.string.edit_failure), Toast.LENGTH_SHORT).show();
                 }
             });
 

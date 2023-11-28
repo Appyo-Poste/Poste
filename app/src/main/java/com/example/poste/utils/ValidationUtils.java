@@ -3,6 +3,8 @@ package com.example.poste.utils;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.example.poste.R;
+
 import org.apache.commons.validator.routines.EmailValidator;
 
 public class ValidationUtils {
@@ -17,16 +19,24 @@ public class ValidationUtils {
      */
     public static boolean validateNames(Context context, String firstName, String lastName) {
         if (firstName.isEmpty()) {
-            Toast.makeText(context, "Please enter your first name!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,
+                    R.string.enter_first_name,
+                    Toast.LENGTH_SHORT).show();
             return false;
         } else if (lastName.isEmpty()) {
-            Toast.makeText(context, "Please enter your last name!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,
+                    R.string.enter_last_name,
+                    Toast.LENGTH_SHORT).show();
             return false;
         } else if (firstName.length() > 32) {
-            Toast.makeText(context, "First name must be at most 32 characters!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,
+                    R.string.first_name_length,
+                    Toast.LENGTH_SHORT).show();
             return true;
         } else if (lastName.length() > 32) {
-            Toast.makeText(context, "Last name must be at most 32 characters!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,
+                    R.string.last_name_length,
+                    Toast.LENGTH_SHORT).show();
             return true;
         }
         return true;
@@ -42,7 +52,9 @@ public class ValidationUtils {
         if (EmailValidator.getInstance().isValid(email)){
             return true;
         } else {
-            Toast.makeText(context, "Please enter a valid email!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,
+                    R.string.invalid_email,
+                    Toast.LENGTH_SHORT).show();
             return false;
         }
     }
@@ -57,7 +69,9 @@ public class ValidationUtils {
     public static boolean validatePassword(Context context, String password, String confirmPassword) {
         if (validatePassword(context, password)){
             if (!password.equals(confirmPassword)) {
-                Toast.makeText(context, "Passwords do not match!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,
+                        R.string.password_mismatch,
+                        Toast.LENGTH_SHORT).show();
                 return false;
             } else {
                 return true;
@@ -76,10 +90,14 @@ public class ValidationUtils {
      */
     public static boolean validatePassword(Context context, String password) {
         if (password.length() < 8) {
-            Toast.makeText(context, "Password must be at least 8 characters!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,
+                    R.string.password_short,
+                    Toast.LENGTH_SHORT).show();
             return false;
         } else if (password.length() > 32) {
-            Toast.makeText(context, "Password must be at most 32 characters!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,
+                    R.string.password_long,
+                    Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
