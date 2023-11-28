@@ -342,6 +342,12 @@ public class DashboardActivity extends PActivity {
                 intent.putExtra("folderName", folder.getTitle());
                 startActivity(intent);
                 break;
+            case R.id.ctx_menu_view_shares:
+                intent = new Intent(DashboardActivity.this, FolderUserActivity.class);
+                intent.putExtra("folderId", folder.getId());
+                intent.putExtra("folderName", folder.getTitle());
+                startActivity(intent);
+                break;
             case R.id.ctx_menu_delete_folder:
                 // Delete the folder
                 Call<ResponseBody> call = apiService.deleteFolder(

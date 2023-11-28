@@ -67,7 +67,6 @@ public class SharedFolderActivity extends AppCompatActivity {
                 String email = emailView.getText().toString();
                 FolderAccess selectedAccess = null;
                 switch (permissionsSelectedAccessValue) {
-                    case "No Access": selectedAccess = FolderAccess.NONE; break;
                     case "View Access": selectedAccess = FolderAccess.VIEWER; break;
                     case "Edit Access": selectedAccess = FolderAccess.EDITOR; break;
                     case "Full Access": selectedAccess = FolderAccess.FULL_ACCESS; break;

@@ -1,5 +1,6 @@
 package com.example.poste.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -35,9 +36,17 @@ public class IntroActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         User user = User.getUser();
-        if (!user.getToken().equals("")) {
+        if (user.getToken().isEmpty()) {
+            boolean rememberMe = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE).getBoolean("rememberMe", false);
+            if (rememberMe) {
+                String prefToken = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE).getString("token", "");
+                if (!prefToken.isEmpty()) {
+                    user.setToken(prefToken);
+                }
+            }
+        }
+        if (!user.getToken().isEmpty()) {
             Intent intent = new Intent(IntroActivity.this, DashboardActivity.class);
             startActivity(intent);
             finish();
@@ -60,7 +69,6 @@ public class IntroActivity extends AppCompatActivity {
         buttonRegister.setOnClickListener(view -> {
             Intent intent = new Intent(IntroActivity.this, RegisterActivity.class);
             startActivity(intent);
-            finish();
         });
 
         // Click listener for the login button -- takes user to login page (LoginActivity)
