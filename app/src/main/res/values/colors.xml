@@ -15,6 +15,8 @@
 
     <color name="poste_icon_background">#F5F1F1</color>
 
+    <color name="red_button_color">#B0BC2C2C</color>
+
 <!--    Sponsor selected color palette  -->
     <color name="color1">#6FECE4</color>
     <color name="color2">#70DAD3</color>
