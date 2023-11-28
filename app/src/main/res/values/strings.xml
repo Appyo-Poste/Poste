@@ -75,17 +75,17 @@
     <!--=====[ ValidationUtils | Start ]=====-->
     <string name="enter_first_name">Please enter your first name!</string>
     <string name="enter_last_name">Please enter your last name!</string>
-    <string name="first_name_length">First name must be at most 32 characters!</string>
-    <string name="last_name_length">Last name must be at most 32 characters!</string>
+    <string name="error_first_name_length">First name must be at most 32 characters!</string>
+    <string name="error_last_name_length">Last name must be at most 32 characters!</string>
     <string name="invalid_email">Please enter a valid email!</string>
     <string name="password_mismatch">Passwords do not match!</string>
-    <string name="password_short">Password must be at least 8 characters!</string>
-    <string name="password_long">Password must be at most 32 characters!</string>
+    <string name="error_password_short">Password must be at least 8 characters!</string>
+    <string name="error_password_long">Password must be at most 32 characters!</string>
     <!--=====[ ValidationUtils | End ]=====-->
 
     <!--=====[ NewPost | Start ]=====-->
     <string name="folder_selection">-- Select a Folder --</string>
-    <string name="pick_a_folder">Select a folder to save post!</string>
+    <string name="error_no_folder_selected">Select a folder to save post!</string>
     <string name="post_creation_success">Created post!</string>
     <string name="post_creation_failed">Failed to create post.</string>
     <!--=====[ NewPost | End ]=====-->
@@ -98,7 +98,7 @@
     <string name="folder">Folder</string>
     <string name="folder_name">Folder Name</string>
     <string name="name">Name</string>
-    <string name="new_folder">Create Folder</string>
+    <string name="create_folder">Create Folder</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="save">Save</string>
@@ -186,7 +186,7 @@
     <!--=====[ options | End ]=====-->
 
     <!--=====[ requester | Start ]=====-->
-    <string name="email_address">Email Address</string>
+    <string name="email_address_hint">Email Address</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <!--=====[ requester | End ]=====-->

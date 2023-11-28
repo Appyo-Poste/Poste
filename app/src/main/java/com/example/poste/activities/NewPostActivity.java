@@ -135,7 +135,7 @@ public class NewPostActivity extends AppCompatActivity {
             if (folder_id.equals("0")) {
                 Log.d("NewPostActivity", "Default folder (0) selected");
                 Toast.makeText(this,
-                        getString(R.string.pick_a_folder),
+                        getString(R.string.error_no_folder_selected),
                         Toast.LENGTH_SHORT).show();
             } else {
                 Log.d("NewPostActivity", "Folder id: " + folder_id);
