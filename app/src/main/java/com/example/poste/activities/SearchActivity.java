@@ -147,7 +147,13 @@ public class SearchActivity extends AppCompatActivity {
                             searchResultList.add(p);
                         }
                         break;
-                    //TODO: Add search for tags. Waiting for implementation
+                    case TAG:
+                        if (p.getTags().contains(queryString)) {
+                            searchResultList.add(p);
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
         }
