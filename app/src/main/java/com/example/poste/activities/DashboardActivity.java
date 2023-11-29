@@ -210,7 +210,6 @@ public class DashboardActivity extends PActivity {
         // Setup refresh
         if (swipeRefreshLayout == null) {
             swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-            //swipeRefreshLayout.setOnRefreshListener(this::reloadDashboard);
             swipeRefreshLayout.setOnRefreshListener(() -> {
                 updateData();
                 swipeRefreshLayout.setRefreshing(false);
