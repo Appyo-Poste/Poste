@@ -29,7 +29,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:gravity="center"
-            android:text="Options"
+            android:text="@string/options"
             android:textSize="38sp"
             android:textStyle="bold" />
 
@@ -46,7 +46,7 @@
                 android:layout_height="48dp"
                 android:layout_gravity="center"
                 style="@style/RedButton"
-                android:text="Account Settings" />
+                android:text="@string/account_settings" />
 
             <Button
                 android:id="@+id/Signoutbtn"
@@ -54,7 +54,7 @@
                 android:layout_height="48dp"
                 android:layout_gravity="center"
                 style="@style/RedButton"
-                android:text="Signout" />
+                android:text="@string/signout" />
 
         </LinearLayout>
 

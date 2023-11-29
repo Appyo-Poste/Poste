@@ -28,7 +28,7 @@
         <EditText
             android:id="@+id/editTextEmail"
             android:layout_width="match_parent"
-            android:hint="Email Address"
+            android:hint="@string/email_address_hint"
             android:layout_height="46dp"
             android:background="@drawable/edittext_rounded_gray"
             android:inputType="textEmailAddress"
@@ -42,7 +42,7 @@
             android:layout_height="46dp"
             android:background="@drawable/edittext_rounded_gray"
             android:padding="10dp"
-            android:hint="First Name"
+            android:hint="@string/first_name"
             android:inputType="textPersonName"
             android:layout_marginBottom="16dp"
             android:autofillHints="AUTOFILL_HINT_PERSON_NAME_GIVEN"/>
@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="46dp"
             android:background="@drawable/edittext_rounded_gray"
-            android:hint="Last Name"
+            android:hint="@string/last_name"
             android:inputType="textPersonName"
             android:padding="10dp"
             android:layout_marginBottom="16dp"
@@ -63,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="46dp"
             android:background="@drawable/edittext_rounded_gray"
-            android:hint="Password"
+            android:hint="@string/password"
             android:inputType="textPassword"
             android:padding="10dp"
             android:layout_marginBottom="16dp"
@@ -74,7 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="46dp"
             android:background="@drawable/edittext_rounded_gray"
-            android:hint="Confirm Password"
+            android:hint="@string/new_password_confirm_hint"
             android:inputType="textPassword"
             android:padding="10dp"
             android:layout_marginBottom="16dp"
@@ -84,14 +84,14 @@
             android:id="@+id/buttonRegister"
             android:layout_width="match_parent"
             android:layout_height="46dp"
-            android:text="Register"
+            android:text="@string/register"
             style="@style/RedButton"/>
 
         <Button
             android:id="@+id/buttonBack"
             android:layout_width="match_parent"
             android:layout_height="46dp"
-            android:text="Back"
+            android:text="@string/back"
             style="@style/GrayButton"/>
 
     </LinearLayout>

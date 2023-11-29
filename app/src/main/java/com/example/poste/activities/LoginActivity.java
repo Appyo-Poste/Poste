@@ -111,7 +111,9 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.isSuccessful()){
-                        Toast.makeText(LoginActivity.this,"Login successful!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this,
+                                getString(R.string.login_successful),
+                                Toast.LENGTH_SHORT).show();
                         try {
                             String jsonResponse = response.body().string();
                             JSONObject jsonObject = new JSONObject(jsonResponse);
@@ -145,7 +147,9 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
                     }else {
-                        Toast.makeText(LoginActivity.this, "Incorrect credentials.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this,
+                                getString(R.string.login_invalid_credentials),
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -156,7 +160,9 @@ public class LoginActivity extends AppCompatActivity {
                  */
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Toast.makeText(LoginActivity.this, "Login failed due to error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this,
+                            getString(R.string.login_failed),
+                            Toast.LENGTH_SHORT).show();
                 }
             });
         });

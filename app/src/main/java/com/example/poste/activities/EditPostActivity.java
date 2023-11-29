@@ -109,14 +109,20 @@ public class EditPostActivity extends AppCompatActivity {
                             currentPost.setDescription(description);
                             currentPost.setUrl(url);
                             currentPost.setTags(Post.parseTags(tagsString));
-                            Toast.makeText(EditPostActivity.this,"Edit post successful!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditPostActivity.this,
+                                    getString(R.string.edit_post_success),
+                                    Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
                             String errorMessage = utils.parseError(response);
                             if (errorMessage != null) {
-                                Toast.makeText(EditPostActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(EditPostActivity.this,
+                                        getString(R.string.error_message) + errorMessage,
+                                        Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(EditPostActivity.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(EditPostActivity.this,
+                                        getString(R.string.edit_failure),
+                                        Toast.LENGTH_SHORT).show();
                             }
                         }
                         finish();
@@ -124,7 +130,9 @@ public class EditPostActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(EditPostActivity.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditPostActivity.this,
+                                getString(R.string.edit_failure),
+                                Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 });

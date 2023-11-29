@@ -75,10 +75,14 @@ public class SearchActivity extends AppCompatActivity {
 
             if (searchField.equals(searchFields.get(0))) {
                 Log.d("SearchActivity", "Default selected");
-                Toast.makeText(this, "Select a field to search post!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,
+                        getString(R.string.select_search_field),
+                        Toast.LENGTH_SHORT).show();
             } else {
                 if (searchBy.isBlank()){
-                    Toast.makeText(this, "Search field cannot be empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,
+                            getString(R.string.search_field_empty),
+                            Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d("SearchActivity", Integer.toString(chooseSearchField.getSelectedItemPosition()));
                     Log.d("SearchActivity", searchBy);
