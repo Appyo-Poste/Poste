@@ -4,6 +4,7 @@ import static com.example.poste.utils.ValidationUtils.validateEmail;
 import static com.example.poste.utils.ValidationUtils.validatePassword;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
@@ -11,6 +12,7 @@ import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +40,8 @@ public class LoginActivity extends AppCompatActivity {
     public Button buttonLoginSubmit;
     private EditText usernameField, passwordField;
 
+    private CheckBox rememberMeCheckbox;
+
     /**
      * function that runs on creation of the activity
      * @param savedInstanceState A bundle containing the saved instance state
@@ -55,6 +59,16 @@ public class LoginActivity extends AppCompatActivity {
         buttonLoginSubmit = findViewById(R.id.loginLoginbtn);
         Boolean isReturn = getIntent().getBooleanExtra("return", false); // if true, dont start dashboard activity, just finish this one
         Log.d("debug", "isReturn: " + isReturn);
+
+        // configure 'remember me' checkbox
+        rememberMeCheckbox = findViewById(R.id.rememberMeCheckBox);
+        rememberMeCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("rememberMe", isChecked);
+            editor.apply();
+            Log.d("debug", "rememberMe: " + isChecked);
+        });
 
         // adds a hyperlink to redirect user to the login page
         SpannableString spannable = new SpannableString(hyperlinkTextView.getText());
@@ -97,13 +111,24 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.isSuccessful()){
-                        Toast.makeText(LoginActivity.this,"Login successful!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this,
+                                getString(R.string.login_successful),
+                                Toast.LENGTH_SHORT).show();
                         try {
                             String jsonResponse = response.body().string();
                             JSONObject jsonObject = new JSONObject(jsonResponse);
                             String token = jsonObject.getJSONObject("result").getString("token");
                             Log.d("debug","Token: " + token);
                             User.getUser().setToken(token);
+                            SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE);
+                            if (rememberMeCheckbox.isChecked()){
+                                sharedPreferences.edit().putString("token", token).apply();
+                            } else {
+                                sharedPreferences.edit().putString("token", "").apply();
+                            }
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("token", token);
+                            editor.apply();
                             User.getUser().setEmail(email);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
@@ -122,7 +147,9 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
                     }else {
-                        Toast.makeText(LoginActivity.this, "Incorrect credentials.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this,
+                                getString(R.string.login_invalid_credentials),
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -133,7 +160,9 @@ public class LoginActivity extends AppCompatActivity {
                  */
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Toast.makeText(LoginActivity.this, "Login failed due to error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this,
+                            getString(R.string.login_failed),
+                            Toast.LENGTH_SHORT).show();
                 }
             });
         });

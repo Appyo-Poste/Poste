@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -15,6 +13,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -149,7 +148,7 @@ public class DashboardActivity extends PActivity {
             public void onError(String errorMessage) {
                 Toast.makeText(
                         DashboardActivity.this,
-                        "Unable to retrieve folders and posts, please try again.",
+                        getString(R.string.retrieve_error),
                         Toast.LENGTH_SHORT
                 ).show();
             }
@@ -207,11 +206,13 @@ public class DashboardActivity extends PActivity {
      * Configures the window
      */
     private void configureWindow() {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getSupportActionBar().hide();
         setContentView(R.layout.activity_dashboard);
+
+        // Configure window settings
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
 
         // Setup refresh
         if (swipeRefreshLayout == null) {
@@ -275,10 +276,10 @@ public class DashboardActivity extends PActivity {
         // Create the AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView);
-        builder.setTitle("Create Folder");
+        builder.setTitle(getString(R.string.new_folder));
 
         // Set the positive button (Create button) click listener
-        builder.setPositiveButton("Create", (dialog, which) -> {
+        builder.setPositiveButton(getString(R.string.create), (dialog, which) -> {
 
 
             // Get the item name and link from the EditText fields
@@ -296,14 +297,14 @@ public class DashboardActivity extends PActivity {
                         // Display success message, then restart the activity
                         Toast.makeText(
                                 DashboardActivity.this,
-                                "Folder created!",
+                                getString(R.string.folder_creation_success),
                                 Toast.LENGTH_LONG
                         ).show();
                         reloadDashboard();
                     } else {
                         Toast.makeText(
                                 DashboardActivity.this,
-                                "Folder creation failed.",
+                                getString(R.string.folder_creation_failed),
                                 Toast.LENGTH_LONG
                         ).show();
                     }
@@ -313,7 +314,7 @@ public class DashboardActivity extends PActivity {
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     Toast.makeText(
                             DashboardActivity.this,
-                            "Folder creation failed.",
+                            getString(R.string.folder_creation_failed),
                             Toast.LENGTH_LONG
                     ).show();
                 }
@@ -322,7 +323,7 @@ public class DashboardActivity extends PActivity {
         });
 
         // Set the negative button (Cancel button) click listener
-        builder.setNegativeButton("Cancel", (dialog, which) -> {
+        builder.setNegativeButton(getString(R.string.cancel), (dialog, which) -> {
             // Dismiss the dialog (do nothing)
             dialog.dismiss();
         });
@@ -351,6 +352,12 @@ public class DashboardActivity extends PActivity {
                 intent.putExtra("folderName", folder.getTitle());
                 startActivity(intent);
                 break;
+            case R.id.ctx_menu_view_shares:
+                intent = new Intent(DashboardActivity.this, FolderUserActivity.class);
+                intent.putExtra("folderId", folder.getId());
+                intent.putExtra("folderName", folder.getTitle());
+                startActivity(intent);
+                break;
             case R.id.ctx_menu_delete_folder:
                 // Delete the folder
                 Call<ResponseBody> call = apiService.deleteFolder(
@@ -361,20 +368,22 @@ public class DashboardActivity extends PActivity {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
-                            Toast.makeText(DashboardActivity.this, "folder deleted successful.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(DashboardActivity.this,
+                                    getString(R.string.folder_delete_success),
+                                    Toast.LENGTH_LONG).show();
                             reloadDashboard();
                         } else {
                             String error = utils.parseError(response);
                             if (error != null) {
                                 Toast.makeText(
                                         DashboardActivity.this,
-                                        "Folder deletion failed: " + error,
+                                        getString(R.string.folder_delete_failed_message) + error,
                                         Toast.LENGTH_LONG
                                 ).show();
                             } else {
                                 Toast.makeText(
                                         DashboardActivity.this,
-                                        "Folder deletion failed.",
+                                        getString(R.string.folder_delete_failed),
                                         Toast.LENGTH_LONG
                                 ).show();
                             }
@@ -385,7 +394,7 @@ public class DashboardActivity extends PActivity {
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         Toast.makeText(
                                 DashboardActivity.this,
-                                "Folder deletion failed.",
+                                getString(R.string.folder_delete_failed),
                                 Toast.LENGTH_LONG
                         ).show();
                     }

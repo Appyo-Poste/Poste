@@ -2,8 +2,6 @@ package com.example.poste.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.ActionBar;
 
 import com.example.poste.R;
 import com.example.poste.models.FolderAccess;
@@ -38,11 +37,11 @@ public class SharedFolderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Configure window settings for fullscreen mode
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getSupportActionBar().hide();
+        // Configure window settings
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
 
         // Set the activity layout
         setContentView(R.layout.activity_shared_folder);
@@ -68,7 +67,6 @@ public class SharedFolderActivity extends AppCompatActivity {
                 String email = emailView.getText().toString();
                 FolderAccess selectedAccess = null;
                 switch (permissionsSelectedAccessValue) {
-                    case "No Access": selectedAccess = FolderAccess.NONE; break;
                     case "View Access": selectedAccess = FolderAccess.VIEWER; break;
                     case "Edit Access": selectedAccess = FolderAccess.EDITOR; break;
                     case "Full Access": selectedAccess = FolderAccess.FULL_ACCESS; break;
@@ -84,15 +82,21 @@ public class SharedFolderActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()){
-                            Toast.makeText(SharedFolderActivity.this,"Share folder successful!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SharedFolderActivity.this,
+                                    getString(R.string.share_folder_success),
+                                    Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(SharedFolderActivity.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SharedFolderActivity.this,
+                                    getString(R.string.error_message) + response.message(),
+                                    Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(SharedFolderActivity.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SharedFolderActivity.this,
+                                getString(R.string.Edit_shared_failed),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
 

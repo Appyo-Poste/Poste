@@ -5,14 +5,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.ActionBar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -132,7 +131,7 @@ public class FolderViewActivity extends AppCompatActivity {
             public void onError(String errorMessage) {
                 Toast.makeText(
                         FolderViewActivity.this,
-                        "Unable to retrieve folders and posts, please try again.",
+                        getString(R.string.folder_retrieve_error),
                         Toast.LENGTH_SHORT
                 ).show();
             }
@@ -140,11 +139,11 @@ public class FolderViewActivity extends AppCompatActivity {
     }
 
     private void configureWindow() {
-        // Configure window settings for fullscreen mode
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getSupportActionBar().hide();
+        // Configure window settings
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
 
         // Set the activity layout
         setContentView(R.layout.activity_folder_view);

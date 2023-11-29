@@ -3,13 +3,12 @@ package com.example.poste.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.ActionBar;
 
 import com.example.poste.R;
 import com.example.poste.http.EditFolderRequest;
@@ -38,11 +37,11 @@ public class EditFolderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Configure window settings for fullscreen mode
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN); //show the activity in full screen
-        getSupportActionBar().hide();
+        // Configure window settings
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
 
         // Set the activity layout
         setContentView(R.layout.activity_edit_folder);
@@ -73,16 +72,22 @@ public class EditFolderActivity extends AppCompatActivity {
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()){
                             currentFolder.setTitle(title);
-                            Toast.makeText(EditFolderActivity.this,"Edit folder successful!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditFolderActivity.this,
+                                    getString(R.string.edit_folder_success),
+                                    Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(EditFolderActivity.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditFolderActivity.this,
+                                    getString(R.string.error_message) + response.message(),
+                                    Toast.LENGTH_SHORT).show();
                         }
                         finish();
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(EditFolderActivity.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditFolderActivity.this,
+                                getString(R.string.edit_failure),
+                                Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 });

@@ -9,13 +9,13 @@
         android:layout_width="match_parent"
         android:layout_height="200px"
         android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="125px"
-        android:background="#430000"
+        android:background="@color/topbar_color"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -30,20 +30,19 @@
     <ImageView
         android:id="@+id/imageViewEditPostIcon"
         android:contentDescription="@string/edit_post_icon"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="42dp"
-        android:layout_marginTop="135dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="86dp"
+        android:layout_height="81dp"
+        app:layout_constraintStart_toEndOf="@+id/imageViewLogoP"
+        app:layout_constraintTop_toBottomOf="@+id/view"
         app:srcCompat="@drawable/edit_post_icon" />
 
     <TextView
         android:id="@+id/textViewEditPostTitleLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit Post"
-        android:textSize="35sp"
+        android:text="@string/edit_post_text"
+        android:layout_marginTop="10dp"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/imageViewEditPostIcon"
         app:layout_constraintTop_toTopOf="@+id/imageViewEditPostIcon" />
@@ -52,11 +51,10 @@
         android:id="@+id/textViewEditPostUrl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="19dp"
-        android:text="Link to post:"
+        android:text="@string/link_text"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/imageViewEditPostIcon"
+        app:layout_constraintStart_toStartOf="@+id/editTextPostLink"
         app:layout_constraintTop_toBottomOf="@+id/imageViewEditPostIcon" />
 
     <EditText
@@ -75,11 +73,11 @@
         android:id="@+id/textViewPostTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:text="Title"
+        android:layout_marginTop="10dp"
+        android:text="@string/title"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/imageViewEditPostIcon"
+        app:layout_constraintStart_toStartOf="@+id/textViewEditPostUrl"
         app:layout_constraintTop_toBottomOf="@+id/editTextPostLink" />
 
     <EditText
@@ -111,11 +109,11 @@
         android:id="@+id/textViewPostTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Tags"
+        android:layout_marginTop="10dp"
+        android:text="@string/tags"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/imageViewEditPostIcon"
+        app:layout_constraintStart_toStartOf="@+id/textViewEditPostUrl"
         app:layout_constraintTop_toBottomOf="@+id/editTextPostDescription" />
 
     <EditText
@@ -135,20 +133,20 @@
         android:id="@+id/textViewPostDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Description"
+        android:layout_marginTop="10dp"
+        android:text="@string/description"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/imageViewEditPostIcon"
+        app:layout_constraintStart_toStartOf="@+id/textViewEditPostUrl"
         app:layout_constraintTop_toBottomOf="@+id/editTextPostTitle" />
 
     <Button
         android:id="@+id/buttonSaveChanges"
+        style="@style/RedButton"
         android:layout_width="0dp"
         android:layout_height="46dp"
         android:layout_marginTop="50dp"
-        android:text="Save Post"
-        style="@style/RedButton"
+        android:text="@string/save_post_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -160,20 +158,13 @@
         android:layout_width="0dp"
         android:layout_height="46dp"
         android:layout_marginTop="10dp"
-        android:text="Cancel Post"
+        android:text="@string/cancel_post_text"
         style="@style/GrayButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonSaveChanges"
         app:layout_constraintWidth_percent="0.6" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_end="369dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

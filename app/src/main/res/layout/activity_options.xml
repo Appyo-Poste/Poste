@@ -20,7 +20,7 @@
             android:layout_width="270dp"
             android:layout_height="98dp"
             android:layout_marginTop="4dp"
-            app:srcCompat="@drawable/new_logo" />
+            app:srcCompat="@drawable/new_logo_poste_removebg" />
 
         <TextView
             android:id="@+id/Titletxt"
@@ -29,7 +29,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:gravity="center"
-            android:text="Options"
+            android:text="@string/options"
             android:textSize="38sp"
             android:textStyle="bold" />
 
@@ -46,7 +46,7 @@
                 android:layout_height="48dp"
                 android:layout_gravity="center"
                 style="@style/RedButton"
-                android:text="Account Settings" />
+                android:text="@string/account_settings" />
 
             <Button
                 android:id="@+id/Signoutbtn"
@@ -54,7 +54,7 @@
                 android:layout_height="48dp"
                 android:layout_gravity="center"
                 style="@style/RedButton"
-                android:text="Signout" />
+                android:text="@string/signout" />
 
         </LinearLayout>
 

@@ -5,12 +5,11 @@ import static com.example.poste.utils.ValidationUtils.validatePassword;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.poste.R;
@@ -43,11 +42,11 @@ public class AccountActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Configure window settings for fullscreen mode
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getSupportActionBar().hide();
+        // Configure window settings
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
 
         // Set the activity layout
         setContentView(R.layout.activity_account);
@@ -77,7 +76,7 @@ public class AccountActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.isSuccessful()){
-                        Toast.makeText(AccountActivity.this, "Password changed successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AccountActivity.this, getString(R.string.password_change_success), Toast.LENGTH_SHORT).show();
                         String jsonResponse;
                         try {
                             jsonResponse = response.body().string();
@@ -112,14 +111,14 @@ public class AccountActivity extends AppCompatActivity {
                         if (errorMessage != null) {
                             Toast.makeText(AccountActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(AccountActivity.this, "Password change failed, unknown error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AccountActivity.this, getString(R.string.password_change_failure), Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Toast.makeText(AccountActivity.this, "Edit failed, unknown error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AccountActivity.this, getString(R.string.password_change_failure), Toast.LENGTH_SHORT).show();
                 }
             });
 

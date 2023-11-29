@@ -1,11 +1,11 @@
 package com.example.poste.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.poste.R;
@@ -36,19 +36,27 @@ public class IntroActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         User user = User.getUser();
-        if (!user.getToken().equals("")) {
+        if (user.getToken().isEmpty()) {
+            boolean rememberMe = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE).getBoolean("rememberMe", false);
+            if (rememberMe) {
+                String prefToken = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE).getString("token", "");
+                if (!prefToken.isEmpty()) {
+                    user.setToken(prefToken);
+                }
+            }
+        }
+        if (!user.getToken().isEmpty()) {
             Intent intent = new Intent(IntroActivity.this, DashboardActivity.class);
             startActivity(intent);
             finish();
         }
 
-        // Configure window settings for fullscreen mode
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getSupportActionBar().hide();
+        // Configure window settings
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
 
         // Set the activity layout
         setContentView(R.layout.activity_intro);
@@ -61,7 +69,6 @@ public class IntroActivity extends AppCompatActivity {
         buttonRegister.setOnClickListener(view -> {
             Intent intent = new Intent(IntroActivity.this, RegisterActivity.class);
             startActivity(intent);
-            finish();
         });
 
         // Click listener for the login button -- takes user to login page (LoginActivity)
