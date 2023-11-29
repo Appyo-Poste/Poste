@@ -51,7 +51,13 @@ public class DashboardActivity extends PActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        reloadDashboard();
+        updateData();
+    }
+
+    private void updateData() {
+        // set any titles to invis
+        User.getUser().updateFoldersAndPosts(updateCallback);
+        // set any titles to vis
     }
 
     /**
@@ -194,21 +200,12 @@ public class DashboardActivity extends PActivity {
         // Setup refresh
         if (swipeRefreshLayout == null) {
             swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-            swipeRefreshLayout.setOnRefreshListener(this::reloadDashboard);
+            //swipeRefreshLayout.setOnRefreshListener(this::reloadDashboard);
+            swipeRefreshLayout.setOnRefreshListener(() -> {
+                updateData();
+                swipeRefreshLayout.setRefreshing(false);
+            });
         }
-    }
-
-    /**
-     * Reloads the Dashboard by ending this activity and starting a new one
-     * This is intended to be used by the swipe refresh layout to allow the user to refresh the
-     * dashboard by swiping down
-     */
-    private void reloadDashboard() {
-        Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startActivity(intent);
-        finish();
-        swipeRefreshLayout.setRefreshing(false);
     }
 
     private void showCreateItemDialog() {
@@ -235,7 +232,6 @@ public class DashboardActivity extends PActivity {
                     return false;
             }
         });
-
         // Show the PopupMenu
         popupMenu.show();
     }
@@ -277,7 +273,7 @@ public class DashboardActivity extends PActivity {
                                 getString(R.string.folder_creation_success),
                                 Toast.LENGTH_LONG
                         ).show();
-                        reloadDashboard();
+                        updateData();
                     } else {
                         Toast.makeText(
                                 DashboardActivity.this,
@@ -348,7 +344,7 @@ public class DashboardActivity extends PActivity {
                             Toast.makeText(DashboardActivity.this,
                                     getString(R.string.folder_delete_success),
                                     Toast.LENGTH_LONG).show();
-                            reloadDashboard();
+                            updateData();
                         } else {
                             String error = utils.parseError(response);
                             if (error != null) {

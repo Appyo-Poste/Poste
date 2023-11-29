@@ -26,6 +26,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private List<Post> localDataSet;
     public int position;
 
+    public void setLocalDataSet(List<Post> posts) {
+        localDataSet = posts;
+    }
+
     /**
      * Custom ViewHolder class that holds the views of a single item in the RecyclerView.
      */
