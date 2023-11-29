@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -28,7 +29,6 @@ import com.example.poste.models.User;
 import com.example.poste.utils.utils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -47,6 +47,7 @@ public class DashboardActivity extends PActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private final MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
     private UpdateCallback updateCallback;
+    private TextView dashboardViewEmptyText;
     
     @Override
     protected void onRestart() {
@@ -55,9 +56,8 @@ public class DashboardActivity extends PActivity {
     }
 
     private void updateData() {
-        // set any titles to invis
+        dashboardViewEmptyText.setVisibility(View.GONE);
         User.getUser().updateFoldersAndPosts(updateCallback);
-        // set any titles to vis
     }
 
     /**
@@ -103,6 +103,9 @@ public class DashboardActivity extends PActivity {
             public void onSuccess() {
                 folderAdapter.setLocalDataSet(User.getUser().getFolders());
                 folderAdapter.notifyDataSetChanged();
+                if (User.getUser().getFolders().size() == 0) {
+                    dashboardViewEmptyText.setVisibility(View.VISIBLE);
+                }
             }
 
             /**
@@ -118,6 +121,9 @@ public class DashboardActivity extends PActivity {
                         getString(R.string.retrieve_error),
                         Toast.LENGTH_SHORT
                 ).show();
+                if (User.getUser().getFolders().size() == 0) {
+                    dashboardViewEmptyText.setVisibility(View.VISIBLE);
+                }
             }
         };
     }
@@ -150,6 +156,10 @@ public class DashboardActivity extends PActivity {
      * initializes them. This saves us from resetting them every time the activity is restarted.
      */
     private void prepVars() {
+        if (dashboardViewEmptyText == null) {
+            dashboardViewEmptyText = findViewById(R.id.dashboardViewEmptyText);
+            dashboardViewEmptyText.setVisibility(View.GONE); // hide by default
+        }
         if (optionsView == null) {
             optionsView = findViewById(R.id.optionsbtn);
         }
