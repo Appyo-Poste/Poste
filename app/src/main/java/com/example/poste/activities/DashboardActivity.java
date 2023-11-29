@@ -101,9 +101,7 @@ public class DashboardActivity extends PActivity {
             @Override
             public void onSuccess() {
                 userFolders = currentUser.getFolders(); // update our local copy of the folders
-                System.out.println("111111111111111111111111");
                 if (!userFolders.isEmpty()) {
-                    System.out.println("2222222222222222222222222222");
                     emptyText.setVisibility(View.GONE);
                 }
                 // Fill folder view (Recycler View)
