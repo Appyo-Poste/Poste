@@ -61,6 +61,7 @@ public class DebugUtils {
                             Log.d("UserDebug", "\t\tID: " + post.getId());
                             Log.d("UserDebug", "\t\tDescription: " + post.getDescription());
                             Log.d("UserDebug", "\t\tURL: " + post.getUrl());
+                            Log.d("UserDebug", "\t\tTags: " + post.getTags());
                         }
                     } else {
                         Log.d("UserDebug", "\tNo posts available in this folder.");
