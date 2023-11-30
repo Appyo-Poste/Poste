@@ -1,39 +1,29 @@
 package com.example.poste.activities;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.app.ActionBar;
 
-import com.example.poste.PosteApplication;
 import com.example.poste.R;
-import com.example.poste.adapters.FolderAdapter;
-import com.example.poste.api.poste.API;
-import com.example.poste.api.poste.exceptions.APIException;
-import com.example.poste.api.poste.models.Folder;
-import com.example.poste.api.poste.models.FolderAccess;
-import com.example.poste.api.poste.models.User;
+import com.example.poste.http.EditFolderRequest;
+import com.example.poste.http.MyApiService;
+import com.example.poste.http.RetrofitClient;
+import com.example.poste.models.Folder;
+import com.example.poste.models.User;
 
-import java.util.HashMap;
-import java.util.Objects;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
- * The EditFolderActivity class adds functionality to the activity_edit_folder.xml layout
+ * The EditFolderActivity class adds functionality to the activity_edit_folder_v2.xml layout
  */
 @SuppressLint("UseSwitchCompatOrMaterialCode")
 public class EditFolderActivity extends AppCompatActivity {
@@ -47,20 +37,20 @@ public class EditFolderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Configure window settings for fullscreen mode
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN); //show the activity in full screen
-        getSupportActionBar().hide();
+        // Configure window settings
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
 
         // Set the activity layout
         setContentView(R.layout.activity_edit_folder);
 
         // Prep vars
         Intent intent = getIntent();
-        Button cancelBtn = findViewById(R.id.edit_folder_cancel_btn);
-        Button saveBtn = findViewById(R.id.edit_folder_save_button);
-        EditText folderNameView = findViewById(R.id.edit_folder_folder_name);
+        Button cancelBtn = findViewById(R.id.buttonCancelChanges);
+        Button saveBtn = findViewById(R.id.buttonSaveChanges);
+        EditText folderNameView = findViewById(R.id.editTextNameOfFolder);
 
         // Set text and checked
         folderNameView.setText(intent.getStringExtra("folderName"));
@@ -68,31 +58,49 @@ public class EditFolderActivity extends AppCompatActivity {
         // Save button push
         saveBtn.setOnClickListener(view -> {
             try {
-                // Find folder
-                int targetFolderId = intent.getIntExtra("folderId",-1);
-                Folder targetFolder = API.getFolderById(targetFolderId);
+                 String folderId = intent.getStringExtra("folderId");
+                 Folder currentFolder = User.getUser().getFolder(folderId);
+                String title = folderNameView.getText().toString();
+                MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
+                Call<ResponseBody> call = apiService.editFolder(
+                        User.getUser().getTokenHeaderString(),
+                        folderId,
+                        new EditFolderRequest(title));
 
-                // Apply changes
-                targetFolder.setName(folderNameView.getText().toString());
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()){
+                            currentFolder.setTitle(title);
+                            Toast.makeText(EditFolderActivity.this,
+                                    getString(R.string.edit_folder_success),
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(EditFolderActivity.this,
+                                    getString(R.string.error_message) + response.message(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        finish();
+                    }
 
-                // Commit changes
-                targetFolder.update();
-            } catch (APIException e) {
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(EditFolderActivity.this,
+                                getString(R.string.edit_failure),
+                                Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-
-            sendToDashboard();
         });
 
         // Cancel button push
         cancelBtn.setOnClickListener(view -> {
-            sendToDashboard();
+            finish();
         });
 
     }
 
-    private void sendToDashboard() {
-        Intent newIntent = new Intent(EditFolderActivity.this, DashboardActivity.class);
-        startActivity(newIntent);
-    }
 }

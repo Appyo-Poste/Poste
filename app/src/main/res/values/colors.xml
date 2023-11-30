@@ -7,4 +7,21 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="light_grey">#FFD3D3D3</color>
+
+    <color name="hyperlink_blue">#0000FF</color>
+
+    <color name="topbar_color">#430000</color>
+
+    <color name="poste_icon_background">#F5F1F1</color>
+
+    <color name="red_button_color">#B0BC2C2C</color>
+
+<!--    Sponsor selected color palette  -->
+    <color name="color1">#6FECE4</color>
+    <color name="color2">#70DAD3</color>
+    <color name="color3">#BDF3F0</color>
+    <color name="color4">#E8F3F3</color>
+    <color name="color5">#3B4948</color>
+    <color name="color6">#EC8C6F</color>
 </resources>

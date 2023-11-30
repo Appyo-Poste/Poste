@@ -1,127 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activities.EditPostActivity">
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="200px"
         android:orientation="horizontal"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/accountLogo2"
-            android:layout_width="135dp"
-            android:layout_height="49dp"
-            android:layout_weight="1"
-            android:layout_marginTop="2dp"
-            android:layout_marginEnd="90dp"
-            android:contentDescription="@string/poste_logo_description"
-            app:srcCompat="@drawable/poste_logo_inpixio" />
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="125px"
+        android:background="@color/topbar_color"
+        app:layout_constraintTop_toTopOf="parent" />
 
-<!--        <Button-->
-<!--            android:id="@+id/dashboard_add_folder_btn"-->
-<!--            android:layout_width="36dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="5dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_weight="1"-->
-<!--            android:backgroundTint="#B0BC2C2C"-->
-<!--            android:insetTop="0dp"-->
-<!--            android:insetBottom="0dp"-->
-<!--            android:textAlignment="center"-->
-<!--            app:icon="@android:drawable/ic_input_add"-->
-<!--            app:iconPadding="0dp" />-->
+    <ImageView
+        android:id="@+id/imageViewLogoP"
+        android:layout_width="95dp"
+        android:layout_height="114dp"
+        android:contentDescription="@string/poste_logo_description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/newlogo_p_noback" />
 
-<!--        <ImageView-->
-<!--            android:id="@+id/Optionsbtn"-->
-<!--            android:layout_width="36dp"-->
-<!--            android:layout_height="46dp"-->
-<!--            android:layout_marginStart="20dp"-->
-<!--            android:layout_marginTop="5dp"-->
-<!--            android:layout_marginEnd="20dp"-->
-<!--            android:layout_weight="1"-->
-<!--            android:minWidth="50dp"-->
-<!--            app:srcCompat="@drawable/options" />-->
+    <ImageView
+        android:id="@+id/imageViewEditPostIcon"
+        android:contentDescription="@string/edit_post_icon"
+        android:layout_width="86dp"
+        android:layout_height="81dp"
+        app:layout_constraintStart_toEndOf="@+id/imageViewLogoP"
+        app:layout_constraintTop_toBottomOf="@+id/view"
+        app:srcCompat="@drawable/edit_post_icon" />
 
-    </LinearLayout>
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/textViewEditPostTitleLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/edit_post_text"
+        android:layout_marginTop="10dp"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/imageViewEditPostIcon"
+        app:layout_constraintTop_toTopOf="@+id/imageViewEditPostIcon" />
+
+    <TextView
+        android:id="@+id/textViewEditPostUrl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/link_text"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/editTextPostLink"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewEditPostIcon" />
+
+    <EditText
+        android:id="@+id/editTextPostLink"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:background="@drawable/edittext_rounded_gray"
+        android:inputType="text"
+        android:paddingStart="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/textViewEditPostUrl"
+        app:layout_constraintWidth_percent="0.9" />
 
-        <TextView
-            android:id="@+id/edit_post_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="48dp"
-            android:gravity="center_horizontal"
-            android:text="Edit Post"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="40sp" />
+    <TextView
+        android:id="@+id/textViewPostTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/title"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/textViewEditPostUrl"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPostLink" />
+
+    <EditText
+        android:id="@+id/editTextPostTitle"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:background="@drawable/edittext_rounded_gray"
+        android:inputType="text"
+        android:paddingStart="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPostTitle"
+        app:layout_constraintWidth_percent="0.9" />
+
+    <EditText
+        android:id="@+id/editTextPostTags"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:background="@drawable/edittext_rounded_gray"
+        android:inputType="text"
+        android:paddingStart="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPostTag"
+        app:layout_constraintWidth_percent="0.9" />
+
+    <TextView
+        android:id="@+id/textViewPostTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/tags"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/textViewEditPostUrl"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPostDescription" />
+
+    <EditText
+        android:id="@+id/editTextPostDescription"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:inputType="text"
+        android:paddingStart="12dp"
+        android:background="@drawable/edittext_rounded_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPostDescription"
+        app:layout_constraintWidth_percent="0.9" />
+
+    <TextView
+        android:id="@+id/textViewPostDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/description"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/textViewEditPostUrl"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPostTitle" />
+
+    <Button
+        android:id="@+id/buttonSaveChanges"
+        style="@style/RedButton"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="50dp"
+        android:text="@string/save_post_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPostTags"
+        app:layout_constraintWidth_percent="0.6" />
+
+    <Button
+        android:id="@+id/buttonCancelChanges"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/cancel_post_text"
+        style="@style/GrayButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSaveChanges"
+        app:layout_constraintWidth_percent="0.6" />
 
 
-        <Spinner
-            android:id="@+id/edit_post_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="24dp"
-            android:spinnerMode="dialog" />
-
-        <EditText
-            android:id="@+id/editTextNewName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="text"
-            android:hint="New Name"
-            android:text="" />
-
-        <EditText
-            android:id="@+id/editTextNewLink"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="text"
-            android:hint="New Link"
-            android:text="" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/edit_post_cancel_btn"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:backgroundTint="#B0BC2C2C"
-                android:text="@string/cancel"
-                android:layout_marginEnd="5dp"
-                android:textColor="#FFFFFF" />
-
-            <Button
-                android:id="@+id/edit_post_save_button"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:backgroundTint="#B71C1C"
-                android:text="@string/save"
-                android:textColor="#FFFFFF" />
-        </LinearLayout>
-
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,9 +1,5 @@
 package com.example.poste.adapters;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -15,12 +11,9 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.poste.PosteApplication;
 import com.example.poste.R;
-import com.example.poste.api.poste.models.Folder;
-import com.example.poste.api.poste.models.Post;
+import com.example.poste.models.Post;
 
-import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -32,6 +25,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private ClickListener clickListener;
     private List<Post> localDataSet;
     public int position;
+
+    public void setLocalDataSet(List<Post> posts) {
+        localDataSet = posts;
+    }
 
     /**
      * Custom ViewHolder class that holds the views of a single item in the RecyclerView.
@@ -107,7 +104,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         try {
             // Set the post name
-            viewHolder.getTextView().setText(localDataSet.get(position).getName());
+            viewHolder.getTextView().setText(localDataSet.get(position).getTitle());
         } catch (Exception e) {
             Log.e("FolderAdapter", e.getLocalizedMessage());
         }

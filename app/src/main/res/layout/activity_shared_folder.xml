@@ -4,104 +4,132 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.Shared_Folder">
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="87dp"
-        android:layout_height="99dp"
-        app:layout_constraintBottom_toTopOf="@+id/share_folder_buttonLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/folder_icon" />
-
-    <TextView
-        android:id="@+id/ACEmailtxt2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="20dp"
-        android:text="Email:"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/share_folder_email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/accountLogo4" />
-
-    <ImageView
-        android:id="@+id/accountLogo4"
-        android:layout_width="209dp"
-        android:layout_height="79dp"
-        android:layout_marginTop="56dp"
-        android:layout_marginBottom="70dp"
-        android:contentDescription="@string/poste_logo_description"
-        app:layout_constraintBottom_toTopOf="@+id/ACEmailtxt2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/poste_logo" />
-
-    <EditText
-        android:id="@+id/share_folder_email"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginBottom="20dp"
-        android:ems="10"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/share_folder_spinner"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/share_folder_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Folder Name"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/imageView3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+    tools:context=".activities.EditFolderActivity">
 
     <LinearLayout
-        android:id="@+id/share_folder_buttonLayout"
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="200px"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="125px"
+        android:background="@color/topbar_color"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageViewLogoP"
+        android:layout_width="95dp"
+        android:layout_height="114dp"
+        android:contentDescription="@string/poste_logo_description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/newlogo_p_noback" />
+
+    <ImageView
+        android:id="@+id/imageViewShareFolderIcon"
+        android:contentDescription="@string/edit_post_icon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="135dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/edit_post_icon" />
+
+    <TextView
+        android:id="@+id/textViewShareFolderEmailLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="112dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/share_folder"
+        android:textSize="35sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/imageViewShareFolderIcon"
+        app:layout_constraintTop_toTopOf="@+id/imageViewShareFolderIcon" />
+
+    <TextView
+        android:id="@+id/textViewShareFolderEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="19dp"
+        android:text="@string/email_field"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/imageViewShareFolderIcon"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewShareFolderIcon" />
+
+    <EditText
+        android:id="@+id/editTextEmailToShareWith"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:background="@drawable/edittext_rounded_gray"
+        android:autofillHints="emailAddress"
+        android:inputType="textEmailAddress"
+        android:paddingStart="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewShareFolderEmail"
+        app:layout_constraintWidth_percent="0.9" />
 
-        <Button
-            android:id="@+id/share_folder_cancel_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="#B0BC2C2C"
-            android:text="@string/cancel"
-            style="?android:attr/buttonBarButtonStyle" />
+    <TextView
+        android:id="@+id/textViewShareFolderName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/folder_name"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/textViewShareFolderEmailLabel"
+        app:layout_constraintTop_toBottomOf="@+id/textViewShareFolderEmailLabel" />
 
-        <Button
-            android:id="@+id/share_folder_save_btn"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/share"
-            android:textColor="#B0BC2C2C" />
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/textViewShareFolderPermissions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="19dp"
+        android:text="@string/Shared_Permissions"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/imageViewShareFolderIcon"
+        app:layout_constraintTop_toBottomOf="@+id/editTextEmailToShareWith" />
 
     <Spinner
-        android:id="@+id/share_folder_spinner"
-        android:layout_width="210dp"
-        android:layout_height="25dp"
-        android:layout_marginBottom="18dp"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/share_folder_name"
+        android:id="@+id/share_folder_permissions_spinner"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:background="@drawable/edittext_rounded_gray"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewShareFolderPermissions"
+        app:layout_constraintWidth_percent="0.9" />
+
+    <Button
+        android:id="@+id/buttonSaveChanges"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="23dp"
+        android:text="@string/save_changes_text"
+        style="@style/RedButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/share_folder_permissions_spinner" />
+
+    <Button
+        android:id="@+id/buttonCancelChanges"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/cancel_changes_text"
+        style="@style/GrayButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSaveChanges" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+

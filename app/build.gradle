@@ -1,15 +1,14 @@
 plugins {
     id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'checkstyle'
+    id "com.github.spotbugs"
+    id 'pmd'
 }
-
-
-def apikeyPropertiesFile = rootProject.file("apikey.properties")
-def apikeyProperties = new Properties()
-apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
 
 android {
     namespace 'com.example.poste'
-    compileSdk 33
+    compileSdk 34
 
 
     defaultConfig {
@@ -26,14 +25,6 @@ android {
                 arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
-
-        // should correspond to key/value pairs inside the file
-        buildConfigField("String", "TWITTER_CLIENT_KEY", apikeyProperties['TWITTER_CLIENT_KEY'])
-        buildConfigField("String", "TWITTER_CLIENT_SECRET", apikeyProperties['TWITTER_CLIENT_SECRET'])
-        buildConfigField("String", "TWITTER_CONSUMER_KEY", apikeyProperties['TWITTER_CONSUMER_KEY'])
-        buildConfigField("String", "TWITTER_CONSUMER_SECRET", apikeyProperties['TWITTER_CONSUMER_SECRET'])
-        //buildConfigField("String", "REDDIT_CLIENT_KEY", apikeyProperties['REDDIT_CLIENT_KEY'])
-        //buildConfigField("String", "REDDIT_CLIENT_SECRET", apikeyProperties['REDDIT_CLIENT_SECRET'])
     }
 
     buildTypes {
@@ -41,13 +32,88 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        development {
+            debuggable true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "API_ENDPOINT", '"https://postebackend.duckdns.org/api/"'
+            signingConfig signingConfigs.debug
+        }
+        local {
+            debuggable true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "API_ENDPOINT", '"https://10.0.2.2/api/"'
+            signingConfig signingConfigs.debug
+        }
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
     buildFeatures {
         viewBinding true
+    }
+}
+
+apply plugin: 'checkstyle'
+
+checkstyle {
+    description = 'code style check'
+    group 'verification'
+    configFile = file("$project.rootDir/config/checkstyle/checkstyle.xml")
+}
+
+task checkstyle(type: Checkstyle, group: 'verification') {
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+    exclude '**/R.java'
+    classpath = files()
+}
+
+
+checkstyle {
+    ignoreFailures = true
+}
+
+apply plugin: 'pmd'
+
+pmd {
+    ruleSetConfig = rootProject.resources.text.fromFile("config/pmd/pmd-hard.xml")
+    ignoreFailures = true
+}
+
+task pmd(type: Pmd) {
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+    exclude '**/R.java'
+    classpath = files()
+}
+
+spotbugs {
+    ignoreFailures = true
+    showProgress = true
+    effort = 'max'
+    reportsDir = file("$project.buildDir/reports/spotbugs")
+    // changes the level of severity of bugs that make it into the report
+    //reportLevel = 'high'
+}
+
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
+    dependsOn 'assembleDebug'
+    dependsOn 'compileDebugUnitTestJavaWithJavac'
+    dependsOn 'compileReleaseJavaWithJavac'
+    dependsOn 'compileReleaseUnitTestJavaWithJavac'
+    classes = files("$project.buildDir/intermediates/javac")
+    reports {
+        html.enabled = true
+        xml.enabled = false
     }
 }
 
@@ -55,18 +121,24 @@ dependencies {
     implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.google.android.material:material:1.10.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.navigation:navigation-fragment:2.5.3'
-    implementation 'androidx.navigation:navigation-ui:2.5.3'
-    implementation 'androidx.room:room-runtime:2.5.0'
+    implementation 'androidx.navigation:navigation-fragment:2.7.5'
+    implementation 'androidx.navigation:navigation-ui:2.7.5'
+    implementation 'androidx.room:room-runtime:2.6.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+    implementation 'commons-validator:commons-validator:1.7'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    annotationProcessor 'androidx.room:room-compiler:2.5.0'
-    implementation 'com.google.android.gms:play-services-auth:20.4.1'
+    annotationProcessor 'androidx.room:room-compiler:2.6.0'
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
     implementation ('com.twitter:twitter-api-java-sdk:2.0.3'){
         exclude group:'org.apache.oltu.oauth2' , module: 'org.apache.oltu.oauth2.common'
     }
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
 }

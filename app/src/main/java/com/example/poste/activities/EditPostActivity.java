@@ -1,53 +1,37 @@
 package com.example.poste.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.poste.PosteApplication;
-import com.example.poste.R;
-import com.example.poste.adapters.FolderAdapter;
-import com.example.poste.api.poste.API;
-import com.example.poste.api.poste.exceptions.APIException;
-import com.example.poste.api.poste.models.Folder;
-import com.example.poste.api.poste.models.FolderAccess;
-import com.example.poste.api.poste.models.User;
-import com.example.poste.api.poste.exceptions.IncompleteRequestException;
-import com.example.poste.api.poste.exceptions.MalformedResponseException;
-import com.example.poste.api.poste.models.Folder;
-import com.example.poste.api.poste.models.FolderAccess;
-import com.example.poste.api.poste.models.Post;
+import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.example.poste.R;
+import com.example.poste.http.EditPostRequest;
+import com.example.poste.http.MyApiService;
+import com.example.poste.http.RetrofitClient;
+import com.example.poste.models.Post;
+import com.example.poste.models.User;
+import com.example.poste.utils.utils;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * The EditPostActivity class adds functionality to the activity_edit_post.xml layout
+ *
+ * The activity that calls this activity, do a .putExtra to pass the postId
+ *
+ * Example:
+ *  Intent editPostIntent = new Intent(FolderViewActivity.this, EditPostActivity.class);
+ *  finish();
+ *  editPostIntent.putExtra("postID",postId);
+ *  editPostIntent.putExtra("folderID",folderId);
+ *  startActivity(editPostIntent);
  */
 public class EditPostActivity extends AppCompatActivity {
 
@@ -59,84 +43,100 @@ public class EditPostActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Configure window settings for fullscreen mode
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getSupportActionBar().hide();
-
-        // Set the activity layout
         setContentView(R.layout.activity_edit_post);
+        getSupportActionBar().hide();
+//        DebugUtils.logUserFoldersAndPosts(User.getUser());
 
-        // Prep vars
-        String currentFolderTitle;
+        EditText postLink = findViewById(R.id.editTextPostLink);
+        EditText postTitle = findViewById(R.id.editTextPostTitle);
+        EditText postDescription = findViewById(R.id.editTextPostDescription);
+        EditText postTags = findViewById(R.id.editTextPostTags);
+
+        Button buttonSaveChanges = findViewById(R.id.buttonSaveChanges);
+        Button buttonCancelChanges = findViewById(R.id.buttonCancelChanges);
+
         Post currentPost;
-        Folder currentFolder;
-        HashMap<Folder, FolderAccess> userFolders;
-        HashMap<String, Integer> folderIdNameMap = new HashMap<>();
-        EditText postNameField = findViewById(R.id.editTextNewName);
-        EditText postLinkField = findViewById(R.id.editTextNewLink);
-        Spinner spinner = findViewById(R.id.edit_post_spinner);
-        Button cancelBtn = findViewById(R.id.edit_post_cancel_btn);
-        Button saveBtn = findViewById(R.id.edit_post_save_button);
-        try {
-            currentPost = API.getPostById(getIntent().getIntExtra("postId", 0));
-            currentFolder = API.getFolderById(getIntent().getIntExtra("folderId", 0));
-            currentFolderTitle = String.format("(%d) %s", currentFolder.getId(), currentFolder.getName());
-            userFolders = API.getFoldersForUserId(PosteApplication.getCurrentUser().getId());
-            for (Folder folder: userFolders.keySet()) {
-                folderIdNameMap.put(String.format("(%d) %s", folder.getId(), folder.getName()), folder.getId());
-            }
-        } catch (APIException e) {
-            throw new RuntimeException(e);
+
+        String postId = getIntent().getStringExtra("postID");
+
+        if (postId == null){
+            currentPost = null;
+            Log.e("Error", "EditPostActivity onCreate: Post not found");
+        } else {
+            currentPost = User.getUser().getPost(postId);
         }
 
-        // Setup for the dropdown menu
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new ArrayList<>(folderIdNameMap.keySet()));
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        if (currentPost == null){
+            Log.e("Error", "EditPostActivity onCreate: Post not found");
+        } else {
+            postTitle.setText(currentPost.getTitle());
+            postDescription.setText(currentPost.getDescription());
+            postLink.setText(currentPost.getUrl());
+            String tagsNewText = "";
+            for (String s : currentPost.getTags()) {
+                if (tagsNewText.length() > 0) {
+                    tagsNewText = tagsNewText + ", ";
+                }
+                tagsNewText = tagsNewText + s;
+            }
+            postTags.setText(tagsNewText);
+        }
 
-        // Set the default values
-        postNameField.setText(currentPost.getName());
-        postLinkField.setText(currentPost.getLink());
-        spinner.setSelection(adapter.getPosition(currentFolderTitle));
-
-        // Cancel button click handler
-        cancelBtn.setOnClickListener(view -> {
-            // Send back to folder view
-            sendToDashboard();
+        buttonCancelChanges.setOnClickListener(view -> {
+            finish();
         });
 
-        // Save button click handler
-        saveBtn.setOnClickListener(view -> {
-            try {
-                String selectedFolderName = spinner.getSelectedItem().toString();
-                Integer selectedFolderId = folderIdNameMap.get(selectedFolderName);
+        buttonSaveChanges.setOnClickListener(view -> {
+            if (currentPost != null){
+                String title = postTitle.getText().toString();
+                String description = postDescription.getText().toString();
+                String url = postLink.getText().toString();
+                String tagsString = postTags.getText().toString();
 
-                // Save the post in the API
-                if (currentPost.getName() != postNameField.getText().toString() ||
-                        currentPost.getLink() != postLinkField.getText().toString()) {
-                    API.updatePost(currentPost.getId(), postNameField.getText().toString(), postLinkField.getText().toString(), currentPost.getOwnerId());
-                }
 
-                // Update the post in the API
-                if (currentFolder.getId() != selectedFolderId) {
-                    API.removePostFromFolder(currentPost.getId(), currentFolder.getId());
-                    API.addPostToFolder(currentPost.getId(), selectedFolderId);
-                }
 
-                // Send back to folder view
-                sendToDashboard();
-            } catch (APIException e) {
-                throw new RuntimeException(e);
+                MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
+                Call<ResponseBody> call = apiService.editPost(
+                        User.getUser().getTokenHeaderString(),
+                        postId,
+                        new EditPostRequest(title,description,url,tagsString));
+
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()){
+                            currentPost.setTitle(title);
+                            currentPost.setDescription(description);
+                            currentPost.setUrl(url);
+                            currentPost.setTags(Post.parseTags(tagsString));
+                            Toast.makeText(EditPostActivity.this,
+                                    getString(R.string.edit_post_success),
+                                    Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            String errorMessage = utils.parseError(response);
+                            if (errorMessage != null) {
+                                Toast.makeText(EditPostActivity.this,
+                                        getString(R.string.error_message) + errorMessage,
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(EditPostActivity.this,
+                                        getString(R.string.edit_failure),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(EditPostActivity.this,
+                                getString(R.string.edit_failure),
+                                Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
             }
         });
-
-    }
-
-    private void sendToDashboard() {
-        Intent newIntent = new Intent(EditPostActivity.this, DashboardActivity.class);
-        startActivity(newIntent);
     }
 }

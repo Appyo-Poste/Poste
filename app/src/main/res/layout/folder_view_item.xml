@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:text="TextView"
+        android:text="@string/folder_view_text"
         app:layout_constraintEnd_toEndOf="@+id/folder_image_view"
         app:layout_constraintStart_toStartOf="@+id/folder_image_view"
         app:layout_constraintTop_toBottomOf="@+id/folder_image_view" />
@@ -29,6 +29,6 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/ic_folder_foreground" />
+        app:srcCompat="@mipmap/folder_icon_new" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

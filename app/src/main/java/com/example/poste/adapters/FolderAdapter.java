@@ -11,9 +11,8 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.poste.PosteApplication;
 import com.example.poste.R;
-import com.example.poste.api.poste.models.Folder;
+import com.example.poste.models.Folder;
 
 import java.util.List;
 
@@ -26,6 +25,10 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
     private final ClickListener clickListener;
     private List<Folder> localDataSet;
     public int position;
+
+    public void setLocalDataSet(List<Folder> userFolders) {
+        this.localDataSet = userFolders;
+    }
 
     /**
      * Custom ViewHolder class that holds the views of a single item in the RecyclerView.
@@ -70,7 +73,9 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
             // Add context menu items (e.g., edit, share, delete) for each folder item
             menu.add(Menu.NONE, R.id.ctx_menu_edit_folder, Menu.NONE, R.string.edit);
             menu.add(Menu.NONE, R.id.ctx_menu_share_folder, Menu.NONE, R.string.share);
+            menu.add(Menu.NONE, R.id.ctx_menu_view_shares, Menu.NONE, "View Shares");
             menu.add(Menu.NONE, R.id.ctx_menu_delete_folder, Menu.NONE, R.string.delete);
+
         }
     }
 
@@ -102,7 +107,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         try {
             // Set the folder name
-            viewHolder.getTextView().setText(localDataSet.get(position).getName());
+            viewHolder.getTextView().setText(localDataSet.get(position).getTitle());
         } catch (Exception e) {
             Log.e("FolderAdapter", e.getLocalizedMessage());
         }
