@@ -143,8 +143,9 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d("debug", "isReturn is false");
                             Log.d("debug", "Starting dashboard activity");
                             Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-                            finish();
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
+                            finish();
                         }
                     }else {
                         Toast.makeText(LoginActivity.this,

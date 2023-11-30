@@ -3,6 +3,7 @@ package com.example.poste.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.ActionBar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.poste.R;
 import com.example.poste.adapters.PostAdapter;
@@ -22,13 +24,15 @@ import com.example.poste.callbacks.UpdateCallback;
 import com.example.poste.models.Post;
 import com.example.poste.models.User;
 
+import java.util.List;
+
 /**
  * The FolderViewActivity class adds functionality to the activity_folder_view.xml layout.
  * This class governs the page where users can view, use, and edit the posts contained within a
  * selected folder.
  */
 public class FolderViewActivity extends AppCompatActivity {
-    private static UpdateCallback updateCallback;
+    private UpdateCallback updateCallback;
     private PostAdapter postAdapter;
     private RecyclerView postRecyclerView;
     private TextView emptyText;
@@ -37,6 +41,9 @@ public class FolderViewActivity extends AppCompatActivity {
 
     private Button newBut;
     private ImageView settingsBut;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
+
 
     @Override
     public void onBackPressed() {
@@ -84,47 +91,56 @@ public class FolderViewActivity extends AppCompatActivity {
 
     private void prepVars() {
         emptyText = findViewById(R.id.folderViewEmptyText);
+        emptyText.setVisibility(View.GONE); // Hide empty text until data is loaded
         folderName = findViewById(R.id.folderNameText);
+        folderName.setVisibility(View.INVISIBLE); // Hide folder name until data is loaded
+        // reset selected folder
+        User.getUser().setSelectedFolder(User.getUser().getFolder(User.getUser().getSelectedFolder().getId()));
+        // Set folder name in title bar
+        folderName.setText(User.getUser().getSelectedFolder().getTitle());
+        folderName.setVisibility(View.VISIBLE); // Show folder name now that data is loaded
         newBut = findViewById(R.id.newPost);
         settingsBut = findViewById(R.id.folderSettings);
         postRecyclerView = findViewById(R.id.posts_recycler_view);
+        postAdapter = new PostAdapter(
+                new PostAdapter.ClickListener() {
+                    @Override
+                    public void onItemClick(int position, Post post) {
+                        User.getUser().setSelectedPost(post);
+                        try {
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(User.getUser().getSelectedPost().getUrl()));
+                            startActivity(browserIntent);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(FolderViewActivity.this, R.string.internal_error, Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onItemLongClick(int position, Post post) {
+                        User.getUser().setSelectedPost(post);
+                    }
+                },
+                User.getUser().getSelectedFolder().getPosts()
+        );
+        postRecyclerView.setAdapter(postAdapter);
+        postRecyclerView.setLayoutManager(new LinearLayoutManager(FolderViewActivity.this));
         updateCallback = new UpdateCallback() {
             @Override
             public void onSuccess() {
-                // reset selected folder
+                // Fill post view (Recycler View)
                 User.getUser().setSelectedFolder(User.getUser().getFolder(User.getUser().getSelectedFolder().getId()));
-                // Set folder name in title bar
-                folderName.setText(User.getUser().getSelectedFolder().getTitle());
-
-                // Remove empty text if posts exist in folder or remove buttons if the folder is empty
+                postAdapter.setLocalDataSet(User.getUser().getSelectedFolder().getPosts());
+                postAdapter.notifyDataSetChanged();
+                List<Post> newPosts = User.getUser().getSelectedFolder().getPosts();
+                for (Post post : newPosts) {
+                    Log.d("FolderViewActivity", "Post: " + post.getTitle());
+                }
                 if (User.getUser().getSelectedFolder().getPosts().size() > 0) {
                     emptyText.setVisibility(View.GONE);
+                } else {
+                    emptyText.setVisibility(View.VISIBLE);
                 }
-
-                // Fill post view (Recycler View)
-                postRecyclerView.setLayoutManager(new LinearLayoutManager(FolderViewActivity.this));
-                postAdapter = new PostAdapter(
-                        new PostAdapter.ClickListener() {
-                            @Override
-                            public void onItemClick(int position, Post post) {
-                                User.getUser().setSelectedPost(post);
-                                try {
-                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(User.getUser().getSelectedPost().getUrl()));
-                                    startActivity(browserIntent);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(FolderViewActivity.this, R.string.internal_error, Toast.LENGTH_LONG).show();
-                                }
-                            }
-
-                            @Override
-                            public void onItemLongClick(int position, Post post) {
-                                User.getUser().setSelectedPost(post);
-                            }
-                        },
-                        User.getUser().getSelectedFolder().getPosts()
-                );
-                postRecyclerView.setAdapter(postAdapter);
             }
 
             @Override
@@ -147,6 +163,15 @@ public class FolderViewActivity extends AppCompatActivity {
 
         // Set the activity layout
         setContentView(R.layout.activity_folder_view);
+
+        // Setup refresh
+        if (swipeRefreshLayout == null) {
+            swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+            swipeRefreshLayout.setOnRefreshListener(()-> {
+                updateData();
+                swipeRefreshLayout.setRefreshing(false);
+            });
+        }
     }
 
     @Override
@@ -170,7 +195,7 @@ public class FolderViewActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess() {
                             Toast.makeText(FolderViewActivity.this, R.string.post_deleted, Toast.LENGTH_LONG).show();
-                            recreate();
+                            updateData();
                         }
 
                         @Override
@@ -187,6 +212,7 @@ public class FolderViewActivity extends AppCompatActivity {
     }
 
     private void updateData() {
+        emptyText.setVisibility(View.GONE); // Hide empty text until data is loaded
         User.getUser().updateFoldersAndPosts(updateCallback);
     }
 }

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.SearchActivity">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout5"
         android:layout_width="match_parent"
@@ -14,8 +15,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/linearLayout4"
-            android:layout_width="413dp"
-            android:layout_height="63dp"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
             android:background="@color/topbar_color"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
@@ -46,65 +47,82 @@
             android:id="@+id/accountLogo2"
             android:layout_width="95dp"
             android:layout_height="114dp"
-            android:layout_marginTop="-45dp"
             android:background="#00430000"
             android:contentDescription="@string/poste_logo_description"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/newlogo_p_noback" />
 
         <Spinner
             android:id="@+id/chooseFieldSpinner"
-            android:layout_width="270dp"
             android:layout_height="46dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_width="0dp"
             android:background="@drawable/edittext_rounded_gray"
-            app:layout_constraintTop_toBottomOf="@id/linearLayout4"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias=".5"
             app:layout_constraintStart_toEndOf="@+id/accountLogo2"
-            app:layout_constraintWidth_percent="0.9"
-            tools:layout_editor_absoluteY="60dp" />
+            app:layout_constraintTop_toBottomOf="@id/linearLayout4"
+            app:layout_constraintVertical_bias=".5"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <EditText
-        android:id="@+id/editTextSearchBy"
-        android:layout_width="262dp"
-        android:layout_height="46dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/edittext_rounded_gray"
-        android:hint="@string/search_by"
-        android:inputType="text"
-        android:paddingStart="12dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.194"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
-        app:layout_constraintWidth_percent="0.9" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
 
-    <Button
-        android:id="@+id/search_go_button"
-        android:layout_width="77dp"
-        android:layout_height="46dp"
-        app:layout_constraintStart_toEndOf="@id/editTextSearchBy"
-        android:layout_marginStart="10dp"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout5"
-        android:layout_marginTop="12dp"
-        style="@style/RedButton"
-        android:text="@string/go"
-        tools:layout_editor_absoluteX="301dp"
-        tools:layout_editor_absoluteY="144dp" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline70"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.7" />
+
+        <EditText
+            android:id="@+id/editTextSearchBy"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:background="@drawable/edittext_rounded_gray"
+            android:hint="@string/search_by"
+            android:inputType="text"
+            android:paddingStart="12dp"
+            android:layout_marginStart="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/guideline70"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/search_go_button"
+            style="@style/RedButton"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            app:layout_constraintStart_toEndOf="@id/guideline70"
+            android:layout_marginLeft="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginRight="15dp"
+            android:text="@string/go" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/searchViewEmptyText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:textAlignment="center"
-        android:textSize="25sp"
         android:text="@string/search_empty"
+        android:textAlignment="center"
         android:textColor="#3B3B3B"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -112,17 +130,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/posts_recycler_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.6"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="180dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextSearchBy"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
         tools:listitem="@layout/recycler_view_item" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

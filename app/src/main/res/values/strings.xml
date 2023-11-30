@@ -213,6 +213,7 @@
     <!--=====[ dialog_create_post | Start ]=====-->
     <string name="item_name">Item Name</string>
     <string name="item_link">Item Link</string>
+    <string name="empty_dashboard_hint">Add a Folder to get started!</string>
     <!--=====[ dialog_create_post | End ]=====-->
     <!--=====[ layouts | End ]=====-->
 </resources>

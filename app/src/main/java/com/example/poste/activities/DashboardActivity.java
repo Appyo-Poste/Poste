@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -28,7 +29,6 @@ import com.example.poste.models.User;
 import com.example.poste.utils.utils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -39,21 +39,26 @@ import retrofit2.Response;
  * The DashboardActivity class adds functionality to the activity_dashboard.xml layout
  */
 public class DashboardActivity extends PActivity {
-    private User currentUser;
+    private static final int FOLDERS_PER_ROW = 3;
     private Button addButton;
     private Button searchButton;
-    private List<com.example.poste.models.Folder> userFolders;
     private RecyclerView folderRecyclerView;
     private FolderAdapter folderAdapter;
     private ImageView optionsView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private final MyApiService apiService = RetrofitClient.getRetrofitInstance().create(MyApiService.class);
     private UpdateCallback updateCallback;
+    private TextView dashboardViewEmptyText;
     
     @Override
     protected void onRestart() {
         super.onRestart();
-        reloadDashboard();
+        updateData();
+    }
+
+    private void updateData() {
+        dashboardViewEmptyText.setVisibility(View.GONE);
+        User.getUser().updateFoldersAndPosts(updateCallback);
     }
 
     /**
@@ -64,12 +69,11 @@ public class DashboardActivity extends PActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         configureWindow();
         prepVars();
         setListeners();
         createUpdateCallback();
-        currentUser.updateFoldersAndPosts(updateCallback);
+        User.getUser().updateFoldersAndPosts(updateCallback);
     }
 
     /**
@@ -98,37 +102,11 @@ public class DashboardActivity extends PActivity {
              */
             @Override
             public void onSuccess() {
-                userFolders = currentUser.getFolders(); // update our local copy of the folders
-                // Fill folder view (Recycler View)
-                // Note: This is not the best way to do this, because it means every time
-                // DashboardActivity restarts, a new Adapter is created, but it works for now. The
-                // better way would be to use DiffUtil to calculate the difference between the old
-                // and new lists, and then update the RecyclerView accordingly using
-                // AdapterListUpdateCallback. This method is an attempt to keep the code simple
-                // For more information, see:
-                // https://developer.android.com/reference/androidx/recyclerview/widget/DiffUtil
-                // and
-                // https://developer.android.com/reference/androidx/recyclerview/widget/ListUpdateCallback
-                folderAdapter = new FolderAdapter(
-                        new FolderAdapter.ClickListener() {
-                            @Override
-                            public void onItemClick(int position, Folder model) {
-                                // Send to that folder's view
-                                User.getUser().setSelectedFolder(model);
-                                Intent intent = new Intent(DashboardActivity.this, FolderViewActivity.class);
-                                startActivity(intent);
-                            }
-
-                            @Override
-                            public void onItemLongClick(int position, Folder model) {
-                                // Prompt to share folder
-                                Toast.makeText(DashboardActivity.this, getString(R.string.share_folder), Toast.LENGTH_LONG).show();
-                            }
-                        },
-                        new ArrayList<>(userFolders)
-                );
-                folderRecyclerView.setAdapter(folderAdapter);
-                registerForContextMenu(folderRecyclerView);
+                folderAdapter.setLocalDataSet(User.getUser().getFolders());
+                folderAdapter.notifyDataSetChanged();
+                if (User.getUser().getFolders().size() == 0) {
+                    dashboardViewEmptyText.setVisibility(View.VISIBLE);
+                }
             }
 
             /**
@@ -144,6 +122,9 @@ public class DashboardActivity extends PActivity {
                         getString(R.string.retrieve_error),
                         Toast.LENGTH_SHORT
                 ).show();
+                if (User.getUser().getFolders().size() == 0) {
+                    dashboardViewEmptyText.setVisibility(View.VISIBLE);
+                }
             }
         };
     }
@@ -176,13 +157,36 @@ public class DashboardActivity extends PActivity {
      * initializes them. This saves us from resetting them every time the activity is restarted.
      */
     private void prepVars() {
-        currentUser = User.getUser(); // always get updated user, in case someone else logged in
+        if (dashboardViewEmptyText == null) {
+            dashboardViewEmptyText = findViewById(R.id.dashboardViewEmptyText);
+            dashboardViewEmptyText.setVisibility(View.GONE); // hide by default
+        }
         if (optionsView == null) {
             optionsView = findViewById(R.id.optionsbtn);
         }
         if (folderRecyclerView == null) {
             folderRecyclerView = findViewById(R.id.folder_recycler_view);
-            folderRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+            folderRecyclerView.setLayoutManager(new GridLayoutManager(this, FOLDERS_PER_ROW));
+            folderAdapter = new FolderAdapter(
+                    new FolderAdapter.ClickListener() {
+                        @Override
+                        public void onItemClick(int position, Folder model) {
+                            // Send to that folder's view
+                            User.getUser().setSelectedFolder(model);
+                            Intent intent = new Intent(DashboardActivity.this, FolderViewActivity.class);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onItemLongClick(int position, Folder model) {
+                            // Prompt to share folder
+                            Toast.makeText(DashboardActivity.this, getString(R.string.share_folder), Toast.LENGTH_LONG).show();
+                        }
+                    },
+                    new ArrayList<>(User.getUser().getFolders())
+            );
+            folderRecyclerView.setAdapter(folderAdapter);
+            registerForContextMenu(folderRecyclerView);
         }
         if (addButton == null) {
             addButton = findViewById(R.id.dashboard_add_folder_btn);
@@ -207,21 +211,11 @@ public class DashboardActivity extends PActivity {
         // Setup refresh
         if (swipeRefreshLayout == null) {
             swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-            swipeRefreshLayout.setOnRefreshListener(this::reloadDashboard);
+            swipeRefreshLayout.setOnRefreshListener(() -> {
+                updateData();
+                swipeRefreshLayout.setRefreshing(false);
+            });
         }
-    }
-
-    /**
-     * Reloads the Dashboard by ending this activity and starting a new one
-     * This is intended to be used by the swipe refresh layout to allow the user to refresh the
-     * dashboard by swiping down
-     */
-    private void reloadDashboard() {
-        Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startActivity(intent);
-        finish();
-        swipeRefreshLayout.setRefreshing(false);
     }
 
     private void showCreateItemDialog() {
@@ -248,7 +242,6 @@ public class DashboardActivity extends PActivity {
                     return false;
             }
         });
-
         // Show the PopupMenu
         popupMenu.show();
     }
@@ -277,7 +270,7 @@ public class DashboardActivity extends PActivity {
 
             // Handle folder creation logic
             Call<ResponseBody> call = apiService.createFolder(
-                    currentUser.getTokenHeaderString(),
+                    User.getUser().getTokenHeaderString(),
                     new FolderRequest(itemName)
             );
             call.enqueue(new Callback<ResponseBody>() {
@@ -290,7 +283,7 @@ public class DashboardActivity extends PActivity {
                                 getString(R.string.folder_creation_success),
                                 Toast.LENGTH_LONG
                         ).show();
-                        reloadDashboard();
+                        updateData();
                     } else {
                         Toast.makeText(
                                 DashboardActivity.this,
@@ -351,7 +344,7 @@ public class DashboardActivity extends PActivity {
             case R.id.ctx_menu_delete_folder:
                 // Delete the folder
                 Call<ResponseBody> call = apiService.deleteFolder(
-                        currentUser.getTokenHeaderString(),
+                        User.getUser().getTokenHeaderString(),
                         folder.getId()
                 );
                 call.enqueue(new Callback<ResponseBody>() {
@@ -361,7 +354,7 @@ public class DashboardActivity extends PActivity {
                             Toast.makeText(DashboardActivity.this,
                                     getString(R.string.folder_delete_success),
                                     Toast.LENGTH_LONG).show();
-                            reloadDashboard();
+                            updateData();
                         } else {
                             String error = utils.parseError(response);
                             if (error != null) {

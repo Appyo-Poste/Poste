@@ -26,6 +26,10 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
     private List<Folder> localDataSet;
     public int position;
 
+    public void setLocalDataSet(List<Folder> userFolders) {
+        this.localDataSet = userFolders;
+    }
+
     /**
      * Custom ViewHolder class that holds the views of a single item in the RecyclerView.
      */

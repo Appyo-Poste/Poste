@@ -215,8 +215,6 @@ public class User {
                                     for (int p = 0; p < JsonTags.length(); p++) {
                                         listOfTags.add(JsonTags.getString(p));
                                     }
-
-                                    System.out.println(listOfTags);
                                 }
                                 Post newPost = new Post.Builder()
                                         .setTitle(postTitle)
@@ -226,9 +224,6 @@ public class User {
                                         .setTags(listOfTags)
                                         .build();
                                 posts.add(newPost);
-                                for (String s : newPost.getTags()) {
-                                    System.out.println(s);
-                                }
                             }
                             List<String> sharedUsers = new ArrayList<>();
                             JSONArray sharedUsersArray = folder.getJSONArray("shared_users");

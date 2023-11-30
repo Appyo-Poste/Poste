@@ -95,11 +95,7 @@ public class Post {
     public String getId() { return id; }
 
     public ArrayList<String> getTags() {
-        ArrayList<String> ret = new ArrayList<>();
-        for (String s : tags) {
-            ret.add(s);
-        }
-        return ret;
+        return new ArrayList<>(tags);
     }
 
     /**
