@@ -20,8 +20,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/linearLayout4"
-                android:layout_width="413dp"
-                android:layout_height="63dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@color/topbar_color"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -39,7 +39,9 @@
                     android:textColor="#FFFFFF"
                     android:textSize="24sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/newPost"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.5" />
 
@@ -47,7 +49,7 @@
                     android:id="@+id/newPost"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:backgroundTint="#430000"
+                    android:backgroundTint="#00000000"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
                     android:textAlignment="center"
@@ -56,6 +58,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/folderSettings"
                     app:layout_constraintTop_toTopOf="parent"
+                    android:elevation="0dp"
+                    android:stateListAnimator="@null"
                     app:layout_constraintVertical_bias="0.5" />
 
                 <ImageView
@@ -64,6 +68,9 @@
                     android:layout_height="35dp"
                     android:layout_marginRight="15dp"
                     android:minWidth="50dp"
+                    android:backgroundTint="#00000000"
+                    android:elevation="0dp"
+                    android:stateListAnimator="@null"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -102,14 +109,13 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/posts_recycler_view"
-            android:layout_width="352dp"
-            android:layout_height="638dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="32dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="-50dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
             app:layout_constraintVertical_bias="0.0"
             tools:listitem="@layout/recycler_view_item" />
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -39,6 +39,7 @@ import retrofit2.Response;
  * The DashboardActivity class adds functionality to the activity_dashboard.xml layout
  */
 public class DashboardActivity extends PActivity {
+    private static final int FOLDERS_PER_ROW = 3;
     private Button addButton;
     private Button searchButton;
     private RecyclerView folderRecyclerView;
@@ -165,7 +166,7 @@ public class DashboardActivity extends PActivity {
         }
         if (folderRecyclerView == null) {
             folderRecyclerView = findViewById(R.id.folder_recycler_view);
-            folderRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+            folderRecyclerView.setLayoutManager(new GridLayoutManager(this, FOLDERS_PER_ROW));
             folderAdapter = new FolderAdapter(
                     new FolderAdapter.ClickListener() {
                         @Override
