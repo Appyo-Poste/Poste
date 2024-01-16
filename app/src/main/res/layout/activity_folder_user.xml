@@ -79,7 +79,7 @@
             android:contentDescription="@string/poste_logo_description"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
-            app:srcCompat="@drawable/newlogo_p_noback" />
+            app:srcCompat="@drawable/poste_logo_p" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
