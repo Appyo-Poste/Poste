@@ -2,6 +2,7 @@
 <resources>
     <drawable name="poste_logo_expanded">@drawable/new_logo_poste_removebg</drawable>
     <drawable name="poste_logo_p">@drawable/newlogo_p_noback</drawable>
-    <drawable name="folder_icon">@drawable/folder_icon0</drawable>
+    <drawable name="folder_icon">@drawable/folder_icon_new</drawable>
+    <drawable name="post_icon">@drawable/post_icon0</drawable>
     <drawable name="edit_post_icon">@drawable/edit_post_icon0</drawable>
 </resources>
