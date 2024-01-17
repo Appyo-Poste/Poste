@@ -24,6 +24,7 @@
             android:layout_height="60dp"
             android:maxHeight="400dp"
             android:scaleType="fitCenter"
+            android:contentDescription="@string/post_icon"
             android:src="@drawable/post_icon"/>
 
 
