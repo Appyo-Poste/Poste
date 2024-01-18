@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,9 +22,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -38,17 +44,21 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.R
 import com.example.poste.http.RegisterRequest
 import com.example.poste.http.RetrofitClient
 import okhttp3.ResponseBody
 import retrofit2.Call
+
 
 class IntroActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Poste()
+            MyApplicationTheme {
+                Poste()
+            }
         }
     }
 }
@@ -62,6 +72,49 @@ fun Poste() {
     }
 }
 
+val PrimaryColor = Color(0xFF00796B)
+val PrimaryDarkColor = Color(0xFF005662)
+val AccentColor = Color(0xFF4DB6AC)
+val SecondaryColor = Color(0xFF757575)
+val BackgroundColor = Color(0xFF000000)
+val TextColor = Color(0xFF212121)
+val TextOnPrimaryColor = Color(0xFFFFFFFF)
+
+val LightColorScheme = lightColorScheme(
+    primary = PrimaryColor,
+    onPrimary = TextOnPrimaryColor,
+    secondary = SecondaryColor,
+    onSecondary = TextOnPrimaryColor,
+    background = BackgroundColor,
+    surface = BackgroundColor,
+    onBackground = TextColor,
+    onSurface = TextColor,
+)
+
+val DarkColorScheme = lightColorScheme(
+    primary = PrimaryDarkColor,
+    onPrimary = TextOnPrimaryColor,
+    secondary = SecondaryColor,
+    onSecondary = TextOnPrimaryColor,
+    background = BackgroundColor,
+    surface = BackgroundColor,
+    onBackground = TextColor,
+    onSurface = TextColor,
+)
+
+@Composable
+fun MyApplicationTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = Typography(),
+        content = content
+    )
+}
+
 @Composable
 fun DynamicScreen(sharedViewModel: SharedViewModel) {
     val currentState = sharedViewModel.currentScreenState.value
@@ -72,7 +125,7 @@ fun DynamicScreen(sharedViewModel: SharedViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(id = R.drawable.logo_intro),
+            painter = painterResource(id = R.drawable.logo),
             contentDescription = "Intro Logo",
             modifier = Modifier
                 .fillMaxWidth()
@@ -97,9 +150,9 @@ fun IntroContent(sharedViewModel: SharedViewModel) {
                 sharedViewModel.currentScreenState.value = ScreenState.REGISTER
             },
             modifier = Modifier
-                .fillMaxWidth(.6f)
+                .fillMaxWidth(.6f),
         ) {
-            Text(text = "Create Account")
+            Text(text = "Register")
         }
         Spacer(modifier = Modifier.height(16.dp))
         Button(
@@ -132,6 +185,12 @@ fun RegisterContent(sharedViewModel: SharedViewModel) {
         targetValue = progress,
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec, label = ""
     )
+    BackHandler(enabled = currentStep != RegistrationStep.Email) {
+        val previousOrdinal = currentStep.ordinal - 1
+        if (previousOrdinal >= 0) {
+            currentStep = RegistrationStep.entries.toTypedArray()[previousOrdinal]
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize(),
