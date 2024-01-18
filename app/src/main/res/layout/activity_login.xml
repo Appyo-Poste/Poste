@@ -17,13 +17,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5"
-        app:srcCompat="@drawable/new_logo_poste_removebg" />
+        app:srcCompat="@drawable/poste_logo_expanded" />
 
     <EditText
         android:id="@+id/editTextTextEmailAddress"
         style="@style/EditTextStyle"
         android:inputType="textEmailAddress"
         android:hint="@string/enter_email"
+        android:autofillHints="emailAddress"
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -36,6 +37,7 @@
         style="@style/EditTextStyle"
         android:inputType="textPassword"
         android:hint="@string/enter_password"
+        android:autofillHints="password"
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -49,7 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/remember_me"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="@+id/editTextTextPassword"
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
 

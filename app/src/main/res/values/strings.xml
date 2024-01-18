@@ -133,6 +133,8 @@
     <string name="poste_logo_description">Poste Logo</string>
     <string name="title_activity_twitter_token">TwitterToken</string>
     <string name="edit_post_icon">edit post icon</string>
+    <string name="post_icon">post icon</string>
+    <string name="folder_icon">folder icon</string>
     <string name="post_deleted">Post deleted</string>
     <string name="text_view">folderNameText</string>
     <string name="click_here">Click here!</string>

@@ -23,7 +23,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5"
-            app:srcCompat="@drawable/new_logo_poste_removebg" />
+            app:srcCompat="@drawable/poste_logo_expanded" />
 
         <EditText
             android:id="@+id/editTextEmail"

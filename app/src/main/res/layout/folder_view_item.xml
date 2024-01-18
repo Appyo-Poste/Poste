@@ -29,6 +29,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/folder_icon_new" />
+        android:contentDescription="@string/folder_icon"
+        app:srcCompat="@drawable/folder_icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
