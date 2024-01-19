@@ -80,6 +80,15 @@
             android:layout_marginBottom="16dp"
             android:autofillHints="password" />
 
+        <TextView
+            android:id="@+id/requiredFields"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/required_all"
+            android:textSize="15sp"
+            android:textStyle="bold"/>
+
         <Button
             android:id="@+id/buttonRegister"
             android:layout_width="match_parent"

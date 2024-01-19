@@ -100,7 +100,8 @@
     <string name="create">Create</string>
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
-    <string name="folder">Folder</string>
+    <string name="folder">Folder<font color="red">*</font></string>
+    <string name="folder_create">Folder</string>
     <string name="folder_name">Folder Name</string>
     <string name="name">Name</string>
     <string name="new_folder">Create Folder</string>
@@ -110,10 +111,10 @@
     <string name="share">Share</string>
     <string name="share_folder">Share Folder</string>
     <string name="error_message">Error: </string>
-    <string name="name_field">Name:</string>
-    <string name="title">Title</string>
+    <string name="name_field">Name</string>
+    <string name="title">Title<font color="red">*</font></string>
     <string name="tags">Tags</string>
-    <string name="description">Description</string>
+    <string name="description">Description<font color="red">*</font></string>
     <string name="login">Login</string>
     <string name="options">Options</string>
     <string name="password">Password</string>
@@ -142,6 +143,8 @@
     <string name="edit_access">Edit Access</string>
     <string name="user_name">User Name</string>
     <string name="communication_error">Unable to communicate with server</string>
+    <string name="required_info">Fields with <font color="red">*</font> are required</string>
+    <string name="required_all">All fields are required</string>
     <!--=====[ Misc | End ]=====-->
 
     <string-array name="spinner_values">
@@ -168,7 +171,7 @@
 
     <!--=====[ edit_post | Start ]=====-->
     <string name="edit_post_text">Edit Post</string>
-    <string name="link_text">Link to post:</string>
+    <string name="link_text">Link to post<font color="red">*</font></string>
     <string name="save_post_text">Save Post</string>
     <string name="cancel_post_text">Cancel Post</string>
     <!--=====[ edit_post | End ]=====-->
@@ -208,7 +211,7 @@
     <!--=====[ search | End ]=====-->
 
     <!--=====[ shared_folder | Start ]=====-->
-    <string name="email_field">Email:</string>
+    <string name="email_field">Email</string>
     <string name="Shared_Permissions">Share Permissions</string>
     <!--=====[ shared_folder | End ]=====-->
 
