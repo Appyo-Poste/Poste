@@ -1,4 +1,4 @@
-package com.example.poste
+package com.poste
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

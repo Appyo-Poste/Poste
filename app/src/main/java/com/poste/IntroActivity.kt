@@ -1,4 +1,4 @@
-package com.example.poste
+package com.poste
 
 import android.content.Context
 import android.os.Bundle
@@ -10,7 +10,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,13 +20,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.ProgressIndicatorDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.Typography
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,127 +34,99 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
-import com.example.poste.http.RegisterRequest
-import com.example.poste.http.RetrofitClient
+import com.poste.http.RegisterRequest
+import com.poste.http.RetrofitClient
+import com.poste.theme.MyApplicationTheme
+import com.poste.theme.color1
+import com.poste.theme.color2
 import okhttp3.ResponseBody
 import retrofit2.Call
 
 
 class IntroActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
-            MyApplicationTheme {
-                Poste()
-            }
+            Poste()
         }
     }
 }
 
+@Preview(showBackground = true)
 @Composable
 fun Poste() {
-    val navController = rememberNavController()
-    val sharedViewModel = remember { SharedViewModel() }
-    NavHost(navController = navController, startDestination = "dynamic") {
-        composable("dynamic") { DynamicScreen(sharedViewModel) }
+    MyApplicationTheme {
+        val navController = rememberNavController()
+        val sharedViewModel = remember { SharedViewModel() }
+        NavHost(navController = navController, startDestination = "dynamic") {
+            composable("dynamic") { DynamicScreen(sharedViewModel) }
+        }
     }
-}
-
-val PrimaryColor = Color(0xFF00796B)
-val PrimaryDarkColor = Color(0xFF005662)
-val AccentColor = Color(0xFF4DB6AC)
-val SecondaryColor = Color(0xFF757575)
-val BackgroundColor = Color(0xFF000000)
-val TextColor = Color(0xFF212121)
-val TextOnPrimaryColor = Color(0xFFFFFFFF)
-
-val LightColorScheme = lightColorScheme(
-    primary = PrimaryColor,
-    onPrimary = TextOnPrimaryColor,
-    secondary = SecondaryColor,
-    onSecondary = TextOnPrimaryColor,
-    background = BackgroundColor,
-    surface = BackgroundColor,
-    onBackground = TextColor,
-    onSurface = TextColor,
-)
-
-val DarkColorScheme = lightColorScheme(
-    primary = PrimaryDarkColor,
-    onPrimary = TextOnPrimaryColor,
-    secondary = SecondaryColor,
-    onSecondary = TextOnPrimaryColor,
-    background = BackgroundColor,
-    surface = BackgroundColor,
-    onBackground = TextColor,
-    onSurface = TextColor,
-)
-
-@Composable
-fun MyApplicationTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
-) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography(),
-        content = content
-    )
 }
 
 @Composable
 fun DynamicScreen(sharedViewModel: SharedViewModel) {
     val currentState = sharedViewModel.currentScreenState.value
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Intro Logo",
+    Surface(color = MaterialTheme.colorScheme.background) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1.5f)
-        )
-        AnimatedVisibility(visible = currentState == ScreenState.INTRO) {
-            IntroContent(sharedViewModel = sharedViewModel)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Intro Logo",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1.5f)
+            )
+            AnimatedVisibility(visible = currentState == ScreenState.INTRO) {
+                IntroContent(sharedViewModel = sharedViewModel)
+            }
+            AnimatedVisibility(visible = currentState == ScreenState.REGISTER) {
+                RegisterContent(sharedViewModel = sharedViewModel)
+            }
         }
-        AnimatedVisibility(visible = currentState == ScreenState.REGISTER ) {
-            RegisterContent(sharedViewModel = sharedViewModel)
-        }
-
     }
+
 }
 
 @Composable
 fun IntroContent(sharedViewModel: SharedViewModel) {
+
+    Log.d("ThemeDebug", "Current primary color: ${MaterialTheme.colorScheme.primary}")
+
     Column {
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
+        FloatingActionButton(
+            containerColor = color1,
+            contentColor = color2,
+
             onClick = {
                 sharedViewModel.currentScreenState.value = ScreenState.REGISTER
             },
+            //colors = ButtonDefaults.buttonColors(containerColor = SeaGreen),
             modifier = Modifier
                 .fillMaxWidth(.6f),
         ) {
             Text(text = "Register")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
+        FloatingActionButton(
+            containerColor = color2,
+            contentColor = color1,
             onClick = {
                 //TODO: Handle login navigation
             },
@@ -218,8 +189,8 @@ fun RegisterContent(sharedViewModel: SharedViewModel) {
                 Spacer(modifier = Modifier.height(16.dp))
                 EntryBox("Email", email, { email = it })
             }
-            RegistrationStep.FirstName ->
-            {
+
+            RegistrationStep.FirstName -> {
                 Text(
                     text = "Next, we'll need your first name",
                     modifier = Modifier
@@ -229,6 +200,7 @@ fun RegisterContent(sharedViewModel: SharedViewModel) {
                 Spacer(modifier = Modifier.height(16.dp))
                 EntryBox("First Name", firstName, { firstName = it })
             }
+
             RegistrationStep.LastName -> {
                 Text(
                     text = "Hi, $firstName. What's your last name?",
@@ -239,6 +211,7 @@ fun RegisterContent(sharedViewModel: SharedViewModel) {
                 Spacer(modifier = Modifier.height(16.dp))
                 EntryBox("Last Name", lastName, { lastName = it })
             }
+
             RegistrationStep.Password -> {
                 Text(
                     text = "Got it. $firstName $lastName. Go ahead and set your password",
@@ -253,6 +226,7 @@ fun RegisterContent(sharedViewModel: SharedViewModel) {
                     isPassword = true
                 )
             }
+
             RegistrationStep.ConfirmPassword -> {
                 Text(
                     text = "One more time -- confirm your password",
@@ -299,7 +273,14 @@ fun RegisterContent(sharedViewModel: SharedViewModel) {
     }
 }
 
-fun handleRegistration(email: String, firstName: String, lastName: String, password: String, context: Context, sharedViewModel: SharedViewModel) {
+fun handleRegistration(
+    email: String,
+    firstName: String,
+    lastName: String,
+    password: String,
+    context: Context,
+    sharedViewModel: SharedViewModel
+) {
     var call: Call<ResponseBody> = RetrofitClient.instance.registerUser(
         registerRequest = RegisterRequest(
             email = email,
@@ -342,7 +323,12 @@ fun handleRegistration(email: String, firstName: String, lastName: String, passw
 }
 
 @Composable
-fun EntryBox(label: String, text: String, onTextChange: (String) -> Unit, isPassword: Boolean = false) {
+fun EntryBox(
+    label: String,
+    text: String,
+    onTextChange: (String) -> Unit,
+    isPassword: Boolean = false
+) {
     OutlinedTextField(
         value = text,
         onValueChange = onTextChange,

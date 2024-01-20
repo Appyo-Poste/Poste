@@ -1,4 +1,4 @@
-package com.example.poste.http
+package com.poste.http
 
 import okhttp3.ResponseBody
 import retrofit2.Call

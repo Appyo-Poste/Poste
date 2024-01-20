@@ -1,4 +1,4 @@
-package com.example.poste.http
+package com.poste.http
 
 data class RegisterRequest(
     val email: String,

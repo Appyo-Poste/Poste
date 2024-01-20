@@ -1,4 +1,4 @@
-package com.example.poste.http
+package com.poste.http
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
