@@ -6,18 +6,19 @@
     android:padding="16dp">
 
 
-
     <EditText
         android:id="@+id/editTextItemName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/item_name" />
+        android:hint="@string/item_name"
+        android:singleLine="true" />
 
     <EditText
         android:id="@+id/editTextItemLink"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/item_link" />
+        android:hint="@string/item_link"
+        android:singleLine="true" />
 
     <Spinner
         android:id="@+id/spinnerNewPostFolder"
