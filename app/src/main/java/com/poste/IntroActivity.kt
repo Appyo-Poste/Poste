@@ -19,8 +19,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -34,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -56,14 +60,12 @@ import retrofit2.Call
 class IntroActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             Poste()
         }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
 fun Poste() {
     MyApplicationTheme {
@@ -141,6 +143,30 @@ fun IntroContent(sharedViewModel: SharedViewModel) {
 
 enum class RegistrationStep { Email, FirstName, LastName, Password, ConfirmPassword }
 
+@Preview
+@Composable
+fun RegisterPreview() {
+    MyApplicationTheme {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = "Intro Logo",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1.5f)
+                )
+                RegisterContent(SharedViewModel())
+            }
+        }
+    }
+}
+
 
 @Composable
 fun RegisterContent(sharedViewModel: SharedViewModel) {
@@ -163,10 +189,9 @@ fun RegisterContent(sharedViewModel: SharedViewModel) {
         }
     }
     Column(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = "Account Registration",
@@ -187,7 +212,7 @@ fun RegisterContent(sharedViewModel: SharedViewModel) {
                         .align(Alignment.CenterHorizontally),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                EntryBox("Email", email, { email = it })
+                EntryBox("Email", email, { email = it }, validator = ::validateEmail)
             }
 
             RegistrationStep.FirstName -> {
@@ -198,7 +223,7 @@ fun RegisterContent(sharedViewModel: SharedViewModel) {
                         .align(Alignment.CenterHorizontally),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                EntryBox("First Name", firstName, { firstName = it })
+                EntryBox("First Name", firstName, { firstName = it }, validator = ::validateName)
             }
 
             RegistrationStep.LastName -> {
@@ -209,7 +234,7 @@ fun RegisterContent(sharedViewModel: SharedViewModel) {
                         .align(Alignment.CenterHorizontally),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                EntryBox("Last Name", lastName, { lastName = it })
+                EntryBox("Last Name", lastName, { lastName = it }, validator = ::validateName)
             }
 
             RegistrationStep.Password -> {
@@ -223,7 +248,8 @@ fun RegisterContent(sharedViewModel: SharedViewModel) {
                     "Password",
                     password,
                     { password = it },
-                    isPassword = true
+                    isPassword = true,
+                    validator = ::validatePassword
                 )
             }
 
@@ -239,7 +265,8 @@ fun RegisterContent(sharedViewModel: SharedViewModel) {
                     "Confirm Password",
                     confirmPassword,
                     { confirmPassword = it },
-                    isPassword = true
+                    isPassword = true,
+                    validator = ::validatePassword
                 )
             }
         }
@@ -327,18 +354,76 @@ fun EntryBox(
     label: String,
     text: String,
     onTextChange: (String) -> Unit,
-    isPassword: Boolean = false
+    isPassword: Boolean = false,
+    validator: (String) -> String? = { null }, // Validation function
 ) {
+    var isValid by remember { mutableStateOf(true) }
+
+    var error by remember { mutableStateOf("") }
     OutlinedTextField(
+        maxLines = 1,
         value = text,
-        onValueChange = onTextChange,
+        onValueChange = {
+            val newText = it.filterNot { char -> char.isWhitespace() }
+            onTextChange(newText)
+            error = validator(newText) ?: ""
+            isValid = validator(newText)==null // Perform validation on each text change
+        },
         label = { Text(text = label) },
         modifier = Modifier.fillMaxWidth(.8f),
         shape = RoundedCornerShape(16.dp),
+        isError = !isValid, // Show error state based on validation
         visualTransformation = if (isPassword) {
             PasswordVisualTransformation()
         } else {
             VisualTransformation.None
+        },
+        trailingIcon = {
+            if (!isValid && text.isNotEmpty()) {
+                Icon(imageVector = Icons.Filled.Warning, contentDescription = "Invalid Input")
+            }
         }
     )
+
+    // Optionally display an error message
+    if (!isValid && text.isNotEmpty()) {
+        Text(
+            text = error,
+            color = Color.Red,
+            // style caption
+            modifier = Modifier.padding(start = 16.dp)
+        )
+    }
+}
+
+fun validateEmail(email: String): String? {
+    return if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        null
+    } else {
+        "Invalid email"
+    }
+}
+
+fun validateName(name: String): String? {
+    return if (name.length >= 2) {
+        null
+    } else {
+        "Name must be at least 2 characters"
+    }
+}
+
+fun validatePassword(password: String): String? {
+    return if (password.length < 8) {
+        "Password must be at least 8 characters"
+    } else if (password.length > 32) {
+        "Password must be less than 32 characters"
+    } else if (!password.contains(Regex("[0-9]"))) {
+        "Password must contain a number"
+    } else if (!password.contains(Regex("[A-Z]"))) {
+        "Password must contain an uppercase letter"
+    } else if (!password.contains(Regex("[a-z]"))) {
+        "Password must contain a lowercase letter"
+    } else {
+        null
+    }
 }
