@@ -50,7 +50,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.poste.http.RegisterRequest
 import com.poste.http.RetrofitClient
-import com.poste.theme.MyApplicationTheme
+import com.poste.theme.PosteTheme
 import com.poste.theme.color1
 import com.poste.theme.color2
 import okhttp3.ResponseBody
@@ -68,7 +68,7 @@ class IntroActivity : ComponentActivity() {
 
 @Composable
 fun Poste() {
-    MyApplicationTheme {
+    PosteTheme {
         val navController = rememberNavController()
         val sharedViewModel = remember { SharedViewModel() }
         NavHost(navController = navController, startDestination = "dynamic") {
@@ -146,7 +146,7 @@ enum class RegistrationStep { Email, FirstName, LastName, Password, ConfirmPassw
 @Preview
 @Composable
 fun RegisterPreview() {
-    MyApplicationTheme {
+    PosteTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             Column(
                 modifier = Modifier
