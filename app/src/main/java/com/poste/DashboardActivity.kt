@@ -56,10 +56,36 @@ fun Folder(name: String) {
     }
 }
 
+@Composable
+fun SharedFolder(name: String) {
+    Column (modifier = Modifier
+        .padding(all = 8.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        Image(
+            painter = painterResource(R.drawable.folder_icon_shared),
+            contentDescription = "Contact profile picture",
+            modifier = Modifier
+                .size(80.dp)
+        )
+        Text(
+            text = name
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun FolderPreview() {
     PosteTheme {
         Folder("Test Folder")
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SharedFolderPreview() {
+    PosteTheme {
+        SharedFolder("Shared Folder")
     }
 }
