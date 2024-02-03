@@ -74,6 +74,24 @@ fun SharedFolder(name: String) {
     }
 }
 
+@Composable
+fun Post(name: String) {
+    Column (modifier = Modifier
+        .padding(all = 8.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        Image(
+            painter = painterResource(R.drawable.post_icon),
+            contentDescription = "Contact profile picture",
+            modifier = Modifier
+                .size(80.dp)
+        )
+        Text(
+            text = name
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun FolderPreview() {
@@ -87,5 +105,13 @@ fun FolderPreview() {
 fun SharedFolderPreview() {
     PosteTheme {
         SharedFolder("Shared Folder")
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PostPreview() {
+    PosteTheme {
+        Post("Test Post")
     }
 }
