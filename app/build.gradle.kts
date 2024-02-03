@@ -35,13 +35,11 @@ android {
             dimension = "version"
             applicationIdSuffix = ".local"
             versionNameSuffix = "-local"
-            buildConfigField("String", "API_BASE_URL", "\"https://10.0.2.2/\"")
         }
         create("dev") {
             dimension = "version"
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
-            buildConfigField("String", "API_BASE_URL", "\"https://dev.example.com/\"")
         }
     }
     compileOptions {
