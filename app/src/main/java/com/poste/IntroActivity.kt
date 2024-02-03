@@ -30,7 +30,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.poste.theme.LogoLight
-import com.poste.theme.MyApplicationTheme
+import com.poste.theme.PosteTheme
 
 
 class IntroActivity : ComponentActivity() {
@@ -44,7 +44,7 @@ class IntroActivity : ComponentActivity() {
 
 @Composable
 fun Poste() {
-    MyApplicationTheme {
+    PosteTheme {
         val navController = rememberNavController()
         val sharedViewModel = remember { SharedViewModel() }
         NavHost(navController = navController, startDestination = "dynamic") {
@@ -84,7 +84,7 @@ fun DynamicScreen(sharedViewModel: SharedViewModel) {
 @Preview
 @Composable
 fun test() {
-    MyApplicationTheme {
+    PosteTheme {
         Column(
             modifier = Modifier
                 .fillMaxSize(),
