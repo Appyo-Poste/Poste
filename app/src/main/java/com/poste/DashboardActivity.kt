@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
 import com.poste.theme.PosteTheme
 
+private enum class ObjectType{Folder, SharedFolder,Post}
+
 class DashboardActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +33,7 @@ class DashboardActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Folder("Test")
+                    DashboardObject("Test Folder",ObjectType.Folder)
                 }
             }
         }
@@ -39,53 +41,34 @@ class DashboardActivity : ComponentActivity() {
 }
 
 @Composable
-fun Folder(name: String) {
+private fun DashboardObject(name: String, objectType: ObjectType ) {
     Column (modifier = Modifier
                     .padding(all = 8.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally) {
-        Image(
-            painter = painterResource(R.drawable.folder_icon),
-            contentDescription = "Contact profile picture",
-            modifier = Modifier
-                .size(80.dp)
-        )
-        Text(
-            text = name
-        )
-    }
-}
-
-@Composable
-fun SharedFolder(name: String) {
-    Column (modifier = Modifier
-        .padding(all = 8.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally) {
-        Image(
-            painter = painterResource(R.drawable.folder_icon_shared),
-            contentDescription = "Contact profile picture",
-            modifier = Modifier
-                .size(80.dp)
-        )
-        Text(
-            text = name
-        )
-    }
-}
-
-@Composable
-fun Post(name: String) {
-    Column (modifier = Modifier
-        .padding(all = 8.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally) {
-        Image(
-            painter = painterResource(R.drawable.post_icon),
-            contentDescription = "Contact profile picture",
-            modifier = Modifier
-                .size(80.dp)
-        )
+        when (objectType){
+            ObjectType.Folder ->
+                Image(
+                    painter = painterResource(R.drawable.folder_icon),
+                    contentDescription = "Icon for folder",
+                    modifier = Modifier
+                        .size(80.dp)
+                )
+            ObjectType.SharedFolder ->
+                Image(
+                    painter = painterResource(R.drawable.folder_icon_shared),
+                    contentDescription = "Icon for shared folder",
+                    modifier = Modifier
+                        .size(80.dp)
+                )
+            ObjectType.Post ->
+                Image(
+                    painter = painterResource(R.drawable.post_icon),
+                    contentDescription = "Icon for folder",
+                    modifier = Modifier
+                        .size(80.dp)
+                )
+        }
         Text(
             text = name
         )
@@ -96,7 +79,7 @@ fun Post(name: String) {
 @Composable
 fun FolderPreview() {
     PosteTheme {
-        Folder("Test Folder")
+        DashboardObject("Test Folder",ObjectType.Folder)
     }
 }
 
@@ -104,7 +87,7 @@ fun FolderPreview() {
 @Composable
 fun SharedFolderPreview() {
     PosteTheme {
-        SharedFolder("Shared Folder")
+        DashboardObject("Shared Folder", ObjectType.SharedFolder)
     }
 }
 
@@ -112,6 +95,6 @@ fun SharedFolderPreview() {
 @Composable
 fun PostPreview() {
     PosteTheme {
-        Post("Test Post")
+        DashboardObject("Test Post", ObjectType.Post)
     }
 }
