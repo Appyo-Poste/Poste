@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,12 +14,15 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +33,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
+import com.poste.reusables.rememberImeState
 import com.poste.theme.LogoLight
 import com.poste.theme.PosteTheme
 
@@ -56,10 +61,19 @@ fun Poste() {
 @Composable
 fun DynamicScreen(sharedViewModel: SharedViewModel) {
     val currentState = sharedViewModel.currentScreenState.value
+    val imeState = rememberImeState()
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(key1 = imeState.value) {
+        if (imeState.value) {
+            scrollState.animateScrollTo(scrollState.maxValue, tween(300))
+        }
+    }
     Surface(color = MaterialTheme.colorScheme.background) {
         Column(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -75,6 +89,9 @@ fun DynamicScreen(sharedViewModel: SharedViewModel) {
             }
             AnimatedVisibility(visible = currentState == ScreenState.REGISTER) {
                 RegisterContent(sharedViewModel = sharedViewModel)
+            }
+            AnimatedVisibility(visible = currentState == ScreenState.LOGIN) {
+                LoginContent(sharedViewModel = sharedViewModel)
             }
         }
     }
@@ -120,7 +137,7 @@ fun IntroContent(sharedViewModel: SharedViewModel) {
         FloatingActionButton(
             containerColor = LogoLight,
             onClick = {
-                //TODO: Handle login navigation
+                sharedViewModel.currentScreenState.value = ScreenState.LOGIN
             },
             modifier = Modifier
                 .fillMaxWidth(.6f)
