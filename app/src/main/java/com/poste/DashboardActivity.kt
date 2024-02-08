@@ -4,9 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
@@ -20,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
 import com.poste.theme.PosteTheme
+import java.time.LocalDate
 
 private enum class ObjectType{Folder, SharedFolder,Post}
 
@@ -33,7 +37,7 @@ class DashboardActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    DashboardObject("Test Folder",ObjectType.Folder)
+                    DashboardObject("Test Folder", 12, LocalDate.now(), ObjectType.Folder)
                 }
             }
         }
@@ -41,11 +45,15 @@ class DashboardActivity : ComponentActivity() {
 }
 
 @Composable
-private fun DashboardObject(name: String, objectType: ObjectType ) {
-    Column (modifier = Modifier
-                    .padding(all = 8.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally) {
+private fun DashboardObject(name: String, numFiles: Int, date: LocalDate, objectType: ObjectType ) {
+    Row (modifier = Modifier
+        .padding(all = 8.dp)
+        .fillMaxWidth()
+        .clickable {
+            /* TODO: add click functionality */
+        },
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically) {
         when (objectType){
             ObjectType.Folder ->
                 Image(
@@ -61,17 +69,44 @@ private fun DashboardObject(name: String, objectType: ObjectType ) {
                     modifier = Modifier
                         .size(80.dp)
                 )
+            /*
+            TODO: POSTS NEED TO BE REDONE ACCORDING TO NEW PROTOTYPES
             ObjectType.Post ->
                 Image(
                     painter = painterResource(R.drawable.post_icon),
-                    contentDescription = "Icon for folder",
+                    contentDescription = "Icon for post",
                     modifier = Modifier
                         .size(80.dp)
-                )
+                )*/
+            else -> {}
+        }
+        Column {
+            Text(text = name)
+            Text(text = "$numFiles files")
         }
         Text(
-            text = name
+            text = date.toString()
         )
+        Row{
+            Image(
+                painter = painterResource(R.drawable.post_icon),
+                contentDescription = "Icon for edit",
+                modifier = Modifier
+                    .size(35.dp)
+            )
+            Image(
+                painter = painterResource(R.drawable.post_icon),
+                contentDescription = "Icon for upload",
+                modifier = Modifier
+                    .size(35.dp)
+            )
+            Image(
+                painter = painterResource(R.drawable.post_icon),
+                contentDescription = "Icon for share",
+                modifier = Modifier
+                    .size(35.dp)
+            )
+        }
     }
 }
 
@@ -79,7 +114,7 @@ private fun DashboardObject(name: String, objectType: ObjectType ) {
 @Composable
 fun FolderPreview() {
     PosteTheme {
-        DashboardObject("Test Folder",ObjectType.Folder)
+        DashboardObject("Test Folder", 10, LocalDate.now(), ObjectType.Folder)
     }
 }
 
@@ -87,14 +122,16 @@ fun FolderPreview() {
 @Composable
 fun SharedFolderPreview() {
     PosteTheme {
-        DashboardObject("Shared Folder", ObjectType.SharedFolder)
+        DashboardObject("Shared Folder", 8, LocalDate.now(), ObjectType.SharedFolder)
     }
 }
 
+/*
+TODO: POSTS NEED TO BE REDONE ACCORDING TO NEW PROTOTYPES
 @Preview(showBackground = true)
 @Composable
 fun PostPreview() {
     PosteTheme {
-        DashboardObject("Test Post", ObjectType.Post)
+        DashboardObject("Test Post", LocalDate.now(), ObjectType.Post)
     }
-}
+}*/
