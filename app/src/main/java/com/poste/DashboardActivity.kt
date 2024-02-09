@@ -66,22 +66,19 @@ private fun DashboardObject(name: String, numFiles: Int, date: LocalDate, object
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically) {
         Box(
-            Modifier.size(85.dp)
+            Modifier.size(55.dp),
+            contentAlignment = Alignment.Center
         ){
             when (objectType){
                 ObjectType.Folder ->
                     Image(
                         painter = painterResource(R.drawable.folder_icon),
-                        contentDescription = "Icon for folder",
-                        modifier = Modifier
-                            .size(80.dp)
+                        contentDescription = "Icon for folder"
                     )
                 ObjectType.SharedFolder ->
                     Image(
                         painter = painterResource(R.drawable.folder_icon_shared),
                         contentDescription = "Icon for shared folder",
-                        modifier = Modifier
-                            .size(80.dp)
                     )
                 /*
                 TODO: POSTS NEED TO BE REDONE ACCORDING TO NEW PROTOTYPES
@@ -89,15 +86,16 @@ private fun DashboardObject(name: String, numFiles: Int, date: LocalDate, object
                     Image(
                         painter = painterResource(R.drawable.post_icon),
                         contentDescription = "Icon for post",
-                        modifier = Modifier
-                            .size(80.dp)
                     )*/
                 else -> {}
             }
         }
-        Box(Modifier.size(182.dp), contentAlignment = Alignment.Center){
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Box(Modifier.size(192.dp), contentAlignment = Alignment.Center){
             Row(verticalAlignment = Alignment.CenterVertically){
-                Box(Modifier.size(85.dp), contentAlignment = Alignment.Center){
+                Box(Modifier.size(90.dp), contentAlignment = Alignment.Center){
                     Column {
                         Text(text = name, maxLines = 2, overflow = TextOverflow.Ellipsis)
                         Text(text = "$numFiles files")
