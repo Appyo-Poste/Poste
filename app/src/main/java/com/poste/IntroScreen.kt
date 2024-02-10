@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -27,8 +26,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -53,13 +52,14 @@ fun Poste() {
         val navController = rememberNavController()
         val sharedViewModel = remember { SharedViewModel() }
         NavHost(navController = navController, startDestination = "dynamic") {
-            composable("dynamic") { DynamicScreen(sharedViewModel) }
+            composable("dynamic") { DynamicScreen(sharedViewModel, navController) }
+            composable("dashboard") { DashboardScreen(navController) }
         }
     }
 }
 
 @Composable
-fun DynamicScreen(sharedViewModel: SharedViewModel) {
+fun DynamicScreen(sharedViewModel: SharedViewModel, navController: NavController) {
     val currentState = sharedViewModel.currentScreenState.value
     val imeState = rememberImeState()
     val scrollState = rememberScrollState()
@@ -91,30 +91,12 @@ fun DynamicScreen(sharedViewModel: SharedViewModel) {
                 RegisterContent(sharedViewModel = sharedViewModel)
             }
             AnimatedVisibility(visible = currentState == ScreenState.LOGIN) {
-                LoginContent(sharedViewModel = sharedViewModel)
+                LoginContent(sharedViewModel = sharedViewModel, navController = navController)
             }
         }
     }
 
 }
-
-@Preview
-@Composable
-fun test() {
-    PosteTheme {
-        Column(
-            modifier = Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Button(onClick = { /*TODO*/ }) {
-                Text(text = "Test")
-            }
-        }
-    }
-}
-
 @Composable
 fun IntroContent(sharedViewModel: SharedViewModel) {
 
@@ -123,8 +105,6 @@ fun IntroContent(sharedViewModel: SharedViewModel) {
     Column {
         Spacer(modifier = Modifier.height(16.dp))
         FloatingActionButton(
-            //containerColor = LogoLight,
-            //contentColor = LogoDark,
             onClick = {
                 sharedViewModel.currentScreenState.value = ScreenState.REGISTER
             },
