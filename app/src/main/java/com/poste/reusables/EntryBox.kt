@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun EntryBox(
     label: String,
-    text: String,
+    state: String,
     onTextChange: (String) -> Unit,
     isPassword: Boolean = false,
     validator: (String) -> String? = { null }, // Validation function
@@ -32,7 +32,7 @@ fun EntryBox(
     var error by remember { mutableStateOf("") }
     OutlinedTextField(
         maxLines = 1,
-        value = text,
+        value = state,
         onValueChange = {
             val newText = it.filterNot { char -> char.isWhitespace() }
             onTextChange(newText)
@@ -49,14 +49,14 @@ fun EntryBox(
             VisualTransformation.None
         },
         trailingIcon = {
-            if (!isValid && text.isNotEmpty()) {
+            if (!isValid && state.isNotEmpty()) {
                 Icon(imageVector = Icons.Filled.Warning, contentDescription = "Invalid Input")
             }
         }
     )
 
     // Optionally display an error message
-    if (!isValid && text.isNotEmpty()) {
+    if (!isValid && state.isNotEmpty()) {
         Text(
             text = error,
             color = Color.Red,

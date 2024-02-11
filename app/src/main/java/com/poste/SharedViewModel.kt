@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModel
 
 enum class ScreenState {
     INTRO,
-    REGISTER
+    REGISTER,
+    LOGIN
 }
 
 class SharedViewModel: ViewModel() {
