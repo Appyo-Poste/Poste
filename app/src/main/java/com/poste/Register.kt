@@ -37,6 +37,9 @@ import org.json.JSONObject
 import retrofit2.Call
 import java.util.Locale
 
+enum class RegistrationStep { Email, FirstName, LastName, Password }
+
+
 @Composable
 fun RegisterContent(sharedViewModel: SharedViewModel) {
     val context = LocalContext.current

@@ -40,7 +40,7 @@ fun EntryBox(
             isValid = validator(newText) == null // Perform validation on each text change
         },
         label = { Text(text = label) },
-        modifier = Modifier.fillMaxWidth(.8f),
+        modifier = Modifier.fillMaxWidth(.85f),
         shape = RoundedCornerShape(16.dp),
         isError = !isValid, // Show error state based on validation
         visualTransformation = if (isPassword) {
