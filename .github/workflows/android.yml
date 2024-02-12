@@ -27,4 +27,4 @@ jobs:
         echo "${{ secrets.REAL_CERTIFICATE }}" | base64 -d > ./app/src/main/res/raw/poste.crt
 
     - name: Build with Gradle
-      run: ./gradlew assembleDevelopment
+      run: ./gradlew assembleDev

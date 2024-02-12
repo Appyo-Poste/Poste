@@ -51,10 +51,14 @@ fun RegisterContent(sharedViewModel: SharedViewModel) {
         targetValue = progress,
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec, label = ""
     )
-    BackHandler(enabled = currentStep != RegistrationStep.Email) {
-        val previousOrdinal = currentStep.ordinal - 1
-        if (previousOrdinal >= 0) {
-            currentStep = RegistrationStep.entries.toTypedArray()[previousOrdinal]
+    BackHandler{
+        if (currentStep == RegistrationStep.Email) {
+            sharedViewModel.currentScreenState.value = ScreenState.INTRO
+        } else {
+            val previousOrdinal = currentStep.ordinal - 1
+            if (previousOrdinal >= 0) {
+                currentStep = RegistrationStep.entries.toTypedArray()[previousOrdinal]
+            }
         }
     }
     Column(
@@ -81,7 +85,7 @@ fun RegisterContent(sharedViewModel: SharedViewModel) {
                         .align(Alignment.CenterHorizontally),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                EntryBox("Email", email, { email = it }, validator = { validateEmail(it) })
+                EntryBox("Email", email, { email = it }) { validateEmail(it) }
             }
 
             RegistrationStep.FirstName -> {
@@ -95,8 +99,8 @@ fun RegisterContent(sharedViewModel: SharedViewModel) {
                 EntryBox(
                     "First Name",
                     firstName,
-                    { firstName = it },
-                    validator = { validateName(it) })
+                    { firstName = it }
+                ) { validateName(it) }
             }
 
             RegistrationStep.LastName -> {
@@ -107,7 +111,7 @@ fun RegisterContent(sharedViewModel: SharedViewModel) {
                         .align(Alignment.CenterHorizontally),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                EntryBox("Last Name", lastName, { lastName = it }, validator = { validateName(it) })
+                EntryBox("Last Name", lastName, { lastName = it }) { validateName(it) }
             }
 
             RegistrationStep.Password -> {
@@ -121,16 +125,14 @@ fun RegisterContent(sharedViewModel: SharedViewModel) {
                     "Password",
                     password,
                     { password = it },
-                    isPassword = true,
-                    validator = { validatePassword(it) }
-                )
+                    isPassword = true
+                ) { validatePassword(it) }
                 EntryBox(
                     "Confirm Password",
                     confirmPassword,
                     { confirmPassword = it },
-                    isPassword = true,
-                    validator = { validateConfirmPassword(password, it) }
-                )
+                    isPassword = true
+                ) { validateConfirmPassword(password, it) }
 
             }
         }
