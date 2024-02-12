@@ -1,5 +1,6 @@
 package com.poste
 
+import com.poste.reusables.Folder
 import java.time.LocalDate
 
 /**
@@ -7,7 +8,7 @@ import java.time.LocalDate
  */
 object SampleData {
     // Sample conversation data
-    val FolderSample = listOf(
+    val FolderListSample = listOf(
         Folder(
           "Test Folder", 13, LocalDate.now()
         ),
@@ -18,4 +19,6 @@ object SampleData {
           "Paris 2024", 4, LocalDate.now()
         ),
     )
+
+    val FolderSample = Folder("Test Folder", 10, LocalDate.now())
 }
