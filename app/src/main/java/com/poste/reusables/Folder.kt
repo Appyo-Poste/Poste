@@ -78,18 +78,27 @@ private fun FolderComposable(folder: Folder) {
                     contentDescription = "Icon for edit",
                     modifier = Modifier
                         .size(30.dp)
+                        .clickable {
+                            /* TODO: add click functionality for edit */
+                        },
                 )
                 Image(
                     painter = painterResource(R.drawable.post_icon),
                     contentDescription = "Icon for upload",
                     modifier = Modifier
                         .size(30.dp)
+                        .clickable {
+                            /* TODO: add click functionality for upload */
+                        },
                 )
                 Image(
                     painter = painterResource(R.drawable.post_icon),
                     contentDescription = "Icon for share",
                     modifier = Modifier
                         .size(30.dp)
+                        .clickable {
+                            /* TODO: add click functionality for share */
+                        },
                 )
             }
         }
