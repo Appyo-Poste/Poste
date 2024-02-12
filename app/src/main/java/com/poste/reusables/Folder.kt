@@ -48,8 +48,10 @@ private fun FolderComposable(folder: Folder) {
             contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(R.drawable.folder_icon),
-                contentDescription = "Icon for folder"
+                painter = painterResource(R.drawable.foldericon_nofill),
+                contentDescription = "Icon for folder",
+                modifier = Modifier
+                        .size(55.dp)
             )
         }
 
@@ -74,7 +76,7 @@ private fun FolderComposable(folder: Folder) {
         Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             Row {
                 Image(
-                    painter = painterResource(R.drawable.post_icon),
+                    painter = painterResource(R.drawable.editicon),
                     contentDescription = "Icon for edit",
                     modifier = Modifier
                         .size(30.dp)
@@ -83,7 +85,7 @@ private fun FolderComposable(folder: Folder) {
                         },
                 )
                 Image(
-                    painter = painterResource(R.drawable.post_icon),
+                    painter = painterResource(R.drawable.uploadicon),
                     contentDescription = "Icon for upload",
                     modifier = Modifier
                         .size(30.dp)
@@ -92,7 +94,7 @@ private fun FolderComposable(folder: Folder) {
                         },
                 )
                 Image(
-                    painter = painterResource(R.drawable.post_icon),
+                    painter = painterResource(R.drawable.shareicon),
                     contentDescription = "Icon for share",
                     modifier = Modifier
                         .size(30.dp)
