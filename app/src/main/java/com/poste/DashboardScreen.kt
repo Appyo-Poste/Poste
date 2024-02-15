@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import com.poste.reusables.FolderList
 
 @Composable
 fun DashboardScreen(navController: NavHostController) {
@@ -15,7 +16,6 @@ fun DashboardScreen(navController: NavHostController) {
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        Folder("Test")
+        FolderList(folders = SampleData.FolderListSample)
     }
-
 }
