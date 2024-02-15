@@ -4,8 +4,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,11 +29,13 @@ fun EntryBox(
     state: String,
     onTextChange: (String) -> Unit,
     isPassword: Boolean = false,
-    validator: (String) -> String? = { null }, // Validation function
+    validator: (String) -> String? = { null },
 ) {
     var isValid by remember { mutableStateOf(true) }
-
     var error by remember { mutableStateOf("") }
+
+    var hidePassword by remember { mutableStateOf(true) }
+
     OutlinedTextField(
         maxLines = 1,
         value = state,
@@ -37,30 +43,43 @@ fun EntryBox(
             val newText = it.filterNot { char -> char.isWhitespace() }
             onTextChange(newText)
             error = validator(newText) ?: ""
-            isValid = validator(newText) == null // Perform validation on each text change
+            isValid = error.isEmpty()
         },
         label = { Text(text = label) },
         modifier = Modifier.fillMaxWidth(.85f),
         shape = RoundedCornerShape(16.dp),
-        isError = !isValid, // Show error state based on validation
-        visualTransformation = if (isPassword) {
+        isError = !isValid,
+        visualTransformation = if (isPassword && hidePassword) {
             PasswordVisualTransformation()
         } else {
             VisualTransformation.None
         },
         trailingIcon = {
-            if (!isValid && state.isNotEmpty()) {
-                Icon(imageVector = Icons.Filled.Warning, contentDescription = "Invalid Input")
+            when {
+                isPassword -> {
+                    val image = if (hidePassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                    val description = if (hidePassword) "Show password" else "Hide password"
+                    IconButton(onClick = { hidePassword = !hidePassword }) {
+                        Icon(imageVector = image, contentDescription = description)
+                    }
+                }
+                !isValid && state.isNotEmpty() -> {
+                    IconButton(onClick = {}) {
+                        Icon(imageVector = Icons.Filled.Warning, contentDescription = "Error")
+                    }
+                }
+                isValid && state.isNotEmpty() -> {
+                    IconButton(onClick = {}) {
+                        Icon(imageVector = Icons.Filled.Check, contentDescription = "Valid")
+                    }
+                }
             }
         }
     )
-
-    // Optionally display an error message
     if (!isValid && state.isNotEmpty()) {
         Text(
             text = error,
             color = Color.Red,
-            // style caption
             modifier = Modifier.padding(start = 16.dp)
         )
     }

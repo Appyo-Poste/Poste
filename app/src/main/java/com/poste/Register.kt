@@ -3,30 +3,43 @@ package com.poste
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.ProgressIndicatorDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.poste.http.RegisterRequest
 import com.poste.http.RetrofitClient
+import com.poste.reusables.BrokenDividerWithText
 import com.poste.reusables.EntryBox
+import com.poste.reusables.rememberImeState
 import com.poste.reusables.validateConfirmPassword
 import com.poste.reusables.validateEmail
 import com.poste.reusables.validateName
@@ -37,152 +50,141 @@ import org.json.JSONObject
 import retrofit2.Call
 import java.util.Locale
 
-enum class RegistrationStep { Email, FirstName, LastName, Password }
+@Composable
+fun RegisterScreen(navController: NavHostController) {
+    val imeState = rememberImeState()
+    val scrollState = rememberScrollState()
 
+    LaunchedEffect(key1 = imeState.value) {
+        if (imeState.value) {
+            scrollState.animateScrollTo(scrollState.maxValue, tween(300))
+        }
+    }
+    Surface(color = MaterialTheme.colorScheme.background) {
+        RegisterContent2(navController)
+    }
+
+}
+
+@Preview
+@Composable
+fun PreviewRegisterContent() {
+    RegisterContent2(navController = rememberNavController())
+}
 
 @Composable
-fun RegisterContent(sharedViewModel: SharedViewModel) {
+fun RegisterContent2(navController: NavHostController) {
     val context = LocalContext.current
-    var currentStep by remember { mutableStateOf(RegistrationStep.Email) }
     var email by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-    val progress = currentStep.ordinal / (RegistrationStep.entries.size - 1).toFloat()
-    val animatedProgress = animateFloatAsState(
-        targetValue = progress,
-        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec, label = ""
-    )
-    BackHandler{
-        if (currentStep == RegistrationStep.Email) {
-            sharedViewModel.currentScreenState.value = ScreenState.INTRO
-        } else {
-            val previousOrdinal = currentStep.ordinal - 1
-            if (previousOrdinal >= 0) {
-                currentStep = RegistrationStep.entries.toTypedArray()[previousOrdinal]
-            }
+    val imeState = rememberImeState()
+    val scrollState = rememberScrollState()
+    LaunchedEffect(key1 = imeState.value) {
+        if (imeState.value) {
+            scrollState.animateScrollTo((scrollState.maxValue * .5).toInt(), tween(300))
         }
     }
     Column(
-        modifier = Modifier,
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        Spacer(modifier = Modifier.height(32.dp))
         Text(
-            text = "Account Registration",
+            text = "Create account",
+            fontSize = 32.sp,
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
+                .padding(8.dp)
+                .align(Alignment.Start),
+            color = MaterialTheme.colorScheme.primary
         )
-        LinearProgressIndicator(
-            progress = animatedProgress.value,
+        Text(
+            text = "Welcome to Poste!",
+            fontSize = 16.sp,
             modifier = Modifier
-                .fillMaxWidth(.8f)
+                .padding(8.dp)
+                .align(Alignment.Start),
+            color = Color.Black
         )
-        when (currentStep) {
-            RegistrationStep.Email -> {
-                Text(
-                    text = "First, we'll need your email",
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .align(Alignment.CenterHorizontally),
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                EntryBox("Email", email, { email = it }) { validateEmail(it) }
-            }
-
-            RegistrationStep.FirstName -> {
-                Text(
-                    text = "Next, we'll need your first name",
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .align(Alignment.CenterHorizontally),
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                EntryBox(
-                    "First Name",
-                    firstName,
-                    { firstName = it }
-                ) { validateName(it) }
-            }
-
-            RegistrationStep.LastName -> {
-                Text(
-                    text = "Hi, $firstName. What's your last name?",
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .align(Alignment.CenterHorizontally),
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                EntryBox("Last Name", lastName, { lastName = it }) { validateName(it) }
-            }
-
-            RegistrationStep.Password -> {
-                Text(
-                    text = "Got it. $firstName $lastName. Go ahead and set your password",
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .align(Alignment.CenterHorizontally),
-                )
-                EntryBox(
-                    "Password",
-                    password,
-                    { password = it },
-                    isPassword = true
-                ) { validatePassword(it) }
-                EntryBox(
-                    "Confirm Password",
-                    confirmPassword,
-                    { confirmPassword = it },
-                    isPassword = true
-                ) { validateConfirmPassword(password, it) }
-
-            }
-        }
+        Spacer(modifier = Modifier.height(32.dp))
+        EntryBox("Email", email, { email = it }) { validateEmail(it) }
+        Spacer(modifier = Modifier.height(16.dp))
+        EntryBox("First Name", firstName, { firstName = it }) { validateName(it) }
+        Spacer(modifier = Modifier.height(16.dp))
+        EntryBox("Last Name", lastName, { lastName = it }) { validateName(it) }
+        Spacer(modifier = Modifier.height(16.dp))
+        EntryBox(
+            "Password",
+            password,
+            { password = it },
+            isPassword = true
+        ) { validatePassword(it) }
+        Spacer(modifier = Modifier.height(16.dp))
+        EntryBox(
+            "Confirm Password",
+            confirmPassword,
+            { confirmPassword = it },
+            isPassword = true
+        ) { validateConfirmPassword(password, it) }
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                when (currentStep) {
-                    RegistrationStep.Password -> {
-                        if (validateConfirmPassword(password, confirmPassword) == null) {
-                            handleRegistration(
-                                email = email,
-                                firstName = firstName,
-                                lastName = lastName,
-                                password = password,
-                                context = context,
-                                sharedViewModel = sharedViewModel
-                            )
-                        } else {
-                            Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT)
-                                .show()
-                            currentStep = RegistrationStep.Password
-                        }
-
-                    }
-
-                    else -> {
-                        val nextOrdinal = currentStep.ordinal + 1
-                        currentStep = RegistrationStep.entries.toTypedArray()[nextOrdinal]
-                    }
+                if (validateConfirmPassword(password, confirmPassword) == null) {
+                    handleRegistration(
+                        email = email,
+                        firstName = firstName,
+                        lastName = lastName,
+                        password = password,
+                        context = context,
+                        navController = navController
+                    )
                 }
             },
-            enabled = when (currentStep) {
-                RegistrationStep.Email -> validateEmail(email) == null
-                RegistrationStep.FirstName -> validateName(firstName) == null
-                RegistrationStep.LastName -> validateName(lastName) == null
-                RegistrationStep.Password -> validatePassword(password) == null && validateConfirmPassword(
-                    password,
-                    confirmPassword
-                ) == null
-            },
+            enabled = (
+                    validateEmail(email) == null
+                            && validateName(firstName) == null
+                            && validateName(lastName) == null
+                            && validatePassword(password) == null
+                            && validateConfirmPassword(password, confirmPassword) == null
+                    ),
             modifier = Modifier
                 .fillMaxWidth(.6f)
         ) {
-            Text(text = if (currentStep == RegistrationStep.Password) "Complete Registration" else "Next")
+            Text("Let's get started")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        BrokenDividerWithText(text = "or")
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(.85f),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                "Have an account?",
+                fontSize = 16.sp
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                "Log In",
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .clickable {
+                        navController.navigate("intro")
+                    }
+            )
+
         }
     }
 }
+
 
 fun handleRegistration(
     email: String,
@@ -190,7 +192,7 @@ fun handleRegistration(
     lastName: String,
     password: String,
     context: Context,
-    sharedViewModel: SharedViewModel
+    navController: NavHostController,
 ) {
     val call: Call<ResponseBody> = RetrofitClient.instance.registerUser(
         registerRequest = RegisterRequest(
@@ -213,15 +215,21 @@ fun handleRegistration(
                         "Registration successful",
                         Toast.LENGTH_SHORT
                     ).show()
-                    sharedViewModel.currentScreenState.value = ScreenState.INTRO
+                    navController.navigate("dashboard") {
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                    }
                 } else {
                     val errorMessage = response.errorBody()?.string()?.let { responseBodyString ->
                         try {
                             val jsonObject = JSONObject(responseBodyString)
-                            val errors = jsonObject.optJSONArray("email") ?: return@let "Unknown error"
+                            val errors =
+                                jsonObject.optJSONArray("email") ?: return@let "Unknown error"
                             if (errors.length() > 0) {
-                                errors.optString(0).replaceFirstChar { if (it.isLowerCase()) it.titlecase(
-                                    Locale.getDefault()) else it.toString() }
+                                errors.optString(0).replaceFirstChar {
+                                    if (it.isLowerCase()) it.titlecase(
+                                        Locale.getDefault()
+                                    ) else it.toString()
+                                }
                             } else {
                                 "Unknown error"
                             }

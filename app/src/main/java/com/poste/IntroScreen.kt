@@ -32,7 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -45,8 +44,7 @@ import com.poste.reusables.EntryBox
 import com.poste.reusables.rememberImeState
 import com.poste.reusables.validateEmail
 import com.poste.reusables.validatePassword
-import com.poste.theme.LogoDark
-import com.poste.theme.PosteTheme
+import com.poste.ui.theme.PosteTheme
 
 class IntroActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,10 +62,13 @@ fun Poste() {
         val navController = rememberNavController()
         NavHost(navController = navController, startDestination = "intro") {
             composable("intro") { IntroScreen(navController) }
+            composable("register") { RegisterScreen(navController) }
             composable("dashboard") { DashboardScreen(navController) }
         }
     }
 }
+
+
 
 @Composable
 fun IntroScreen(navController: NavController) {
@@ -80,17 +81,15 @@ fun IntroScreen(navController: NavController) {
         }
     }
     Surface(color = MaterialTheme.colorScheme.background) {
-        IntroContent()
+        IntroContent(navController)
     }
 }
 
-@Preview
 @Composable
-fun IntroContent() {
+fun IntroContent(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
-    val navController = rememberNavController()
     PosteTheme {
         val imeState = rememberImeState()
         val scrollState = rememberScrollState()
@@ -100,7 +99,6 @@ fun IntroContent() {
                 scrollState.animateScrollTo(scrollState.maxValue, tween(300))
             }
         }
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -128,7 +126,7 @@ fun IntroContent() {
                 modifier = Modifier.fillMaxWidth(.85f),
                 horizontalArrangement = Arrangement.Start
             ) {
-                Text("Find, retrieve, and save. Simple as that.", fontSize = 16.sp)
+                Text("Find, save, retrieve. Simple as that.", fontSize = 16.sp)
             }
 
             Spacer(modifier = Modifier.height(48.dp))
@@ -176,7 +174,7 @@ fun IntroContent() {
             ) {
                 Text(
                     "Forgot Password?",
-                    color = LogoDark,
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 16.sp,
                     modifier = Modifier
                         .clickable { /* Handle click here */ }
@@ -213,10 +211,12 @@ fun IntroContent() {
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     "Sign Up",
-                    color = LogoDark,
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 16.sp,
                     modifier = Modifier
-                        .clickable { /* Handle click here */ }
+                        .clickable {
+                            navController.navigate("register")
+                        }
                 )
 
             }

@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
 import com.poste.SampleData
-import com.poste.theme.PosteTheme
+import com.poste.ui.theme.PosteTheme
 import java.time.LocalDate
 
 data class Folder(val name: String, val numFiles: Int, val date: LocalDate)
