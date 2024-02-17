@@ -59,7 +59,7 @@ private fun FolderComposable(folder: Folder) {
 
         Box(Modifier.size(192.dp), contentAlignment = Alignment.Center) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.size(90.dp), contentAlignment = Alignment.Center) {
+                Box(contentAlignment = Alignment.Center) {
                     Column {
                         Text(text = folder.name, maxLines = 2, overflow = TextOverflow.Ellipsis)
                         Text(text = "${folder.numFiles} files")
@@ -68,9 +68,11 @@ private fun FolderComposable(folder: Folder) {
 
                 Spacer(modifier = Modifier.width(6.dp))
 
-                Text(
-                    text = folder.date.toString()
-                )
+                Box(Modifier.size(90.dp), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = folder.date.toString()
+                    )
+                }
             }
         }
         Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -123,7 +125,7 @@ fun FolderList(folders: List<Folder>){
     showBackground = true
 )
 @Composable
-fun PreviewFolders(){
+fun FolderListPreview(){
     PosteTheme {
         FolderList(folders = SampleData.FolderListSample)
     }
