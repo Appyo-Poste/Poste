@@ -1,6 +1,7 @@
 package com.poste
 
 import com.poste.reusables.Folder
+import com.poste.reusables.Post
 import java.time.LocalDate
 
 /**
@@ -21,4 +22,16 @@ object SampleData {
     )
 
     val FolderSample = Folder("Test Folder", 10, LocalDate.now())
+
+    val PostSample = Post(
+        "Test Post",
+        "www.facebook.com",
+        FolderSample,
+        "A test post",
+        LocalDate.now(),
+        listOf(
+            "funny",
+            "memes"
+        )
+    )
 }
