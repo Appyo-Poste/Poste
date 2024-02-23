@@ -1,4 +1,4 @@
-package com.poste.theme
+package com.poste.ui.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
