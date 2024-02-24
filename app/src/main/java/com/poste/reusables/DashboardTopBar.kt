@@ -1,6 +1,7 @@
 package com.poste.reusables
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,8 +14,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,7 +38,11 @@ import com.example.myapplication.R
 import com.poste.theme.PosteTheme
 
 @Composable
-fun Banner(name: String) {
+fun Banner() {
+
+    var query by remember { mutableStateOf("") }
+
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -50,7 +63,7 @@ fun Banner(name: String) {
             ) {
                 Box(Modifier.height(70.dp), contentAlignment = Alignment.BottomStart){
                     Text(
-                        text = "Welcome Back $name!",
+                        text = "Welcome Back!",
                         style = TextStyle(
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold
@@ -67,6 +80,18 @@ fun Banner(name: String) {
                 }
             }
         }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        SearchBar(
+            query = query,
+            onQueryChanged = { newQuery ->
+                query = newQuery
+            },
+            onSearch = {
+                // Perform search action here
+            }
+        )
 
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -122,11 +147,102 @@ fun Banner(name: String) {
     }
 }
 
+@Composable
+fun SearchBar(
+    query: String,
+    onQueryChanged: (String) -> Unit,
+    onSearch: () -> Unit
+) {
+    TextField(
+        value = query,
+        onValueChange = onQueryChanged,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .background(Color.Transparent),
+        shape = RoundedCornerShape(10.dp),
+        leadingIcon = {
+            Icon(
+                painter = painterResource(id = R.drawable.search),
+                contentDescription = "Search",
+                modifier = Modifier
+                    .size(24.dp)
+                    .padding(4.dp)
+            )
+        },
+        placeholder = {
+            Text(text = "Search here...")
+        },
+        trailingIcon = {
+            if (query.isNotEmpty()) {
+                IconButton(
+                    onClick = {
+                        // Clear the search query
+                        onQueryChanged("")
+                    },
+                    modifier = Modifier.size(24.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.close_small),
+                        contentDescription = "Clear search",
+                    )
+                }
+            } else {
+                IconButton(
+                    onClick = {
+                        /**
+                         * TODO: Include advanced search options
+                         */
+                    },
+                    modifier = Modifier.size(24.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.filter),
+                        contentDescription = "Advanced search",
+                    )
+                }
+            }
+        },
+        colors = TextFieldDefaults.colors(
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent
+        )
+    )
+}
+
+
+@Preview
+    (showBackground = false)
+@Composable
+fun SearchBarEmptyPreview(){
+    PosteTheme {
+        SearchBar(
+            query = "",
+            onQueryChanged = {},
+            onSearch = {}
+        )
+    }
+}
+
+@Preview
+    (showBackground = false)
+@Composable
+fun SearchBarQueryPreview(){
+    PosteTheme {
+        SearchBar(
+            query = "Paris",
+            onQueryChanged = {},
+            onSearch = {}
+        )
+    }
+}
+
 @Preview
     (showBackground = true)
 @Composable
 fun BannerPreview() {
     PosteTheme {
-        Banner(name = "Alivia")
+        Banner()
     }
 }

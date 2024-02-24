@@ -48,7 +48,7 @@ private fun FolderComposable(folder: Folder) {
             contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(R.drawable.foldericon_nofill),
+                painter = painterResource(R.drawable.folder),
                 contentDescription = "Icon for folder",
                 modifier = Modifier
                         .size(55.dp)
@@ -59,7 +59,7 @@ private fun FolderComposable(folder: Folder) {
 
         Box(Modifier.size(192.dp), contentAlignment = Alignment.Center) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(contentAlignment = Alignment.Center) {
+                Box(Modifier.size(90.dp),contentAlignment = Alignment.Center) {
                     Column {
                         Text(text = folder.name, maxLines = 2, overflow = TextOverflow.Ellipsis)
                         Text(text = "${folder.numFiles} files")
@@ -68,7 +68,7 @@ private fun FolderComposable(folder: Folder) {
 
                 Spacer(modifier = Modifier.width(6.dp))
 
-                Box(Modifier.size(90.dp), contentAlignment = Alignment.Center) {
+                Box(contentAlignment = Alignment.Center) {
                     Text(
                         text = folder.date.toString()
                     )
@@ -108,6 +108,15 @@ private fun FolderComposable(folder: Folder) {
         }
     }
 }
+@Preview(
+    showBackground = true
+)
+@Composable
+fun FolderPreview() {
+    PosteTheme {
+        FolderComposable(folder = SampleData.FolderSample)
+    }
+}
 
 @Composable
 fun FolderList(folders: List<Folder>){
@@ -128,15 +137,5 @@ fun FolderList(folders: List<Folder>){
 fun FolderListPreview(){
     PosteTheme {
         FolderList(folders = SampleData.FolderListSample)
-    }
-}
-
-@Preview(
-    showBackground = true
-)
-@Composable
-fun FolderPreview() {
-    PosteTheme {
-        FolderComposable(folder = SampleData.FolderSample)
     }
 }
