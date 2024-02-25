@@ -38,7 +38,7 @@ import com.example.myapplication.R
 import com.poste.ui.theme.PosteTheme
 
 @Composable
-fun Banner() {
+fun DashboardTopBar() {
 
     var query by remember { mutableStateOf("") }
 
@@ -140,7 +140,7 @@ fun Banner() {
 
                     Spacer(modifier = Modifier.width(5.dp))
 
-                    Text("Import File")
+                    Text("New Post")
                 }
             }
         }
@@ -243,6 +243,6 @@ fun SearchBarQueryPreview(){
 @Composable
 fun BannerPreview() {
     PosteTheme {
-        Banner()
+        DashboardTopBar()
     }
 }

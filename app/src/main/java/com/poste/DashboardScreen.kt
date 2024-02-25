@@ -1,33 +1,20 @@
 package com.poste
 
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.FilterAlt
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.myapplication.R
+import com.poste.reusables.DashboardTopBar
 import com.poste.reusables.FolderList
 import com.poste.ui.theme.PosteTheme
 
@@ -51,6 +38,8 @@ fun DashboardScreen(navController: NavHostController) {
                     .fillMaxWidth()
             ) {
                 Spacer(modifier = Modifier.height(36.dp))
+                /*
+                McConnell Implementation of top bar
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(.8f)
@@ -89,6 +78,9 @@ fun DashboardScreen(navController: NavHostController) {
                     },
 
                 )
+
+                */
+                DashboardTopBar()
                 Spacer(modifier = Modifier.height(16.dp))
                 FolderList(folders = SampleData.FolderListSample)
             }
