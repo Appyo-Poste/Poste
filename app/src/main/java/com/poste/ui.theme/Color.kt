@@ -29,6 +29,8 @@ val lavendarWisp = Color(0xFFFAF5FF)
 val coldSteel = Color(0xFFF8F7F4)
 val mojitoBreeze = Color(0xFFFBFFF4)
 
+val dashboardColumnTitles = Color(0xFF787474)
+
 val primaryLight = newLogoDark
 val secondaryLight = PurpleGrey40
 val tertiaryLight = Pink40

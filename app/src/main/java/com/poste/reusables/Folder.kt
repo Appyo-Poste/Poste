@@ -1,6 +1,7 @@
 package com.poste.reusables
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,10 +15,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,7 +36,6 @@ data class Folder(val name: String, val numFiles: Int, val date: LocalDate)
 private fun FolderComposable(folder: Folder) {
     Row(
         modifier = Modifier
-            .padding(all = 8.dp)
             .fillMaxWidth()
             .height(80.dp)
             .padding(start = 7.5.dp, end = 7.5.dp)
@@ -108,12 +110,18 @@ private fun FolderComposable(folder: Folder) {
 }
 
 @Composable
-fun FolderList(folders: List<Folder>){
-    LazyColumn {
+fun FolderList(folders: List<Folder>) {
+    LazyColumn(
+        modifier = Modifier
+    ) {
         items(folders) { folder ->
-            FolderComposable(
-                folder
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                FolderComposable(folder = folder)
+                Divider()
+            }
         }
     }
 }
