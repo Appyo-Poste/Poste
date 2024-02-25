@@ -37,7 +37,7 @@ fun DashboardScreen(navController: NavHostController) {
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Spacer(modifier = Modifier.height(36.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 /*
                 McConnell Implementation of top bar
                 Row(
@@ -81,7 +81,6 @@ fun DashboardScreen(navController: NavHostController) {
 
                 */
                 DashboardTopBar()
-                Spacer(modifier = Modifier.height(16.dp))
                 FolderList(folders = SampleData.FolderListSample)
             }
         }
