@@ -8,7 +8,7 @@ import java.time.LocalDate
  * SampleData for Jetpack Compose Tutorial 
  */
 object SampleData {
-    // Sample conversation data
+    // Sample Folder List data
     val FolderListSample = listOf(
         Folder(
           "Test Folder", 13, LocalDate.now()
@@ -21,8 +21,10 @@ object SampleData {
         ),
     )
 
+    //Sample Folder data
     val FolderSample = Folder("Test Folder", 10, LocalDate.now())
 
+    //Sample Post data
     val PostSample = Post(
         "Test Post",
         "www.facebook.com",
@@ -33,5 +35,42 @@ object SampleData {
             "funny",
             "memes"
         )
+    )
+
+    //Sample Post List data
+    val PostListSample = listOf(
+        Post(
+            "Test Post",
+            "www.facebook.com",
+            FolderSample,
+            "A test post",
+            LocalDate.now(),
+            listOf(
+                "funny",
+                "memes"
+            )
+        ),
+        Post(
+            "Test Post 1",
+            "www.facebook.com",
+            FolderListSample[2],
+            "A test post",
+            LocalDate.now(),
+            listOf(
+                "funny",
+                "memes"
+            )
+        ),
+        Post(
+            "Test Post 2",
+            "www.facebook.com",
+            FolderListSample[1],
+            "A test post",
+            LocalDate.now(),
+            listOf(
+                "funny",
+                "memes"
+            )
+        ),
     )
 }
