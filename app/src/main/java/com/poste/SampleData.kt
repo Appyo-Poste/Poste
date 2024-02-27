@@ -27,7 +27,7 @@ object SampleData {
     //Sample Post data
     val PostSample = Post(
         "Test Post",
-        "www.facebook.com",
+        "https://www.facebook.com",
         FolderSample,
         "A test post",
         LocalDate.now(),
@@ -41,7 +41,7 @@ object SampleData {
     val PostListSample = listOf(
         Post(
             "Test Post",
-            "www.facebook.com",
+            "https://www.facebook.com",
             FolderSample,
             "A test post",
             LocalDate.now(),
@@ -52,7 +52,7 @@ object SampleData {
         ),
         Post(
             "Test Post 1",
-            "www.facebook.com",
+            "https://www.facebook.com",
             FolderListSample[2],
             "A test post",
             LocalDate.now(),
@@ -63,7 +63,7 @@ object SampleData {
         ),
         Post(
             "Test Post 2",
-            "www.facebook.com",
+            "https://www.facebook.com",
             FolderListSample[1],
             "A test post",
             LocalDate.now(),

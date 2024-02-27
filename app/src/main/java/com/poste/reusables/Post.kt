@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -39,13 +40,16 @@ data class Post(
 
 @Composable
 private fun PostComposable(post: Post){
+    val uriHandler = LocalUriHandler.current
     Box(
         modifier = Modifier.clickable {
             /**
              * TODO: Implement what happens when it's clicked
              */
+            uriHandler.openUri(post.url)
         }
     ){
+
         Column(
             modifier = Modifier
                 .width(140.dp)
