@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,18 +27,29 @@ import com.poste.http.RetrofitClient
 import com.poste.reusables.EntryBox
 import com.poste.reusables.validateEmail
 import com.poste.reusables.validatePassword
+import com.poste.tokens.TokenManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
+import org.json.JSONException
+import org.json.JSONObject
 import retrofit2.Call
 
 
 @Composable
 fun LoginContent(sharedViewModel: SharedViewModel, navController: NavController) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
     BackHandler {
         sharedViewModel.currentScreenState.value = ScreenState.INTRO
     }
+
     Column(
         modifier = Modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -54,7 +66,7 @@ fun LoginContent(sharedViewModel: SharedViewModel, navController: NavController)
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                handleLogin(email, password, context, navController)
+                handleLogin(email, password, context, navController, coroutineScope)
             },
             enabled = validateEmail(email) == null && validatePassword(password) == null,
             modifier = Modifier
@@ -69,7 +81,8 @@ fun handleLogin(
     email: String,
     password: String,
     context: Context,
-    navController: NavController
+    navController: NavController,
+    coroutineScope: CoroutineScope
 ) {
     val call: Call<ResponseBody> = RetrofitClient.instance.loginUser(
         loginRequest = LoginRequest(
@@ -84,41 +97,48 @@ fun handleLogin(
                 response: retrofit2.Response<ResponseBody>
             ) {
                 if (response.isSuccessful) {
-                    Log.d("LoginActivity", "onResponse: Success")
-                    Toast.makeText(
-                        context,
-                        "Login successful",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    navController.navigate("dashboard") {
-                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                    // Assuming response body is correctly formatted JSON
+                    try {
+                        val responseBody = response.body()?.string() ?: ""
+                        val jsonObject = JSONObject(responseBody)
+                        val result = jsonObject.getJSONObject("result")
+                        if (result.getBoolean("success")) {
+                            val token = result.getString("token")
+                            coroutineScope.launch {
+                                TokenManager.saveToken(context, token) // Save the token
+                                val savedToken = TokenManager.getTokenFlow(context).first()
+                                Log.d("LoginActivity", "Saved token: $savedToken")
+                                // Navigate to dashboard
+                                navController.navigate("dashboard") {
+                                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                                }
+                                Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            // Handle case where 'success' is false
+                            handleLoginError(context, "Login failed. Please check your credentials.")
+                        }
+                    } catch (e: JSONException) {
+                        handleLoginError(context, "Error parsing login response.")
                     }
                 } else {
-                    val errorMessage = when {
-                        response.code() == 401 -> "Invalid user credentials; please try again."
-                        response.code() == 400 -> "Request missing required fields; please try again."
-                        else -> {
-                            "Unknown error occurred, please try again later."
-                        }
-                    }
-                    Log.d("LoginActivity", errorMessage)
-                    Toast.makeText(
-                        context,
-                        errorMessage,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    // Handle different HTTP error codes
+                    handleLoginError(context, when (response.code()) {
+                        401 -> "Invalid user credentials; please try again."
+                        400 -> "Request missing required fields; please try again."
+                        else -> "Unknown error occurred, please try again later."
+                    })
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                val message = "Unable to reach Poste server; please try again later."
-                Log.d("RegisterActivity", message)
-                Toast.makeText(
-                    context,
-                    message,
-                    Toast.LENGTH_SHORT
-                ).show()
+                handleLoginError(context, "Unable to reach the server; please try again later.")
             }
         }
     )
+}
+
+private fun handleLoginError(context: Context, message: String) {
+    Log.d("LoginActivity", message)
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }

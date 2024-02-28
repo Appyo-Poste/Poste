@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -17,6 +20,12 @@ import androidx.navigation.compose.rememberNavController
 import com.poste.reusables.DashboardTopBar
 import com.poste.reusables.FolderList
 import com.poste.ui.theme.PosteTheme
+import android.util.Log
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
+import com.poste.tokens.TokenManager
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 
 @Preview
@@ -28,6 +37,17 @@ fun DashboardScreenPreview() {
 
 @Composable
 fun DashboardScreen(navController: NavHostController) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    var token by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(key1 = true) {
+        coroutineScope.launch {
+            token = TokenManager.getTokenFlow(context).first()
+            Log.d("DashboardScreen", "Token: $token")
+        }
+    }
+
     PosteTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -38,48 +58,6 @@ fun DashboardScreen(navController: NavHostController) {
                     .fillMaxWidth()
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
-                /*
-                McConnell Implementation of top bar
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(.8f)
-                        .align(Alignment.CenterHorizontally)
-                ) {
-                    Text("Welcome Back!",
-                        modifier = Modifier
-                            .align(Alignment.Bottom),
-                        fontSize = 24.sp
-                        )
-                    Spacer(Modifier.weight(1f))
-                    Image(
-                        painter = painterResource(id = R.drawable.logo),
-                        contentDescription = "Poste Logo",
-                        modifier = Modifier
-                            .height(50.dp)
-                            .align(Alignment.CenterVertically)
-                    )
-
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                OutlinedTextField(value = "Search here...", onValueChange = {},
-                    modifier = Modifier
-                        .fillMaxWidth(.8f)
-                        .align(Alignment.CenterHorizontally),
-                    shape = RoundedCornerShape(16.dp),
-                    leadingIcon = {
-                        IconButton(onClick = {  }) {
-                            Icon(imageVector = Icons.Filled.Search, contentDescription = "Search")
-                        }
-                    },
-                    trailingIcon = {
-                        IconButton(onClick = {  }) {
-                            Icon(imageVector = Icons.Outlined.FilterAlt, contentDescription = "Search")
-                        }
-                    },
-
-                )
-
-                */
                 DashboardTopBar()
                 FolderList(folders = SampleData.FolderListSample)
             }
