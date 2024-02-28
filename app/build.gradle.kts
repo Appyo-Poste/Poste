@@ -64,6 +64,7 @@ android {
 
 dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.6.2")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.2")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.security:security-crypto:1.0.0")
     implementation("androidx.core:core-ktx:1.12.0")

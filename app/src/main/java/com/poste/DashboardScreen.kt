@@ -9,9 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -20,11 +17,11 @@ import androidx.navigation.compose.rememberNavController
 import com.poste.reusables.DashboardTopBar
 import com.poste.reusables.FolderList
 import com.poste.ui.theme.PosteTheme
-import android.util.Log
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
-import com.poste.tokens.TokenManager
-import kotlinx.coroutines.flow.first
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.poste.viewmodels.MainViewModel
 import kotlinx.coroutines.launch
 
 
@@ -37,14 +34,13 @@ fun DashboardScreenPreview() {
 
 @Composable
 fun DashboardScreen(navController: NavHostController) {
+    val dashboardViewModel: MainViewModel = viewModel()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    var token by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(key1 = true) {
         coroutineScope.launch {
-            token = TokenManager.getTokenFlow(context).first()
-            Log.d("DashboardScreen", "Token: $token")
+            dashboardViewModel.fetchData(context)
         }
     }
 
