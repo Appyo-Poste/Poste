@@ -1,7 +1,7 @@
 package com.poste
 
-import com.poste.reusables.Folder
-import com.poste.reusables.Post
+import com.poste.models.Folder
+import com.poste.models.Post
 import java.time.LocalDate
 
 /**
@@ -11,27 +11,37 @@ object SampleData {
     // Sample Folder List data
     val FolderListSample = listOf(
         Folder(
-          "Test Folder", 13, LocalDate.now()
+            title="Test Folder",
+            numFiles = 13,
+            date = LocalDate.now().toString()
         ),
         Folder(
-            "Test Folder 2 asjhgaskjghasg", 11, LocalDate.now()
+            title="Test Folder 2 asjhgaskjghasg",
+            numFiles = 11,
+            date = LocalDate.now().toString()
         ),
         Folder(
-          "Paris 2024", 4, LocalDate.now()
+            title="Paris 2024",
+            numFiles = 4,
+            date = LocalDate.now().toString()
         ),
     )
 
     //Sample Folder data
-    val FolderSample = Folder("Test Folder", 10, LocalDate.now())
+    val FolderSample = Folder(
+        title="Test Folder",
+        numFiles = 10,
+        date = LocalDate.now().toString()
+    )
 
     //Sample Post data
     val PostSample = Post(
-        "Test Post",
-        "https://www.facebook.com",
-        FolderSample,
-        "A test post",
-        LocalDate.now(),
-        listOf(
+        title = "Test Post",
+        url="https://www.facebook.com",
+        folder=FolderSample,
+        description = "A test post",
+        date = LocalDate.now().toString(),
+        tags = listOf(
             "funny",
             "memes"
         )
@@ -40,34 +50,34 @@ object SampleData {
     //Sample Post List data
     val PostListSample = listOf(
         Post(
-            "Test Post",
-            "https://www.facebook.com",
-            FolderSample,
-            "A test post",
-            LocalDate.now(),
-            listOf(
+            title="Test Post",
+            url="https://www.facebook.com",
+            folder=FolderSample,
+            description="A test post",
+            date=LocalDate.now().toString(),
+            tags=listOf(
                 "funny",
                 "memes"
             )
         ),
         Post(
-            "Test Post 1",
-            "https://www.facebook.com",
-            FolderListSample[2],
-            "A test post",
-            LocalDate.now(),
-            listOf(
+            title="Test Post 1",
+            url="https://www.facebook.com",
+            folder=FolderListSample[2],
+            description = "A test post",
+            date=LocalDate.now().toString(),
+            tags = listOf(
                 "funny",
                 "memes"
             )
         ),
         Post(
-            "Test Post 2",
-            "https://www.facebook.com",
-            FolderListSample[1],
-            "A test post",
-            LocalDate.now(),
-            listOf(
+            title="Test Post 2",
+            url="https://www.facebook.com",
+            folder=FolderListSample[1],
+            description="A test post",
+            date = LocalDate.now().toString(),
+            tags = listOf(
                 "funny",
                 "memes"
             )

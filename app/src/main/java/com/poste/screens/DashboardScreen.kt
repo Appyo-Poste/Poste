@@ -1,4 +1,4 @@
-package com.poste
+package com.poste.screens
 
 
 import androidx.compose.foundation.layout.Column
@@ -21,7 +21,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.poste.viewmodels.MainViewModel
+import com.poste.models.MainViewModel
 import kotlinx.coroutines.launch
 
 
@@ -35,6 +35,10 @@ fun DashboardScreenPreview() {
 @Composable
 fun DashboardScreen(navController: NavHostController) {
     val dashboardViewModel: MainViewModel = viewModel()
+    val data by dashboardViewModel.data.observeAsState()
+    val errorMessage by dashboardViewModel.errorMessage.observeAsState()
+
+
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -55,9 +59,10 @@ fun DashboardScreen(navController: NavHostController) {
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
                 DashboardTopBar()
-                FolderList(folders = SampleData.FolderListSample)
+                data?.folders?.let { folders ->
+                    FolderList(folders = folders)
+                }
             }
         }
     }
-
 }

@@ -1,4 +1,4 @@
-package com.poste
+package com.poste.screens
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -40,6 +40,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
+import com.poste.reusables.RegisterScreen
+import com.poste.reusables.handleLogin
 import com.poste.reusables.BrokenDividerWithText
 import com.poste.reusables.EntryBox
 import com.poste.reusables.rememberImeState

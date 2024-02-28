@@ -1,4 +1,4 @@
-package com.poste
+package com.poste.reusables
 
 import android.content.Context
 import android.widget.Toast
@@ -37,13 +37,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.poste.http.RegisterRequest
 import com.poste.http.RetrofitClient
-import com.poste.reusables.BrokenDividerWithText
-import com.poste.reusables.EntryBox
-import com.poste.reusables.rememberImeState
-import com.poste.reusables.validateConfirmPassword
-import com.poste.reusables.validateEmail
-import com.poste.reusables.validateName
-import com.poste.reusables.validatePassword
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
