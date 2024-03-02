@@ -21,7 +21,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.poste.models.MainViewModel
+import com.poste.viewmodels.MainViewModel
 import kotlinx.coroutines.launch
 
 

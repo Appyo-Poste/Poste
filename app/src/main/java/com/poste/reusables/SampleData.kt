@@ -1,4 +1,4 @@
-package com.poste
+package com.poste.reusables
 
 import com.poste.models.Folder
 import com.poste.models.Post
@@ -38,7 +38,7 @@ object SampleData {
     val PostSample = Post(
         title = "Test Post",
         url="https://www.facebook.com",
-        folder=FolderSample,
+        folder= FolderSample,
         description = "A test post",
         date = LocalDate.now().toString(),
         tags = listOf(
@@ -52,7 +52,7 @@ object SampleData {
         Post(
             title="Test Post",
             url="https://www.facebook.com",
-            folder=FolderSample,
+            folder= FolderSample,
             description="A test post",
             date=LocalDate.now().toString(),
             tags=listOf(
@@ -63,7 +63,7 @@ object SampleData {
         Post(
             title="Test Post 1",
             url="https://www.facebook.com",
-            folder=FolderListSample[2],
+            folder= FolderListSample[2],
             description = "A test post",
             date=LocalDate.now().toString(),
             tags = listOf(
@@ -74,7 +74,7 @@ object SampleData {
         Post(
             title="Test Post 2",
             url="https://www.facebook.com",
-            folder=FolderListSample[1],
+            folder= FolderListSample[1],
             description="A test post",
             date = LocalDate.now().toString(),
             tags = listOf(
