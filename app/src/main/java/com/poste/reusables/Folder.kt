@@ -24,10 +24,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
 import com.poste.SampleData
+import com.poste.models.Folder
 import com.poste.ui.theme.PosteTheme
 import java.time.LocalDate
-
-data class Folder(val name: String, val numFiles: Int, val date: LocalDate)
 
 @Composable
 private fun FolderComposable(folder: Folder) {
@@ -61,7 +60,7 @@ private fun FolderComposable(folder: Folder) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.size(90.dp),contentAlignment = Alignment.Center) {
                     Column {
-                        Text(text = folder.name, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                        Text(text = folder.title, maxLines = 2, overflow = TextOverflow.Ellipsis)
                         Text(text = "${folder.numFiles} files")
                     }
                 }

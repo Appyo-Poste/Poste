@@ -1,7 +1,6 @@
-package com.poste
+package com.poste.reusables
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
@@ -25,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,18 +37,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.poste.http.RegisterRequest
 import com.poste.http.RetrofitClient
-import com.poste.reusables.BrokenDividerWithText
-import com.poste.reusables.EntryBox
-import com.poste.reusables.rememberImeState
-import com.poste.reusables.validateConfirmPassword
-import com.poste.reusables.validateEmail
-import com.poste.reusables.validateName
-import com.poste.reusables.validatePassword
-import okhttp3.ResponseBody
-import org.json.JSONException
-import org.json.JSONObject
-import retrofit2.Call
-import java.util.Locale
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun RegisterScreen(navController: NavHostController) {
@@ -61,7 +53,7 @@ fun RegisterScreen(navController: NavHostController) {
         }
     }
     Surface(color = MaterialTheme.colorScheme.background) {
-        RegisterContent2(navController)
+        RegisterContent(navController)
     }
 
 }
@@ -69,12 +61,14 @@ fun RegisterScreen(navController: NavHostController) {
 @Preview
 @Composable
 fun PreviewRegisterContent() {
-    RegisterContent2(navController = rememberNavController())
+    RegisterContent(navController = rememberNavController())
 }
 
 @Composable
-fun RegisterContent2(navController: NavHostController) {
+fun RegisterContent(navController: NavHostController) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
     var email by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
@@ -142,7 +136,8 @@ fun RegisterContent2(navController: NavHostController) {
                         lastName = lastName,
                         password = password,
                         context = context,
-                        navController = navController
+                        navController = navController,
+                        coroutineScope = coroutineScope
                     )
                 }
             },
@@ -193,68 +188,39 @@ fun handleRegistration(
     password: String,
     context: Context,
     navController: NavHostController,
+    coroutineScope: CoroutineScope
 ) {
-    val call: Call<ResponseBody> = RetrofitClient.instance.registerUser(
-        registerRequest = RegisterRequest(
-            email = email,
-            first_name = firstName,
-            last_name = lastName,
-            password = password
-        )
-    )
-    call.enqueue(
-        object : retrofit2.Callback<ResponseBody> {
-            override fun onResponse(
-                call: Call<ResponseBody>,
-                response: retrofit2.Response<ResponseBody>
-            ) {
-                if (response.isSuccessful) {
-                    Log.d("RegisterActivity", "onResponse: Success")
-                    Toast.makeText(
-                        context,
-                        "Registration successful",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    navController.navigate("dashboard") {
+    coroutineScope.launch {
+        try {
+            val response = RetrofitClient.apiService.registerUser(
+                RegisterRequest(
+                    email = email,
+                    first_name = firstName,
+                    last_name = lastName,
+                    password = password
+                )
+            )
+
+            if (response.isSuccessful) {
+                // Process successful response
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Registration successful", Toast.LENGTH_SHORT).show()
+                    navController.navigate("intro") {
                         popUpTo(navController.graph.startDestinationId) { inclusive = true }
                     }
-                } else {
-                    val errorMessage = response.errorBody()?.string()?.let { responseBodyString ->
-                        try {
-                            val jsonObject = JSONObject(responseBodyString)
-                            val errors =
-                                jsonObject.optJSONArray("email") ?: return@let "Unknown error"
-                            if (errors.length() > 0) {
-                                errors.optString(0).replaceFirstChar {
-                                    if (it.isLowerCase()) it.titlecase(
-                                        Locale.getDefault()
-                                    ) else it.toString()
-                                }
-                            } else {
-                                "Unknown error"
-                            }
-                        } catch (e: JSONException) {
-                            "Error parsing error message"
-                        }
-                    } ?: "Error occurred"
-                    Log.d("RegisterActivity", errorMessage)
-                    Toast.makeText(
-                        context,
-                        errorMessage,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                }
+            } else {
+                // Process error response
+                val errorMessage = response.errorBody()?.string() ?: "Unknown error occurred"
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                 }
             }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                val message = "onFailure: ${t.message}"
-                Log.d("RegisterActivity", message)
-                Toast.makeText(
-                    context,
-                    message,
-                    Toast.LENGTH_SHORT
-                ).show()
+        } catch (e: Exception) {
+            // Process exception, e.g., network error
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, "Registration failed: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
             }
         }
-    )
+    }
 }
