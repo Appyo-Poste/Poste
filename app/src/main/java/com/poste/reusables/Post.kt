@@ -2,13 +2,18 @@ package com.poste.reusables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -105,6 +110,32 @@ private fun PostComposable(post: Post){
 fun PostPreview(){
     PosteTheme {
         PostComposable(post = SampleData.PostSample)
+    }
+}
+
+@Composable
+fun PostGrid(posts: List<Post>) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3), // Specify 3 fixed columns
+        contentPadding = PaddingValues(8.dp), // Add padding around the grid
+        verticalArrangement = Arrangement.spacedBy(8.dp), // Add spacing between items vertically
+        horizontalArrangement = Arrangement.spacedBy(8.dp) // Add spacing between items horizontally
+    ) {
+        items(posts) { post ->
+            PostComposable(
+                post
+            )
+        }
+    }
+}
+
+@Preview(
+    showBackground = true
+)
+@Composable
+fun PostGridPreview(){
+    PosteTheme {
+        PostGrid(posts = SampleData.PostListSample)
     }
 }
 
