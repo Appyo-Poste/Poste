@@ -30,18 +30,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.poste.SampleData
+import com.poste.models.Post
 import com.poste.ui.theme.PosteTheme
-import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
-data class Post(
-    val title: String,
-    val url: String,
-    val folder: Folder,
-    val description: String,
-    val date: LocalDate,
-    val tags: List<String>
-)
 
 @Composable
 private fun PostComposable(post: Post){

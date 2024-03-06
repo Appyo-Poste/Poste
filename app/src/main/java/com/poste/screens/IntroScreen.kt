@@ -1,4 +1,4 @@
-package com.poste
+package com.poste.screens
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -27,6 +27,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +40,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
+import com.poste.reusables.RegisterScreen
+import com.poste.reusables.handleLogin
 import com.poste.reusables.BrokenDividerWithText
 import com.poste.reusables.EntryBox
 import com.poste.reusables.rememberImeState
@@ -90,6 +93,7 @@ fun IntroContent(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     PosteTheme {
         val imeState = rememberImeState()
         val scrollState = rememberScrollState()
@@ -185,7 +189,7 @@ fun IntroContent(navController: NavController) {
             Button(
                 shape = RoundedCornerShape(16.dp),
                 onClick = {
-                    handleLogin(email, password, context, navController)
+                    handleLogin(email, password, context, navController, coroutineScope)
                 },
                 enabled = true,
                 modifier = Modifier
