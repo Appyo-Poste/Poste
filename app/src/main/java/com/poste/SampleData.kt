@@ -82,16 +82,5 @@ object SampleData {
                 "memes"
             )
         ),
-        Post(
-            "Test Post 2",
-            "https://www.facebook.com",
-            FolderListSample[1],
-            "A test post",
-            LocalDate.now(),
-            listOf(
-                "funny",
-                "memes"
-            )
-        ),
     )
 }
