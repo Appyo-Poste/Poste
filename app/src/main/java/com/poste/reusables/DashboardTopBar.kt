@@ -41,7 +41,9 @@ import com.poste.ui.theme.PosteTheme
 fun DashboardTopBar() {
 
     var query by remember { mutableStateOf("") }
+    var showDialog by remember { mutableStateOf(false)}
 
+    CreateFolderDialog(showDialog = showDialog, onDismiss = { showDialog = false })
 
     Column(
         modifier = Modifier
@@ -103,7 +105,7 @@ fun DashboardTopBar() {
 
             ){
                 Button(
-                    onClick = { /* Handle button click here */ },
+                    onClick = { showDialog = true },
                     shape = RoundedCornerShape(10.dp)
                 ) {
                     Image(
