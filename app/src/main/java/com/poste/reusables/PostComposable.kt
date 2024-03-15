@@ -38,9 +38,6 @@ private fun PostComposable(post: Post){
     val uriHandler = LocalUriHandler.current
     Box(
         modifier = Modifier.clickable {
-            /**
-             * TODO: Implement what happens when it's clicked
-             */
             uriHandler.openUri(post.url)
         }
     ){

@@ -12,6 +12,7 @@ object SampleData {
     val FolderListSample = listOf(
         Folder(
             title="Test Folder",
+            description = "abc",
             numFiles = 13,
             date = LocalDate.now().toString()
         ),
@@ -30,6 +31,7 @@ object SampleData {
     //Sample Folder data
     val FolderSample = Folder(
         title="Test Folder",
+        description = "Is this the test description?",
         numFiles = 10,
         date = LocalDate.now().toString()
     )
