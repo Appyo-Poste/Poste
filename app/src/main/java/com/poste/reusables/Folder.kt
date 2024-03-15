@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
-import com.poste.SampleData
 import com.poste.models.Folder
 import com.poste.ui.theme.PosteTheme
 

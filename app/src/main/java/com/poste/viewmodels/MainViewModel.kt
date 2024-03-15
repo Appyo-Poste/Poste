@@ -1,4 +1,4 @@
-package com.poste.models
+package com.poste.viewmodels
 
 import android.content.Context
 import android.util.Log

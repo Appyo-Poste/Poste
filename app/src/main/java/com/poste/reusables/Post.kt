@@ -29,7 +29,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
-import com.poste.SampleData
 import com.poste.models.Post
 import com.poste.ui.theme.PosteTheme
 import java.time.format.DateTimeFormatter

@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -35,8 +34,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.example.myapplication.R
 import com.poste.ui.theme.PosteTheme
 
@@ -44,7 +41,9 @@ import com.poste.ui.theme.PosteTheme
 fun DashboardTopBar() {
 
     var query by remember { mutableStateOf("") }
-    var showNewFolderDialog by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false)}
+
+    CreateFolderDialog(showDialog = showDialog, onDismiss = { showDialog = false })
 
     Column(
         modifier = Modifier
@@ -106,9 +105,7 @@ fun DashboardTopBar() {
 
             ){
                 Button(
-                    onClick = {
-                            showNewFolderDialog = true
-                              },
+                    onClick = { showDialog = true },
                     shape = RoundedCornerShape(10.dp)
                 ) {
                     Image(
@@ -125,39 +122,9 @@ fun DashboardTopBar() {
                     Text("New Folder")
                 }
 
-                if (showNewFolderDialog) {
-                    Dialog(
-                        onDismissRequest = { showNewFolderDialog = false },
-                        properties = DialogProperties(
-                            dismissOnBackPress = true,
-                            dismissOnClickOutside = true
-                        )
-                    ) {
-                        Card(
-                            shape = RoundedCornerShape(10.dp),
-                            modifier = Modifier
-                                .fillMaxWidth(0.85f)
-                                .padding(all = 8.dp),
-                        ) {
-                            Column(
-                                Modifier.background(Color.White)
-                            ) {
-                                Text("Folder Name")
-                                TextField(
-                                    value = "", // Replace with actual logic for filename
-                                    onValueChange = {} // Replace with logic to handle filename changes
-                                )
-                                Button(onClick = { /* Handle save logic */ }) {
-                                    Text("Save")
-                                }
-                                Button(onClick = { showNewFolderDialog = false }) {
-                                    Text("Cancel")
-                                }
-                            }
-                        }
-                    }
-                }
-
+                /**
+                 * TODO: ADD SEARCHBAR
+                 */
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Button(
@@ -206,7 +173,7 @@ fun SearchBar(
             )
         },
         placeholder = {
-            Text(text = "Search here...", color = Color.Gray)
+            Text(text = "Search here...")
         },
         trailingIcon = {
             if (query.isNotEmpty()) {
@@ -222,12 +189,12 @@ fun SearchBar(
                         contentDescription = "Clear search",
                     )
                 }
-            } /*else {
+            } else {
                 IconButton(
                     onClick = {
-                        *//**
+                        /**
                          * TODO: Include advanced search options
-                         *//*
+                         */
                     },
                     modifier = Modifier.size(24.dp)
                 ) {
@@ -236,7 +203,7 @@ fun SearchBar(
                         contentDescription = "Advanced search",
                     )
                 }
-            }*/
+            }
         },
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.Transparent,
@@ -257,53 +224,6 @@ fun SearchBarEmptyPreview(){
             onQueryChanged = {},
             onSearch = {}
         )
-    }
-}
-
-@Preview
-@Composable
-fun PreviewCreateNewFolder(){
-    var showNewFolderDialog by remember { mutableStateOf(true) }
-        PosteTheme {
-        if (showNewFolderDialog) {
-            Dialog(
-                onDismissRequest = { showNewFolderDialog = false },
-                properties = DialogProperties(
-                    dismissOnBackPress = true,
-                    dismissOnClickOutside = true
-                )
-            ) {
-                Card(
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier
-                        .fillMaxWidth(0.85f)
-                        .padding(all = 8.dp),
-                ) {
-                    Column(
-                        Modifier
-                            .background(Color.White)
-                            .padding(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text("Folder Name")
-                        TextField(
-                            value = "", // Replace with actual logic for filename
-                            onValueChange = {}, // Replace with logic to handle filename changes
-                            Modifier.padding(8.dp)
-                        )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Button(onClick = { /* Handle save logic */ }) {
-                            Text("Save")
-                        }
-                        Button(onClick = { showNewFolderDialog = false }) {
-                            Text("Cancel")
-                        }
-                    }
-                }
-            }
-        }
     }
 }
 
