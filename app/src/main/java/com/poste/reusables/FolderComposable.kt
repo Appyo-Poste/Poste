@@ -16,6 +16,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -28,6 +32,10 @@ import com.poste.ui.theme.PosteTheme
 
 @Composable
 private fun FolderComposable(folder: Folder) {
+    var showEditFolderDialog by remember { mutableStateOf(false) }
+
+    EditFolderDialog(showDialog = showEditFolderDialog, folder = folder, onDismiss = { showEditFolderDialog= false })
+
     Row(
         modifier = Modifier
             .padding(all = 8.dp)
@@ -67,7 +75,7 @@ private fun FolderComposable(folder: Folder) {
 
                 Box(contentAlignment = Alignment.Center) {
                     Text(
-                        text = folder.date.toString()
+                        text = folder.date
                     )
                 }
             }
@@ -80,7 +88,7 @@ private fun FolderComposable(folder: Folder) {
                     modifier = Modifier
                         .size(30.dp)
                         .clickable {
-                            /* TODO: add click functionality for edit */
+                            showEditFolderDialog = true
                         },
                 )
                 Image(

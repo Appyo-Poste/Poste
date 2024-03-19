@@ -105,7 +105,9 @@ fun DashboardTopBar() {
 
             ){
                 Button(
-                    onClick = { showDialog = true },
+                    onClick = {
+                            showDialog = true
+                              },
                     shape = RoundedCornerShape(10.dp)
                 ) {
                     Image(
@@ -122,9 +124,6 @@ fun DashboardTopBar() {
                     Text("New Folder")
                 }
 
-                /**
-                 * TODO: ADD SEARCHBAR
-                 */
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Button(
@@ -173,7 +172,7 @@ fun SearchBar(
             )
         },
         placeholder = {
-            Text(text = "Search here...")
+            Text(text = "Search here...", color = Color.Gray)
         },
         trailingIcon = {
             if (query.isNotEmpty()) {
@@ -189,12 +188,12 @@ fun SearchBar(
                         contentDescription = "Clear search",
                     )
                 }
-            } else {
+            } /*else {
                 IconButton(
                     onClick = {
-                        /**
+                        *//**
                          * TODO: Include advanced search options
-                         */
+                         *//*
                     },
                     modifier = Modifier.size(24.dp)
                 ) {
@@ -203,7 +202,7 @@ fun SearchBar(
                         contentDescription = "Advanced search",
                     )
                 }
-            }
+            }*/
         },
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.Transparent,

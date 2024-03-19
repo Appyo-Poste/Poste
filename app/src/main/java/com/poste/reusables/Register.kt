@@ -59,6 +59,7 @@ fun RegisterScreen(navController: NavHostController) {
 }
 
 @Preview
+    (showBackground = true)
 @Composable
 fun PreviewRegisterContent() {
     RegisterContent(navController = rememberNavController())
