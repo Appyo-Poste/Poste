@@ -13,18 +13,18 @@ object SampleData {
         Folder(
             title="Test Folder",
             description = "abc",
-            numFiles = 13,
-            date = LocalDate.now().toString()
+            file_count = 13,
+            created_at = LocalDate.now().toString()
         ),
         Folder(
             title="Test Folder 2 asjhgaskjghasg",
-            numFiles = 11,
-            date = LocalDate.now().toString()
+            file_count = 11,
+            created_at = LocalDate.now().toString()
         ),
         Folder(
             title="Paris 2024",
-            numFiles = 4,
-            date = LocalDate.now().toString()
+            file_count = 4,
+            created_at = LocalDate.now().toString()
         ),
     )
 
@@ -32,8 +32,8 @@ object SampleData {
     val FolderSample = Folder(
         title="Test Folder",
         description = "Is this the test description?",
-        numFiles = 10,
-        date = LocalDate.now().toString()
+        file_count = 10,
+        created_at = LocalDate.now().toString()
     )
 
     //Sample Post data

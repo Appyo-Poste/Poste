@@ -67,7 +67,7 @@ private fun FolderComposable(folder: Folder) {
                 Box(Modifier.size(90.dp),contentAlignment = Alignment.Center) {
                     Column {
                         Text(text = folder.title, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                        Text(text = "${folder.numFiles} files")
+                        Text(text = "${folder.file_count} file" + if (folder.file_count != 1) "s" else "")
                     }
                 }
 
@@ -75,7 +75,7 @@ private fun FolderComposable(folder: Folder) {
 
                 Box(contentAlignment = Alignment.Center) {
                     Text(
-                        text = folder.date
+                        text = folder.getShortCreationDate()
                     )
                 }
             }
