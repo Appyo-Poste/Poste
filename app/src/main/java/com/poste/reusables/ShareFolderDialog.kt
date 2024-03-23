@@ -32,16 +32,21 @@ import com.poste.ui.theme.PosteTheme
 
 @Preview
 @Composable
-fun EditFolderPreview() {
+fun ShareFolderPreview() {
     PosteTheme {
-        EditFolderDialog(true, folder = SampleData.FolderSample, {})
+        ShareFolderDialog(
+            showDialog = true,
+            folder = SampleData.FolderSample,
+            shareList = listOf(Pair("abc", "abc")),
+            {})
     }
 }
 
 @Composable
-fun EditFolderDialog(
+fun ShareFolderDialog(
     showDialog: Boolean,
     folder: Folder,
+    shareList: List<Pair<String,String>>,
     onDismiss: () -> Unit
 ) {
     if (showDialog) {
@@ -56,12 +61,10 @@ fun EditFolderDialog(
                     var folderName by remember { mutableStateOf(folder.title) }
                     var folderDescription by remember { mutableStateOf(folder.description) }
 
-                    val folderDescriptionMaxCharacters = 250
-
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "Edit Folder",
+                        text = "Share Folder",
                         style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.ExtraBold)
                     )
 
@@ -73,8 +76,15 @@ fun EditFolderDialog(
 
                     )
 
+                    Text(
+                        text = folder.title,
+                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+                    )
+
                     Spacer(modifier = Modifier.height(16.dp))
 
+
+/*
                     Text(
                         text = "Name",
                         style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold)
@@ -118,7 +128,7 @@ fun EditFolderDialog(
                             text = "Max 250 characters",
                             style = MaterialTheme.typography.labelSmall,
                         )
-                    }
+                    }*/
 
                     Spacer(modifier = Modifier.height(12.dp))
                     Column(
