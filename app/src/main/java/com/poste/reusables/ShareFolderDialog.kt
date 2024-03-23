@@ -37,7 +37,6 @@ fun ShareFolderPreview() {
         ShareFolderDialog(
             showDialog = true,
             folder = SampleData.FolderSample,
-            shareList = listOf(Pair("abc", "abc")),
             {})
     }
 }
@@ -46,7 +45,6 @@ fun ShareFolderPreview() {
 fun ShareFolderDialog(
     showDialog: Boolean,
     folder: Folder,
-    shareList: List<Pair<String,String>>,
     onDismiss: () -> Unit
 ) {
     if (showDialog) {
@@ -59,7 +57,6 @@ fun ShareFolderDialog(
                 ) {
 
                     var folderName by remember { mutableStateOf(folder.title) }
-                    var folderDescription by remember { mutableStateOf(folder.description) }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
