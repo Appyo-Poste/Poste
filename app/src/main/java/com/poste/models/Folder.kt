@@ -7,7 +7,7 @@ import java.util.TimeZone
 class Folder(
     var id: String = "",
     var title: String = "",
-    var description: String = ""
+    var description: String = "",
     var creator: String = "",
     var tags: List<String> = listOf(),
     var parent_id: String = "",
