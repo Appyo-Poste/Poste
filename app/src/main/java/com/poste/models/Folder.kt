@@ -7,12 +7,16 @@ import java.util.TimeZone
 class Folder(
     var id: String = "",
     var title: String = "",
-    var description: String = "",
+    var description: String = ""
+    var creator: String = "",
     var tags: List<String> = listOf(),
     var parent_id: String = "",
+    var is_root: Boolean = false,
+    var created_at: String = "", // expects a date in the format "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'" e.g., "2024-03-22T01:00:01.948063Z"
+    var shares: Map<String, String> = mapOf(),
     var file_count: Int = 0,
-    var created_at: String = "",
-    var shares: Map<String, String> = mapOf()
+    var folder_count: Int = 0,
+    var child_folders: List<Int> = listOf(),
 ) {
 
     /**
