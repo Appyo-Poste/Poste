@@ -33,8 +33,11 @@ import com.poste.ui.theme.PosteTheme
 @Composable
 private fun FolderComposable(folder: Folder) {
     var showEditFolderDialog by remember { mutableStateOf(false) }
+    var showShareFolderDialog by remember { mutableStateOf(false) }
 
-    EditFolderDialog(showDialog = showEditFolderDialog, folder = folder, onDismiss = { showEditFolderDialog= false })
+    EditFolderDialog(showDialog = showEditFolderDialog, folder = folder, onDismiss = { showEditFolderDialog = false })
+
+    ShareFolderDialog(showDialog = showShareFolderDialog, folder = folder, onDismiss = { showShareFolderDialog = false })
 
     Row(
         modifier = Modifier
@@ -106,7 +109,7 @@ private fun FolderComposable(folder: Folder) {
                     modifier = Modifier
                         .size(30.dp)
                         .clickable {
-                            /* TODO: add click functionality for share */
+                            showShareFolderDialog = true
                         },
                 )
             }
