@@ -36,7 +36,8 @@ object SampleData {
         file_count = 10,
         created_at = defaultCreationDate,
         shares = mapOf(
-            
+            "david@gmail.com" to "Can View",
+            "jasonoatmeallover@email.com" to "Can Edit"
         )
     )
 
