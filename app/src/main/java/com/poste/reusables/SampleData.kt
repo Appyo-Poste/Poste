@@ -15,7 +15,7 @@ object SampleData {
             title="Test Folder",
             description = "abc",
             file_count = 13,
-            created_at = defaultCreationDate
+            created_at = defaultCreationDate,
         ),
         Folder(
             title="Test Folder 2 asjhgaskjghasg",
@@ -34,7 +34,10 @@ object SampleData {
         title="Test Folder",
         description = "Is this the test description?",
         file_count = 10,
-        created_at = defaultCreationDate
+        created_at = defaultCreationDate,
+        shares = mapOf(
+            
+        )
     )
 
     //Sample Post data
