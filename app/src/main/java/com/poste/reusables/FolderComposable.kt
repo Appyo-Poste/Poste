@@ -1,6 +1,5 @@
 package com.poste.reusables
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +13,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.icons.outlined.Upload
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,19 +28,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.myapplication.R
 import com.poste.models.Folder
 import com.poste.ui.theme.PosteTheme
 
 @Composable
 private fun FolderComposable(folder: Folder) {
     var showEditFolderDialog by remember { mutableStateOf(false) }
+    var showShareFolderDialog by remember { mutableStateOf(false) }
 
-    EditFolderDialog(showDialog = showEditFolderDialog, folder = folder, onDismiss = { showEditFolderDialog= false })
+    EditFolderDialog(showDialog = showEditFolderDialog, folder = folder, onDismiss = { showEditFolderDialog = false })
+
+    ShareFolderDialog(showDialog = showShareFolderDialog, folder = folder, onDismiss = { showShareFolderDialog = false })
 
     Row(
         modifier = Modifier
@@ -52,11 +60,9 @@ private fun FolderComposable(folder: Folder) {
             Modifier.size(55.dp),
             contentAlignment = Alignment.Center
         ) {
-            Image(
-                painter = painterResource(R.drawable.folder),
-                contentDescription = "Icon for folder",
+            Icon(Icons.Default.Folder, contentDescription = "Icon for folder",
                 modifier = Modifier
-                        .size(55.dp)
+                    .size(55.dp)
             )
         }
 
@@ -82,32 +88,27 @@ private fun FolderComposable(folder: Folder) {
         }
         Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             Row {
-                Image(
-                    painter = painterResource(R.drawable.editicon),
-                    contentDescription = "Icon for edit",
+                Icon(Icons.Outlined.Edit, contentDescription = "Icon for edit",
                     modifier = Modifier
                         .size(30.dp)
-                        .clickable {
-                            showEditFolderDialog = true
-                        },
+                        .clip(RoundedCornerShape(15.dp))
+                        .clickable { showEditFolderDialog = true }
                 )
-                Image(
-                    painter = painterResource(R.drawable.uploadicon),
-                    contentDescription = "Icon for upload",
+                Icon(Icons.Outlined.Upload, contentDescription = "Icon for move folder",
                     modifier = Modifier
                         .size(30.dp)
+                        .clip(RoundedCornerShape(15.dp))
                         .clickable {
-                            /* TODO: add click functionality for upload */
-                        },
+                                   /* TODO: add click functionality for move folder */
+                                   }
                 )
-                Image(
-                    painter = painterResource(R.drawable.shareicon),
-                    contentDescription = "Icon for share",
+                Icon(Icons.Outlined.Share, contentDescription = "Icon for share",
                     modifier = Modifier
                         .size(30.dp)
+                        .clip(RoundedCornerShape(15.dp))
                         .clickable {
-                            /* TODO: add click functionality for share */
-                        },
+                            showShareFolderDialog = true
+                        }
                 )
             }
         }

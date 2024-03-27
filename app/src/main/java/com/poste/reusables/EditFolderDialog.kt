@@ -60,6 +60,11 @@ fun EditFolderDialog(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
+                    Text(
+                        text = "Edit Folder",
+                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.ExtraBold)
+                    )
+
                     Image(
                         painter = painterResource(R.drawable.folder),
                         contentDescription = "Poste Icon",

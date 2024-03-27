@@ -21,6 +21,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.poste.reusables.PostGrid
 import com.poste.viewmodels.MainViewModel
 import kotlinx.coroutines.launch
 
@@ -61,6 +62,9 @@ fun DashboardScreen(navController: NavHostController) {
                 DashboardTopBar()
                 data?.folders?.let { folders ->
                     FolderList(folders = folders)
+                }
+                data?.posts?.let { posts ->
+                    PostGrid(posts = posts)
                 }
             }
         }
