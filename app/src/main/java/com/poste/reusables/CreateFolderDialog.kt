@@ -44,7 +44,7 @@ fun CreateFolderDialog(showDialog: Boolean, onDismiss: () -> Unit) {
     if (showDialog) {
         Dialog(onDismissRequest = onDismiss) {
             Surface(
-                shape = RoundedCornerShape(25.dp),
+                shape = RoundedCornerShape(24.dp),
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -64,11 +64,11 @@ fun CreateFolderDialog(showDialog: Boolean, onDismiss: () -> Unit) {
                     OutlinedTextField(
                         value = folderName,
                         onValueChange = { folderName = it },
-                        label = { Text("Name") },
+                        label = { Text("Name", color = Color.Gray) },
                         singleLine = true,
                         modifier = Modifier
                             .fillMaxWidth(.9f),
-                        shape = RoundedCornerShape(24.dp),
+                        shape = RoundedCornerShape(16.dp),
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
@@ -82,11 +82,11 @@ fun CreateFolderDialog(showDialog: Boolean, onDismiss: () -> Unit) {
                                 folderDescription = it
                             }
                         },
-                        label = { Text("Description") },
+                        label = { Text("Description", color = Color.Gray) },
                         modifier = Modifier
                             .fillMaxWidth(.9f)
                             .heightIn(140.dp),
-                        shape = RoundedCornerShape(24.dp),
+                        shape = RoundedCornerShape(16.dp),
                         maxLines = 4,
                     )
                     Row(

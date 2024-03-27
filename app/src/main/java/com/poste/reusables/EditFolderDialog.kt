@@ -47,7 +47,7 @@ fun EditFolderDialog(
     if (showDialog) {
         Dialog(onDismissRequest = onDismiss) {
             Surface(
-                shape = RoundedCornerShape(25.dp),
+                shape = RoundedCornerShape(24.dp),
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -89,7 +89,7 @@ fun EditFolderDialog(
                         label = { Text("Name") },
                         modifier = Modifier
                             .fillMaxWidth(.9f),
-                        shape = RoundedCornerShape(24.dp),
+                        shape = RoundedCornerShape(16.dp),
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
@@ -107,7 +107,7 @@ fun EditFolderDialog(
                         modifier = Modifier
                             .fillMaxWidth(.9f)
                             .heightIn(140.dp),
-                        shape = RoundedCornerShape(24.dp),
+                        shape = RoundedCornerShape(16.dp),
                         maxLines = 4,
                     )
                     Row(
